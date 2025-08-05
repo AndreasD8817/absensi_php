@@ -1,0 +1,17 @@
+.card-menu {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s;
+}
+.card-menu:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.disabled-card {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.icon-lg {
+  font-size: 3rem;
+}
