@@ -1,45 +1,69 @@
 <?php
 session_start();
-require_once '../../config/database.php';
+// Menggunakan path yang benar sesuai struktur file Anda
+require_once __DIR__ . '/../../config/database.php';
 
+
+// "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: ../../index.php?error=Akses ditolak");
+    header("Location: /absensi_php/admin/manajemen-user?error=Akses ditolak.");
     exit();
 }
 
+// Pastikan request adalah POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Ambil semua data dari form
     $nama_lengkap = trim($_POST['nama_lengkap']);
     $username = trim($_POST['username']);
     $password = $_POST['password'];
     $jabatan = trim($_POST['jabatan']);
     $role = $_POST['role'];
+    
+    // --- LOGIKA BARU ---
+    // Jika field radius diisi, ambil nilainya sebagai angka. Jika kosong, simpan sebagai NULL.
+    $radius_absensi = !empty(trim($_POST['radius_absensi'])) ? (int)trim($_POST['radius_absensi']) : NULL;
 
+    // Validasi dasar
     if (empty($nama_lengkap) || empty($username) || empty($password) || empty($role)) {
-        header("Location: ../tambah_user.php?error=Semua field wajib diisi.");
+        header("Location: /absensi_php/admin/tambah-user?error=Nama, username, password, dan role wajib diisi.");
         exit();
     }
-
-    // Hash password
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-    // Cek username duplikat
+    
+    // Cek dulu apakah username sudah ada (mengikuti logika dari file lama Anda)
     $sql_cek = "SELECT id_pegawai FROM tabel_pegawai WHERE username = ?";
     $stmt_cek = mysqli_prepare($koneksi, $sql_cek);
     mysqli_stmt_bind_param($stmt_cek, "s", $username);
     mysqli_stmt_execute($stmt_cek);
-    if (mysqli_stmt_get_result($stmt_cek)->num_rows > 0) {
-        header("Location: ../tambah_user.php?error=Username sudah digunakan.");
+    $result_cek = mysqli_stmt_get_result($stmt_cek);
+    if (mysqli_num_rows($result_cek) > 0) {
+        header("Location: /absensi_php/admin/tambah-user?error=Username '" . htmlspecialchars($username) . "' sudah digunakan.");
         exit();
     }
+    mysqli_stmt_close($stmt_cek);
 
-    $sql = "INSERT INTO tabel_pegawai (nama_lengkap, username, password, jabatan, role) VALUES (?, ?, ?, ?, ?)";
+    // Hash password untuk keamanan
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    
+    // --- QUERY DIPERBARUI ---
+    // Tambahkan kolom radius_absensi ke dalam query INSERT
+    $sql = "INSERT INTO tabel_pegawai (nama_lengkap, username, password, jabatan, role, radius_absensi) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($koneksi, $sql);
-    mysqli_stmt_bind_param($stmt, "sssss", $nama_lengkap, $username, $hashed_password, $jabatan, $role);
+    
+    // Bind parameter. Tipe data: s=string, i=integer.
+    // Variabel $radius_absensi akan berisi angka atau nilai NULL.
+    mysqli_stmt_bind_param($stmt, "sssssi", $nama_lengkap, $username, $hashed_password, $jabatan, $role, $radius_absensi);
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: ../manajemen_user.php?success=User baru berhasil ditambahkan.");
+        header("Location: /absensi_php/admin/manajemen-user?success=User baru berhasil ditambahkan.");
     } else {
-        header("Location: ../tambah_user.php?error=Gagal menambahkan user.");
+        header("Location: /absensi_php/admin/tambah-user?error=Gagal menambahkan user. Error: " . mysqli_error($koneksi));
     }
+    mysqli_stmt_close($stmt);
+    mysqli_close($koneksi);
+
+} else {
+    // Jika bukan POST, redirect
+    header("Location: /absensi_php/admin/tambah-user");
+    exit();
 }
 ?>

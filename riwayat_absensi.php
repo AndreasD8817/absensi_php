@@ -1,10 +1,11 @@
 <?php
 session_start();
-require_once 'config/database.php';
+require_once __DIR__ . '/config/database.php';
+
 
 // Redirect jika belum login
 if (!isset($_SESSION['id_pegawai'])) {
-    header("Location: index.php");
+    header("Location: /absensi_php/login");
     exit();
 }
 
@@ -54,10 +55,10 @@ $dates_on_page = array_slice($dates, $offset, $limit);
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container">
-    <a class="navbar-brand" href="dashboard.php">Aplikasi Absensi</a>
+    <a class="navbar-brand" href="/absensi_php/dashboard">Aplikasi Absensi</a>
     <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-            <a class="nav-link" href="auth/logout.php">Logout</a>
+            <a class="nav-link" href="/absensi_php/auth/logout">Logout</a>
         </li>
     </ul>
   </div>

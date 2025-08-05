@@ -13,7 +13,7 @@ require_once 'partials/header.php';
 <div class="row text-center justify-content-center">
     <!-- Card 1: Kelola Hari Libur (Bisa diakses Admin & Superadmin) -->
     <div class="col-md-4 mb-3">
-        <a href="kelola_libur.php" class="card-menu">
+        <a href="/absensi_php/admin/kelola-libur" class="card-menu">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <i class="bi bi-calendar-plus-fill icon-lg text-info"></i>
@@ -25,7 +25,7 @@ require_once 'partials/header.php';
 
     <!-- Card 2: Laporan Absensi (Bisa diakses Admin & Superadmin) -->
     <div class="col-md-4 mb-3">
-        <a href="laporan_absensi.php" class="card-menu">
+        <a href="/absensi_php/admin/laporan-absensi" class="card-menu">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <i class="bi bi-file-earmark-spreadsheet-fill icon-lg text-success"></i>
@@ -39,7 +39,7 @@ require_once 'partials/header.php';
     <?php if ($_SESSION['role'] == 'superadmin'): ?>
     <!-- Card 3: Impor Data Absensi -->
     <div class="col-md-4 mb-3">
-        <a href="impor_absensi.php" class="card-menu">
+        <a href="/absensi_php/admin/impor-absensi" class="card-menu">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <i class="bi bi-upload icon-lg text-primary"></i>
@@ -51,7 +51,7 @@ require_once 'partials/header.php';
 
     <!-- Card 4: Impor Data Pegawai (BARU) -->
     <div class="col-md-4 mb-3">
-        <a href="impor_pegawai.php" class="card-menu">
+        <a href="/absensi_php/admin/impor-pegawai" class="card-menu">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <i class="bi bi-person-lines-fill icon-lg text-secondary"></i>
@@ -63,7 +63,7 @@ require_once 'partials/header.php';
 
     <!-- Card 5: Manajemen User -->
     <div class="col-md-4 mb-3">
-        <a href="manajemen_user.php" class="card-menu">
+        <a href="/absensi_php/admin/manajemen-user" class="card-menu">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <i class="bi bi-people-fill icon-lg text-danger"></i>
@@ -75,7 +75,7 @@ require_once 'partials/header.php';
 
     <!-- Card 6: Pengaturan Jarak -->
     <div class="col-md-4 mb-3">
-        <a href="pengaturan.php" class="card-menu">
+        <a href="/absensi_php/admin/pengaturan" class="card-menu">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <i class="bi bi-pin-map-fill icon-lg text-warning"></i>

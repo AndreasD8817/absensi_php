@@ -4,7 +4,7 @@ require_once 'partials/header.php';
 
 // Keamanan ekstra, hanya untuk superadmin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: index.php?error=Akses ditolak.");
+    header("Location: /absensi_php/login?error=Akses ditolak.");
     exit();
 }
 ?>
@@ -35,7 +35,7 @@ if ($_SESSION['role'] != 'superadmin') {
             </ul>
         </div>
         
-        <form action="proses/proses_impor_pegawai.php" method="POST" enctype="multipart/form-data">
+        <form action="/absensi_php/admin/proses/impor-pegawai" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="file_pegawai" class="form-label">Pilih File Teks Data Pegawai (.txt)</label>
                 <input class="form-control" type="file" id="file_pegawai" name="file_pegawai" accept=".txt" required>

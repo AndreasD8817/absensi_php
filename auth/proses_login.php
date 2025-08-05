@@ -3,7 +3,7 @@
 session_start();
 
 // Panggil file koneksi database
-require_once '../config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 // Cek apakah data dikirim dari form
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validasi dasar
     if (empty($username) || empty($password)) {
-        header("Location: ../index.php?error=Username dan Password tidak boleh kosong");
+        header("Location: /absensi_php/login?error=Username dan Password tidak boleh kosong");
         exit();
     }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = mysqli_prepare($koneksi, $sql);
     
     if ($stmt === false) {
-        header("Location: ../index.php?error=Terjadi kesalahan pada server");
+        header("Location: /absensi_php/login?error=Terjadi kesalahan pada server");
         exit();
     }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // PENTING: Cek status akun SEBELUM verifikasi password
         if ($user['status'] == 'non-aktif') {
-            header("Location: ../index.php?error=Akun Anda telah dinonaktifkan. Silakan hubungi Super Koor Arvin.");
+            header("Location: /absensi_php/login?error=Akun Anda telah dinonaktifkan. Silakan hubungi Super Koor Arvin.");
             exit();
         }
 
@@ -47,16 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['role'] = $user['role'];
 
             // Redirect ke halaman dashboard utama
-            header("Location: ../dashboard.php");
+            header("Location: /absensi_php/dashboard");
             exit();
         } else {
             // Password salah
-            header("Location: ../index.php?error=Password salah");
+            header("Location: /absensi_php/login?error=Password salah");
             exit();
         }
     } else {
         // Username tidak ditemukan
-        header("Location: ../index.php?error=Username tidak ditemukan");
+        header("Location: /absensi_php/login?error=Username tidak ditemukan");
         exit();
     }
     
@@ -65,6 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 } else {
     // Jika file diakses langsung, redirect ke halaman login
-    header("Location: ../index.php");
+    header("Location: /absensi_php/login");
     exit();
 }

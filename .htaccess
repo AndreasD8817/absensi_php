@@ -1,8 +1,20 @@
-# Aktifkan mesin rewrite
+# Mengaktifkan mesin "rewrite" pada server
+
 RewriteEngine On
 
-# Cek apakah koneksi BUKAN HTTPS
-RewriteCond %{HTTPS} off
+# Kondisi: Alihkan semua lalu lintas ke HTTPS (ini sudah ada sebelumnya, kita pertahankan)
 
-# Jika bukan, alihkan (redirect) ke alamat HTTPS yang sama
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTPS} off
+RewriteRule ^(.\*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Kondisi: Jangan terapkan aturan di bawahnya jika permintaan adalah untuk file yang benar-benar ada
+
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Kondisi: Jangan terapkan aturan di bawahnya jika permintaan adalah untuk direktori yang benar-benar ada
+
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Aturan Utama: Alihkan semua permintaan lain ke index.php
+
+RewriteRule . index.php [L]

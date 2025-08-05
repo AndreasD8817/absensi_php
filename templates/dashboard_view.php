@@ -6,7 +6,7 @@
     <title>Dashboard Absensi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
 </head>
 <body>
 
@@ -15,7 +15,7 @@
     <a class="navbar-brand" href="#">Aplikasi Absensi</a>
     <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-            <a class="nav-link" href="auth/logout.php">Logout</a>
+            <a class="nav-link" href="/absensi_php/auth/logout">Logout</a>
         </li>
     </ul>
   </div>
@@ -72,7 +72,7 @@
     <h4 class="mb-3">Laporan</h4>
     <div class="row text-center">
         <div class="col-md-4 mb-3">
-            <a href="riwayat_absensi.php" class="card-menu">
+            <a href="/absensi_php/riwayat-absensi" class="card-menu">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <i class="bi bi-file-earmark-text-fill icon-lg text-primary"></i>
@@ -84,7 +84,7 @@
         <!-- === PERUBAHAN DI SINI === -->
         <?php if ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin'): ?>
         <div class="col-md-4 mb-3">
-            <a href="admin/index.php" class="card-menu">
+            <a href="/absensi_php/admin" class="card-menu">
                 <div class="card shadow-sm border-danger">
                     <div class="card-body">
                         <i class="bi bi-shield-lock-fill icon-lg text-danger"></i>

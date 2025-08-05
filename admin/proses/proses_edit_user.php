@@ -1,13 +1,17 @@
 <?php
 session_start();
-require_once '../../config/database.php';
+// Menggunakan path yang benar sesuai struktur file Anda
+require_once __DIR__ . '/../../config/database.php';
 
+// "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: ../../index.php?error=Akses ditolak");
+    header("Location: /absensi_php/admin/manajemen-user?error=Akses ditolak.");
     exit();
 }
 
+// Pastikan request adalah POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Ambil semua data dari form
     $id_pegawai = (int)$_POST['id_pegawai'];
     $nama_lengkap = trim($_POST['nama_lengkap']);
     $username = trim($_POST['username']);
@@ -15,27 +19,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jabatan = trim($_POST['jabatan']);
     $role = $_POST['role'];
 
-    if (empty($nama_lengkap) || empty($username) || empty($role)) {
-        header("Location: ../edit_user.php?id=$id_pegawai&error=Field tidak boleh kosong.");
+    // --- LOGIKA BARU ---
+    // Jika field radius diisi, ambil nilainya sebagai angka. Jika kosong, simpan sebagai NULL.
+    $radius_absensi = !empty(trim($_POST['radius_absensi'])) ? (int)trim($_POST['radius_absensi']) : NULL;
+
+    // Validasi dasar
+    if (empty($nama_lengkap) || empty($username) || empty($role) || empty($id_pegawai)) {
+        header("Location: /absensi_php/admin/edit-user?id=$id_pegawai&error=Nama, username, dan role wajib diisi.");
         exit();
     }
-
-    // Jika password diisi, update password. Jika tidak, biarkan password lama.
+    
+    // Logika untuk update password (mengikuti file lama Anda):
+    // Jika field password TIDAK kosong, maka kita update passwordnya.
     if (!empty($password)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "UPDATE tabel_pegawai SET nama_lengkap = ?, username = ?, password = ?, jabatan = ?, role = ? WHERE id_pegawai = ?";
+        // --- QUERY DIPERBARUI ---
+        $sql = "UPDATE tabel_pegawai SET nama_lengkap = ?, username = ?, password = ?, jabatan = ?, role = ?, radius_absensi = ? WHERE id_pegawai = ?";
         $stmt = mysqli_prepare($koneksi, $sql);
-        mysqli_stmt_bind_param($stmt, "sssssi", $nama_lengkap, $username, $hashed_password, $jabatan, $role, $id_pegawai);
+        // Tipe data: s=string, i=integer
+        mysqli_stmt_bind_param($stmt, "sssssii", $nama_lengkap, $username, $hashed_password, $jabatan, $role, $radius_absensi, $id_pegawai);
     } else {
-        $sql = "UPDATE tabel_pegawai SET nama_lengkap = ?, username = ?, jabatan = ?, role = ? WHERE id_pegawai = ?";
+        // Jika field password KOSONG, kita update semua kecuali password.
+        // --- QUERY DIPERBARUI ---
+        $sql = "UPDATE tabel_pegawai SET nama_lengkap = ?, username = ?, jabatan = ?, role = ?, radius_absensi = ? WHERE id_pegawai = ?";
         $stmt = mysqli_prepare($koneksi, $sql);
-        mysqli_stmt_bind_param($stmt, "ssssi", $nama_lengkap, $username, $jabatan, $role, $id_pegawai);
+        // Tipe data: s=string, i=integer
+        mysqli_stmt_bind_param($stmt, "ssssii", $nama_lengkap, $username, $jabatan, $role, $radius_absensi, $id_pegawai);
     }
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: ../manajemen_user.php?success=Data user berhasil diperbarui.");
+        header("Location: /absensi_php/admin/manajemen-user?success=Data user berhasil diperbarui.");
     } else {
-        header("Location: ../edit_user.php?id=$id_pegawai&error=Gagal memperbarui data.");
+        // Cek jika error karena username duplikat
+        if (mysqli_errno($koneksi) == 1062) {
+             header("Location: /absensi_php/admin/edit-user?id=$id_pegawai&error=Username '" . htmlspecialchars($username) . "' sudah digunakan.");
+        } else {
+            header("Location: /absensi_php/admin/edit-user?id=$id_pegawai&error=Gagal memperbarui data user. Error: " . mysqli_error($koneksi));
+        }
     }
+    mysqli_stmt_close($stmt);
+    mysqli_close($koneksi);
+
+} else {
+    // Jika bukan POST, redirect
+    header("Location: /absensi_php/admin/manajemen-user");
+    exit();
 }
 ?>

@@ -1,137 +1,113 @@
 <?php
-session_start();
-// Jika sudah ada sesi, redirect ke dashboard
-if (isset($_SESSION['id_pegawai'])) {
-    header("Location: dashboard.php");
-    exit();
-}
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Absensi Pegawai</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons for the 'eye' icon -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <!-- Custom CSS for the new look -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-card {
-            background-color: #ffffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-        }
-        .login-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 24px;
-        }
-        .form-control {
-            border-radius: 5px;
-            padding: 12px 15px;
-            border: 1px solid #ced4da;
-            margin-bottom: 15px;
-        }
-        .form-control:focus {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-        .input-group-text {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 5;
-        }
-        .btn-login {
-            border-radius: 5px;
-            padding: 12px;
-            font-weight: bold;
-            width: 100%;
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-login:hover {
-            background-color: #0069d9;
-        }
-        .password-container {
-            position: relative;
-        }
-    </style>
-</head>
-<body>
+// Mendapatkan path URL yang diminta, tanpa query string
+$request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 
-<div class="login-card">
-    <div class="text-center mb-4">
-        <img src="assets/img/logo/logo.png" alt="Logo" width="100">
-    </div>
-    <h4 class="login-title">LOGIN ABSENSI PEGAWAI</h4>
-    
-    <?php
-    // Tampilkan pesan error jika ada
-    if (isset($_GET['error'])) {
-        echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($_GET['error']) . '</div>';
-    }
-    ?>
-    
-    <form action="auth/proses_login.php" method="POST">
-        <div class="mb-3">
-            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
-        </div>
-        
-        <div class="mb-3 password-container">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            <span class="input-group-text" id="togglePassword">
-                <i class="bi bi-eye-slash" id="toggleIcon"></i>
-            </span>
-        </div>
+// Menghapus sub-direktori jika aplikasi Anda tidak berada di root domain
+// Contoh: jika URL adalah localhost/absensi_php/dashboard, kita ingin mendapatkan /dashboard
+$base_path = '/absensi_php'; // <-- SESUAIKAN JIKA PERLU
+$request = str_replace($base_path, '', $request_uri);
+$request = trim($request, '/');
 
-        <div class="d-grid mt-4">
-            <button type="submit" class="btn btn-primary btn-login">LOGIN</button>
-        </div>
-    </form>
-</div>
+// Mengatur routing berdasarkan permintaan
+switch ($request) {
+    // --- Routing Utama ---
+    case '':
+    case '/':
+        require 'login.php';
+        break;
+    case 'login':
+        require 'login.php';
+        break;
+    case 'dashboard':
+        require 'dashboard.php';
+        break;
+    case 'riwayat-absensi':
+        require 'riwayat_absensi.php';
+        break;
 
-<!-- JavaScript for password toggle -->
-<script>
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const toggleIcon = document.getElementById('toggleIcon');
+    // --- Routing untuk Proses Form ---
+    case 'auth/proses-login':
+        require 'auth/proses_login.php';
+        break;
+    case 'auth/logout':
+        require 'auth/logout.php';
+        break;
+    case 'proses-absensi':
+        require 'proses_absensi.php';
+        break;
+    case 'proses-dinas-luar':
+        require 'proses_dinas_luar.php';
+        break;
 
-    togglePassword.addEventListener('click', function () {
-        // Toggle the type attribute
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        // Toggle the icon
-        if (type === 'password') {
-            toggleIcon.classList.remove('bi-eye');
-            toggleIcon.classList.add('bi-eye-slash');
+    // --- Routing untuk Halaman Admin ---
+    case 'admin':
+    case 'admin/':
+        require 'admin/index.php';
+        break;
+    case 'admin/manajemen-user':
+        require 'admin/manajemen_user.php';
+        break;
+    case 'admin/tambah-user':
+        require 'admin/tambah_user.php';
+        break;
+    case 'admin/edit-user': // Kita butuh ID, jadi ini akan ditangani secara khusus
+        if (isset($_GET['id'])) {
+            require 'admin/edit_user.php';
         } else {
-            toggleIcon.classList.remove('bi-eye-slash');
-            toggleIcon.classList.add('bi-eye');
+            http_response_code(404);
+            require '404.php'; // Halaman Error
         }
-    });
-</script>
+        break;
+    case 'admin/impor-pegawai':
+        require 'admin/impor_pegawai.php';
+        break;
+    case 'admin/impor-absensi':
+        require 'admin/impor_absensi.php';
+        break;
+    case 'admin/kelola-libur':
+        require 'admin/kelola_libur.php';
+        break;
+    case 'admin/laporan-absensi':
+        require 'admin/laporan_absensi.php';
+        break;
+    case 'admin/pengaturan':
+        require 'admin/pengaturan.php';
+        break;
+        
+    // --- Routing untuk Proses di Folder Admin ---
+    // (Tambahkan semua file dari folder admin/proses/ di sini)
+    case 'admin/proses/proses-edit-user':
+        require 'admin/proses/proses_edit_user.php';
+        break;
+    case 'admin/proses/proses-hapus-user':
+        require 'admin/proses/proses_hapus_user.php';
+        break;
+    case 'admin/proses/impor-pegawai':
+        require 'admin/proses/proses_impor_pegawai.php';
+        break;
+    case 'admin/proses/impor-absensi': 
+        require 'admin/proses/proses_impor.php';
+        break;
+    case 'admin/proses/tambah-libur':
+        require 'admin/proses/proses_tambah_libur.php';
+        break;
+    case 'admin/proses/hapus-libur':
+        require 'admin/proses/proses_hapus_libur.php';
+        break;
+    case 'admin/proses/ubah-status':
+        require 'admin/proses/proses_ubah_status.php';
+        break;
+    case 'admin/proses/proses-pengaturan':
+        require 'admin/proses/proses_pengaturan.php';
+        break;
+    case 'admin/proses/proses-tambah-user':
+        require 'admin/proses/proses_tambah_user.php';
+        break;
+    // ... Tambahkan file proses lainnya di sini
 
-</body>
-</html>
+    default:
+        // Jika tidak ada route yang cocok, tampilkan halaman 404
+        http_response_code(404);
+        require '404.php'; // Anda perlu membuat file ini
+        break;
+}
