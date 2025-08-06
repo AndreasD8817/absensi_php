@@ -23,6 +23,9 @@ switch ($request) {
     case 'dashboard':
         require 'dashboard.php';
         break;
+    case 'proses-profil':
+        require 'proses_profil.php';
+        break;
     case 'riwayat-absensi':
         require 'riwayat_absensi.php';
         break;

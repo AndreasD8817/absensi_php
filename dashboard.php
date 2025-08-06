@@ -1,12 +1,6 @@
 <?php
 // =================================================================
 // CONTROLLER: dashboard.php
-// File ini sekarang hanya bertugas sebagai Controller.
-// Tugasnya:
-// 1. Mengatur keamanan dan sesi.
-// 2. Mengambil data dari database (Model).
-// 3. Menyiapkan variabel untuk ditampilkan.
-// 4. Memanggil file View untuk menampilkan halaman.
 // =================================================================
 
 session_start();
@@ -24,7 +18,16 @@ $nama_lengkap = $_SESSION['nama_lengkap'];
 $role = $_SESSION['role'];
 $hari_ini = date('Y-m-d');
 
-// 3. Logika Bisnis: Cek status absensi terakhir hari ini dari database (Model)
+// === BARU: Ambil data username untuk modal pengaturan ===
+$sql_user = "SELECT username FROM tabel_pegawai WHERE id_pegawai = ?";
+$stmt_user = mysqli_prepare($koneksi, $sql_user);
+mysqli_stmt_bind_param($stmt_user, "i", $id_pegawai);
+mysqli_stmt_execute($stmt_user);
+$result_user = mysqli_stmt_get_result($stmt_user);
+$user = mysqli_fetch_assoc($result_user);
+// ========================================================
+
+// 3. Logika Bisnis: Cek status absensi terakhir hari ini
 $sql_cek = "SELECT tipe_absensi FROM tabel_absensi 
             WHERE id_pegawai = ? AND DATE(waktu_absensi) = ? 
             ORDER BY waktu_absensi DESC LIMIT 1";
@@ -39,12 +42,29 @@ if ($row = mysqli_fetch_assoc($result_cek)) {
     $status_terakhir = $row['tipe_absensi'];
 }
 
+// Logika untuk menentukan batas jam pulang
+$hari_angka = date('w'); 
+$waktu_sekarang = date('H:i:s');
+$batas_pulang_str = ''; 
+
+switch ($hari_angka) {
+    case 1: case 2: case 3: case 4: case 5:
+        $batas_pulang_str = '16:00:00'; 
+        break;
+    case 6: // Sabtu
+        $batas_pulang_str = '14:00:00'; 
+        break;
+}
+
+$lewat_jam_pulang = false;
+if ($batas_pulang_str != '' && $waktu_sekarang > $batas_pulang_str) {
+    $lewat_jam_pulang = true;
+}
+
 // 4. Siapkan variabel untuk View
-$bisa_absen_masuk = ($status_terakhir === null);
-$bisa_absen_pulang = ($status_terakhir === 'Masuk');
 $sudah_selesai = ($status_terakhir === 'Pulang' || $status_terakhir === 'Dinas Luar');
+$bisa_absen_masuk = ($status_terakhir === null && !$lewat_jam_pulang);
+$bisa_absen_pulang = ($status_terakhir === 'Masuk' || ($lewat_jam_pulang && $status_terakhir === null));
 
-
-// 5. Panggil View: Setelah semua data siap, panggil file view untuk menampilkannya.
-// Semua variabel PHP di atas akan bisa diakses di dalam file view.
+// 5. Panggil View
 require_once 'templates/dashboard_view.php';

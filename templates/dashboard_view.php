@@ -10,18 +10,41 @@
 </head>
 <body>
 
+<!-- === NAVBAR BARU DENGAN DROPDOWN === -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container">
-    <a class="navbar-brand" href="#">Aplikasi Absensi</a>
+    <a class="navbar-brand" href="/dashboard">Aplikasi Absensi</a>
     <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="/auth/logout">Logout</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <!-- Tombol ini akan memicu modal -->
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPengaturan">Pengaturan Akun</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+            </ul>
         </li>
     </ul>
   </div>
 </nav>
 
 <div class="container mt-4">
+    <!-- Menampilkan notifikasi dari proses update profil -->
+    <?php if (isset($_GET['sukses'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php echo htmlspecialchars($_GET['sukses']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo htmlspecialchars($_GET['error']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="alert alert-success">
         <h4 class="alert-heading">Selamat Datang!</h4>
         <p>Halo, <strong><?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?></strong>! Silakan lakukan absensi.</p>
@@ -29,6 +52,7 @@
 
     <div id="notifikasi" class="alert" style="display:none;"></div>
     
+    <!-- Sisa konten dashboard tidak berubah -->
     <?php if ($sudah_selesai): ?>
         <div class="alert alert-info text-center">
             <h5>Anda sudah menyelesaikan absensi hari ini. Terima kasih.</h5>
@@ -56,7 +80,7 @@
                 </a>
             </div>
             <div class="col-md-4 mb-3">
-                <a href="#" class="card-menu <?php if(!$bisa_absen_masuk) echo 'disabled-card'; ?>" data-bs-toggle="modal" data-bs-target="#modalDinasLuar">
+                <a href="#" class="card-menu <?php if($sudah_selesai) echo 'disabled-card'; ?>" data-bs-toggle="modal" data-bs-target="#modalDinasLuar">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <i class="bi bi-briefcase-fill icon-lg text-warning"></i>
@@ -68,7 +92,6 @@
         </div>
     <?php endif; ?>
     <hr class="my-4">
-
     <h4 class="mb-3">Laporan</h4>
     <div class="row text-center">
         <div class="col-md-4 mb-3">
@@ -81,7 +104,6 @@
                 </div>
             </a>
         </div>
-        <!-- === PERUBAHAN DI SINI === -->
         <?php if ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin'): ?>
         <div class="col-md-4 mb-3">
             <a href="/admin" class="card-menu">
@@ -94,16 +116,55 @@
             </a>
         </div>
         <?php endif; ?>
-        <!-- === AKHIR PERUBAHAN === -->
     </div>
 </div>
+
 <?php
+// Memanggil modal yang sudah ada
 require_once 'templates/partials/modal_absen.php';
 require_once 'templates/partials/modal_dinas_luar.php';
 ?>
 
+<!-- === MODAL PENGATURAN AKUN BARU === -->
+<div class="modal fade" id="modalPengaturan" tabindex="-1" aria-labelledby="modalPengaturanLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalPengaturanLabel"><i class="bi bi-gear-fill"></i> Pengaturan Akun</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/proses-profil" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+            </div>
+            <hr>
+            <p class="text-muted small">Kosongkan bagian password jika Anda tidak ingin mengubahnya.</p>
+            <div class="mb-3">
+                <label for="password_lama" class="form-label">Password Lama (wajib diisi jika ingin ganti password)</label>
+                <input type="password" class="form-control" id="password_lama" name="password_lama">
+            </div>
+            <div class="mb-3">
+                <label for="password_baru" class="form-label">Password Baru</label>
+                <input type="password" class="form-control" id="password_baru" name="password_baru">
+            </div>
+            <div class="mb-3">
+                <label for="konfirmasi_password" class="form-label">Konfirmasi Password Baru</label>
+                <input type="password" class="form-control" id="konfirmasi_password" name="konfirmasi_password">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/js/dashboard.js" defer></script>
+<script src="/assets/js/dashboard.js"></script>
 
 </body>
 </html>
