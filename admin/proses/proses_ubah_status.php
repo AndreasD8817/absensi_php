@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 // Keamanan
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/login?error=Akses ditolak");
+    header("Location: /login?error=Akses ditolak");
     exit();
 }
 
@@ -14,13 +14,13 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
 
     // Validasi nilai status
     if ($status_baru != 'aktif' && $status_baru != 'non-aktif') {
-        header("Location: /absensi_php/admin/manajemen-user?error=Status tidak valid.");
+        header("Location: /admin/manajemen-user?error=Status tidak valid.");
         exit();
     }
 
     // Mencegah superadmin menonaktifkan dirinya sendiri
     if ($id_pegawai == $_SESSION['id_pegawai']) {
-        header("Location: /absensi_php/admin/manajemen-user?error=Anda tidak dapat mengubah status akun Anda sendiri.");
+        header("Location: /admin/manajemen-user?error=Anda tidak dapat mengubah status akun Anda sendiri.");
         exit();
     }
 
@@ -29,15 +29,15 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
     mysqli_stmt_bind_param($stmt, "si", $status_baru, $id_pegawai);
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: /absensi_php/admin/manajemen-user?success=Status user berhasil diperbarui.");
+        header("Location: /admin/manajemen-user?success=Status user berhasil diperbarui.");
     } else {
-        header("Location: /absensi_php/admin/manajemen-user?error=Gagal memperbarui status user.");
+        header("Location: /admin/manajemen-user?error=Gagal memperbarui status user.");
     }
     mysqli_stmt_close($stmt);
     mysqli_close($koneksi);
 
 } else {
-    header("Location: /absensi_php/admin/manajemen-user");
+    header("Location: /admin/manajemen-user");
     exit();
 }
 ?>

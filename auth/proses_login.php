@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validasi dasar
     if (empty($username) || empty($password)) {
-        header("Location: /absensi_php/login?error=Username dan Password tidak boleh kosong");
+        header("Location: /login?error=Username dan Password tidak boleh kosong");
         exit();
     }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = mysqli_prepare($koneksi, $sql);
     
     if ($stmt === false) {
-        header("Location: /absensi_php/login?error=Terjadi kesalahan pada server");
+        header("Location: /login?error=Terjadi kesalahan pada server");
         exit();
     }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // PENTING: Cek status akun SEBELUM verifikasi password
         if ($user['status'] == 'non-aktif') {
-            header("Location: /absensi_php/login?error=Akun Anda telah dinonaktifkan. Silakan hubungi Super Koor Arvin.");
+            header("Location: /login?error=Akun Anda telah dinonaktifkan. Silakan hubungi Super Koor Arvin.");
             exit();
         }
 
@@ -47,16 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['role'] = $user['role'];
 
             // Redirect ke halaman dashboard utama
-            header("Location: /absensi_php/dashboard");
+            header("Location: /dashboard");
             exit();
         } else {
             // Password salah
-            header("Location: /absensi_php/login?error=Password salah");
+            header("Location: /login?error=Password salah");
             exit();
         }
     } else {
         // Username tidak ditemukan
-        header("Location: /absensi_php/login?error=Username tidak ditemukan");
+        header("Location: /login?error=Username tidak ditemukan");
         exit();
     }
     
@@ -65,6 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 } else {
     // Jika file diakses langsung, redirect ke halaman login
-    header("Location: /absensi_php/login");
+    header("Location: /login");
     exit();
 }

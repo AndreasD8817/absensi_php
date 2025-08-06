@@ -4,8 +4,8 @@ RewriteEngine On
 
 # Kondisi: Alihkan semua lalu lintas ke HTTPS (ini sudah ada sebelumnya, kita pertahankan)
 
-RewriteCond %{HTTPS} off
-RewriteRule ^(.\*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Kondisi: Jangan terapkan aturan di bawahnya jika permintaan adalah untuk file yang benar-benar ada
 

@@ -8,5 +8,5 @@ session_unset();
 session_destroy();
 
 // Redirect ke halaman login
-header("Location: /absensi_php/login");
+header("Location: /login");
 exit();

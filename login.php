@@ -2,7 +2,7 @@
 session_start();
 // Jika sudah ada sesi, redirect ke dashboard
 if (isset($_SESSION['id_pegawai'])) {
-    header("Location: /absensi_php/dashboard");
+    header("Location: /dashboard");
     exit();
 }
 ?>
@@ -93,7 +93,7 @@ if (isset($_SESSION['id_pegawai'])) {
     }
     ?>
     
-    <form action="/absensi_php/auth/proses-login" method="POST">
+    <form action="/auth/proses-login" method="POST">
         <div class="mb-3">
             <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
         </div>

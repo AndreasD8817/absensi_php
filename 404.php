@@ -12,7 +12,7 @@
         <p class="lead">
             Halaman yang Anda cari tidak ada.
         </p>
-        <a href="/absensi_php/dashboard" class="btn btn-primary">Kembali ke Dashboard</a>
+        <a href="/dashboard" class="btn btn-primary">Kembali ke Dashboard</a>
     </div>
 </body>
 </html>

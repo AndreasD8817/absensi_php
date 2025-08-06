@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 // Security check
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'superadmin')) {
-    header("Location: /absensi_php/admin?error=Akses ditolak");
+    header("Location: /admin?error=Akses ditolak");
     exit();
 }
 
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validasi sederhana
     if (empty($tanggal) || empty($keterangan)) {
-        header("Location: /absensi_php/admin/kelola-libur?error=Tanggal dan keterangan tidak boleh kosong.");
+        header("Location: /admin/kelola-libur?error=Tanggal dan keterangan tidak boleh kosong.");
         exit();
     }
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result_cek = mysqli_stmt_get_result($stmt_cek);
 
     if (mysqli_num_rows($result_cek) > 0) {
-        header("Location: /absensi_php/admin/kelola-libur?error=Tanggal libur sudah ada di database.");
+        header("Location: /admin/kelola-libur?error=Tanggal libur sudah ada di database.");
         exit();
     }
     mysqli_stmt_close($stmt_cek);
@@ -37,16 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_bind_param($stmt, "ss", $tanggal, $keterangan);
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: /absensi_php/admin/kelola-libur?success=Hari libur berhasil ditambahkan.");
+        header("Location: /admin/kelola-libur?success=Hari libur berhasil ditambahkan.");
     } else {
-        header("Location: /absensi_php/admin/kelola-libur?error=Gagal menambahkan hari libur.");
+        header("Location: /admin/kelola-libur?error=Gagal menambahkan hari libur.");
     }
     mysqli_stmt_close($stmt);
     mysqli_close($koneksi);
 
 } else {
     // Redirect jika file diakses langsung
-    header("Location: /absensi_php/admin/kelola-libur");
+    header("Location: /admin/kelola-libur");
     exit();
 }
 ?>

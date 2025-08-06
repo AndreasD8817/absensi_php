@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 // "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/admin/manajemen-user?error=Akses ditolak.");
+    header("Location: /admin/manajemen-user?error=Akses ditolak.");
     exit();
 }
 
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validasi dasar
     if (empty($nama_lengkap) || empty($username) || empty($role) || empty($id_pegawai)) {
-        header("Location: /absensi_php/admin/edit-user?id=$id_pegawai&error=Nama, username, dan role wajib diisi.");
+        header("Location: /admin/edit-user?id=$id_pegawai&error=Nama, username, dan role wajib diisi.");
         exit();
     }
     
@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: /absensi_php/admin/manajemen-user?success=Data user berhasil diperbarui.");
+        header("Location: /admin/manajemen-user?success=Data user berhasil diperbarui.");
     } else {
         // Cek jika error karena username duplikat
         if (mysqli_errno($koneksi) == 1062) {
-             header("Location: /absensi_php/admin/edit-user?id=$id_pegawai&error=Username '" . htmlspecialchars($username) . "' sudah digunakan.");
+             header("Location: /admin/edit-user?id=$id_pegawai&error=Username '" . htmlspecialchars($username) . "' sudah digunakan.");
         } else {
-            header("Location: /absensi_php/admin/edit-user?id=$id_pegawai&error=Gagal memperbarui data user. Error: " . mysqli_error($koneksi));
+            header("Location: /admin/edit-user?id=$id_pegawai&error=Gagal memperbarui data user. Error: " . mysqli_error($koneksi));
         }
     }
     mysqli_stmt_close($stmt);
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 } else {
     // Jika bukan POST, redirect
-    header("Location: /absensi_php/admin/manajemen-user");
+    header("Location: /admin/manajemen-user");
     exit();
 }
 ?>

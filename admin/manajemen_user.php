@@ -4,7 +4,7 @@ require_once 'partials/header.php';
 
 // "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/login?error=Akses ditolak. Fitur ini hanya untuk Super Admin.");
+    header("Location: /login?error=Akses ditolak. Fitur ini hanya untuk Super Admin.");
     exit();
 }
 
@@ -17,7 +17,7 @@ $result = mysqli_query($koneksi, $query);
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0"><i class="bi bi-people-fill"></i> Manajemen User</h4>
-        <a href="/absensi_php/admin/tambah-user" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Tambah User Baru</a>
+        <a href="/admin/tambah-user" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Tambah User Baru</a>
     </div>
     <div class="card-body">
         <!-- Tampilkan notifikasi -->
@@ -83,21 +83,21 @@ $result = mysqli_query($koneksi, $query);
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
-                                    <a href="/absensi_php/admin/edit-user?id=<?php echo $row['id_pegawai']; ?>" class="btn btn-warning btn-sm" title="Edit User">
+                                    <a href="/admin/edit-user?id=<?php echo $row['id_pegawai']; ?>" class="btn btn-warning btn-sm" title="Edit User">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <!-- Tombol aksi tidak akan muncul untuk user yang sedang login -->
                                     <?php if ($_SESSION['id_pegawai'] != $row['id_pegawai']): ?>
                                         <?php if ($row['status'] == 'aktif'): ?>
-                                            <a href="/absensi_php/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=non-aktif" class="btn btn-secondary btn-sm" onclick="return confirm('Apakah Anda yakin ingin menonaktifkan user ini?');" title="Non-aktifkan">
+                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=non-aktif" class="btn btn-secondary btn-sm" onclick="return confirm('Apakah Anda yakin ingin menonaktifkan user ini?');" title="Non-aktifkan">
                                                 <i class="bi bi-toggle-off"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a href="/absensi_php/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=aktif" class="btn btn-success btn-sm" onclick="return confirm('Apakah Anda yakin ingin mengaktifkan user ini?');" title="Aktifkan">
+                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=aktif" class="btn btn-success btn-sm" onclick="return confirm('Apakah Anda yakin ingin mengaktifkan user ini?');" title="Aktifkan">
                                                 <i class="bi bi-toggle-on"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a href="/absensi_php/admin/proses/proses-hapus-user?id=<?php echo $row['id_pegawai']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('PERINGATAN: Menghapus user juga akan menghapus semua data absensinya. Apakah Anda yakin?');" title="Hapus User">
+                                        <a href="/admin/proses/proses-hapus-user?id=<?php echo $row['id_pegawai']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('PERINGATAN: Menghapus user juga akan menghapus semua data absensinya. Apakah Anda yakin?');" title="Hapus User">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     <?php endif; ?>

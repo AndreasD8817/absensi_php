@@ -4,7 +4,7 @@ require_once 'partials/header.php';
 
 // Keamanan ekstra, hanya untuk superadmin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/login?error=Akses ditolak.");
+    header("Location: /login?error=Akses ditolak.");
     exit();
 }
 
@@ -30,7 +30,7 @@ while($row = mysqli_fetch_assoc($result)) {
             <div class="alert alert-danger"><?php echo htmlspecialchars($_GET['error']); ?></div>
         <?php endif; ?>
 
-        <form action="/absensi_php/admin/proses/proses-pengaturan" method="POST">
+        <form action="/admin/proses/proses-pengaturan" method="POST">
             <div class="mb-3">
                 <label for="lokasi_lat" class="form-label">Latitude Lokasi Kantor</label>
                 <input type="text" class="form-control" id="lokasi_lat" name="lokasi_lat" value="<?php echo htmlspecialchars($pengaturan['lokasi_lat'] ?? ''); ?>" required>

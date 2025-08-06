@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 // "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/admin/manajemen-user?error=Akses ditolak.");
+    header("Location: /admin/manajemen-user?error=Akses ditolak.");
     exit();
 }
 
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validasi dasar
     if (empty($nama_lengkap) || empty($username) || empty($password) || empty($role)) {
-        header("Location: /absensi_php/admin/tambah-user?error=Nama, username, password, dan role wajib diisi.");
+        header("Location: /admin/tambah-user?error=Nama, username, password, dan role wajib diisi.");
         exit();
     }
     
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_execute($stmt_cek);
     $result_cek = mysqli_stmt_get_result($stmt_cek);
     if (mysqli_num_rows($result_cek) > 0) {
-        header("Location: /absensi_php/admin/tambah-user?error=Username '" . htmlspecialchars($username) . "' sudah digunakan.");
+        header("Location: /admin/tambah-user?error=Username '" . htmlspecialchars($username) . "' sudah digunakan.");
         exit();
     }
     mysqli_stmt_close($stmt_cek);
@@ -54,16 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_bind_param($stmt, "sssssi", $nama_lengkap, $username, $hashed_password, $jabatan, $role, $radius_absensi);
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: /absensi_php/admin/manajemen-user?success=User baru berhasil ditambahkan.");
+        header("Location: /admin/manajemen-user?success=User baru berhasil ditambahkan.");
     } else {
-        header("Location: /absensi_php/admin/tambah-user?error=Gagal menambahkan user. Error: " . mysqli_error($koneksi));
+        header("Location: /admin/tambah-user?error=Gagal menambahkan user. Error: " . mysqli_error($koneksi));
     }
     mysqli_stmt_close($stmt);
     mysqli_close($koneksi);
 
 } else {
     // Jika bukan POST, redirect
-    header("Location: /absensi_php/admin/tambah-user");
+    header("Location: /admin/tambah-user");
     exit();
 }
 ?>

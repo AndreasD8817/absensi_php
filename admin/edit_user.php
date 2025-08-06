@@ -4,13 +4,13 @@ require_once 'partials/header.php';
 
 // "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/login?error=Akses ditolak");
+    header("Location: /login?error=Akses ditolak");
     exit();
 }
 
 // Validasi ID user dari URL
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
-    header("Location: /absensi_php/admin/manajemen-user?error=ID User tidak valid.");
+    header("Location: /admin/manajemen-user?error=ID User tidak valid.");
     exit();
 }
 
@@ -27,7 +27,7 @@ mysqli_stmt_close($stmt);
 
 // Jika user tidak ditemukan, redirect
 if (!$user) {
-    header("Location: /absensi_php/admin/manajemen-user?error=User dengan ID tersebut tidak ditemukan.");
+    header("Location: /admin/manajemen-user?error=User dengan ID tersebut tidak ditemukan.");
     exit();
 }
 ?>
@@ -37,7 +37,7 @@ if (!$user) {
         <h4 class="card-title"><i class="bi bi-pencil-square"></i> Form Edit User: <?php echo htmlspecialchars($user['nama_lengkap']); ?></h4>
     </div>
     <div class="card-body">
-        <form action="/absensi_php/admin/proses/proses-edit-user" method="POST">
+        <form action="/admin/proses/proses-edit-user" method="POST">
             <input type="hidden" name="id_pegawai" value="<?php echo $id_user; ?>">
             
             <div class="mb-3">
@@ -79,7 +79,7 @@ if (!$user) {
             <!-- ====================================================== -->
 
             <hr>
-            <a href="/absensi_php/admin/manajemen-user" class="btn btn-secondary">Batal</a>
+            <a href="/admin/manajemen-user" class="btn btn-secondary">Batal</a>
             <button type="submit" class="btn btn-primary">Update User</button>
         </form>
     </div>

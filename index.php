@@ -1,10 +1,12 @@
 <?php
+// Mendefinisikan base path proyek untuk semua link
+define('BASE_PATH', '');
 // Mendapatkan path URL yang diminta, tanpa query string
 $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 
 // Menghapus sub-direktori jika aplikasi Anda tidak berada di root domain
-// Contoh: jika URL adalah localhost/absensi_php/dashboard, kita ingin mendapatkan /dashboard
-$base_path = '/absensi_php'; // <-- SESUAIKAN JIKA PERLU
+// Contoh: jika URL adalah localhost/dashboard, kita ingin mendapatkan /dashboard
+$base_path = ''; // <-- SESUAIKAN JIKA PERLU
 $request = str_replace($base_path, '', $request_uri);
 $request = trim($request, '/');
 

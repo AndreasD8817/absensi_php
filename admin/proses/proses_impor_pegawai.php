@@ -4,14 +4,14 @@ require_once __DIR__ . '/../../config/database.php';
 
 // Keamanan
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/admin?error=Akses ditolak");
+    header("Location: /admin?error=Akses ditolak");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_pegawai'])) {
     
     if ($_FILES['file_pegawai']['error'] !== UPLOAD_ERR_OK) {
-        header("Location: /absensi_php/admin/impor-pegawai?error=Terjadi kesalahan saat mengunggah file.");
+        header("Location: /admin/impor-pegawai?error=Terjadi kesalahan saat mengunggah file.");
         exit();
     }
 
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_pegawai'])) {
 
     $file_handle = fopen($file_tmp_path, 'r');
     if (!$file_handle) {
-        header("Location: /absensi_php/admin/impor-pegawai?error=Gagal membuka file yang diunggah.");
+        header("Location: /admin/impor-pegawai?error=Gagal membuka file yang diunggah.");
         exit();
     }
 
@@ -93,11 +93,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_pegawai'])) {
     }
 
     fclose($file_handle);
-    header("Location: /absensi_php/admin/impor-pegawai?ditambah=$ditambah&diupdate=$diupdate");
+    header("Location: /admin/impor-pegawai?ditambah=$ditambah&diupdate=$diupdate");
     exit();
 
 } else {
-    header("Location: /absensi_php/admin/impor-pegawai?error=Tidak ada file yang diunggah.");
+    header("Location: /admin/impor-pegawai?error=Tidak ada file yang diunggah.");
     exit();
 }
 ?>

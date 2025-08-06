@@ -7,7 +7,7 @@ session_start();
 // 2. Cek apakah role user adalah 'admin' atau 'superadmin'
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'superadmin')) {
     // Jika tidak, tendang ke halaman login
-    header("Location: /absensi_php/login?error=Akses ditolak");
+    header("Location: /login?error=Akses ditolak");
     exit();
 }
 
@@ -43,14 +43,14 @@ require_once __DIR__ . '/../../config/database.php';
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
   <div class="container">
-    <a class="navbar-brand" href="/absensi_php/admin">Admin Panel</a>
+    <a class="navbar-brand" href="/admin">Admin Panel</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="adminNavbar">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <a class="nav-link" href="/absensi_php/dashboard">Dashboard Pegawai</a>
+                <a class="nav-link" href="/dashboard">Dashboard Pegawai</a>
             </li>
             <!-- Menu lain bisa ditambahkan di sini -->
         </ul>
@@ -60,7 +60,7 @@ require_once __DIR__ . '/../../config/database.php';
                     <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="/absensi_php/auth/logout">Logout</a></li>
+                    <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
                 </ul>
             </li>
         </ul>

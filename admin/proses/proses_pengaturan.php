@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 // Keamanan
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/admin?error=Akses ditolak");
+    header("Location: /admin?error=Akses ditolak");
     exit();
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($pengaturan_baru as $nama => $nilai) {
         // Validasi sederhana
         if (!is_numeric($nilai)) {
-            header("Location: /absensi_php/admin/pengaturan?error=Nilai untuk " . htmlspecialchars($nama) . " harus berupa angka.");
+            header("Location: /admin/pengaturan?error=Nilai untuk " . htmlspecialchars($nama) . " harus berupa angka.");
             exit();
         }
 
@@ -37,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($error) {
-        header("Location: /absensi_php/admin/pengaturan?error=Gagal memperbarui satu atau lebih pengaturan.");
+        header("Location: /admin/pengaturan?error=Gagal memperbarui satu atau lebih pengaturan.");
     } else {
-        header("Location: /absensi_php/admin/pengaturan?success=Pengaturan berhasil diperbarui.");
+        header("Location: /admin/pengaturan?success=Pengaturan berhasil diperbarui.");
     }
     exit();
 
 } else {
-    header("Location: /absensi_php/admin/pengaturan");
+    header("Location: /admin/pengaturan");
     exit();
 }
 ?>

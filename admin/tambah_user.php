@@ -4,7 +4,7 @@ require_once 'partials/header.php';
 
 // "Penjaga Gerbang" Super Admin
 if ($_SESSION['role'] != 'superadmin') {
-    header("Location: /absensi_php/login?error=Akses ditolak.");
+    header("Location: /login?error=Akses ditolak.");
     exit();
 }
 ?>
@@ -14,7 +14,7 @@ if ($_SESSION['role'] != 'superadmin') {
         <h4 class="card-title"><i class="bi bi-person-plus-fill"></i> Form Tambah User</h4>
     </div>
     <div class="card-body">
-        <form action="/absensi_php/admin/proses/proses-tambah-user" method="POST">
+        <form action="/admin/proses/proses-tambah-user" method="POST">
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
                 <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required>
@@ -53,7 +53,7 @@ if ($_SESSION['role'] != 'superadmin') {
             <!-- ====================================================== -->
             
             <hr>
-            <a href="/absensi_php/admin/manajemen-user" class="btn btn-secondary">Batal</a>
+            <a href="/admin/manajemen-user" class="btn btn-secondary">Batal</a>
             <button type="submit" class="btn btn-primary">Simpan User</button>
         </form>
     </div>

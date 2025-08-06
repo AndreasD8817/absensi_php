@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 // Keamanan
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'superadmin')) {
-    header("Location: /absensi_php/admin?error=Akses ditolak");
+    header("Location: /admin?error=Akses ditolak");
 
     exit();
 }
@@ -12,7 +12,7 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_absensi'])) {
     
     if ($_FILES['file_absensi']['error'] !== UPLOAD_ERR_OK) {
-        header("Location: /absensi_php/admin/impor-absensi?error=Terjadi kesalahan saat mengunggah file.");
+        header("Location: /admin/impor-absensi?error=Terjadi kesalahan saat mengunggah file.");
         exit();
     }
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_absensi'])) {
 
     $file_handle = fopen($file_tmp_path, 'r');
     if (!$file_handle) {
-        header("Location: /absensi_php/admin/impor-absensi?error=Gagal membuka file yang diunggah.");
+        header("Location: /admin/impor-absensi?error=Gagal membuka file yang diunggah.");
         exit();
     }
 
@@ -107,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_absensi'])) {
     }
 
     fclose($file_handle);
-    header("Location: /absensi_php/admin/impor-absensi?sukses_masuk=$sukses_masuk&sukses_pulang=$sukses_pulang&gagal_nip=$gagal_nip");
+    header("Location: /admin/impor-absensi?sukses_masuk=$sukses_masuk&sukses_pulang=$sukses_pulang&gagal_nip=$gagal_nip");
     exit();
 
 } else {
-    header("Location: /absensi_php/admin/impor-absensi?error=Tidak ada file yang diunggah.");
+    header("Location: /admin/impor-absensi?error=Tidak ada file yang diunggah.");
     exit();
 }
 ?>
