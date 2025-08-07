@@ -1,4 +1,6 @@
 <?php
+
+
 // Mendefinisikan base path proyek untuk semua link
 define('BASE_PATH', '');
 // Mendapatkan path URL yang diminta, tanpa query string

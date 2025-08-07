@@ -1,0 +1,7 @@
+[07-Aug-2025 07:33:21 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Host 'DESKTOP-SEKWAN-03' is not allowed to connect to this MySQL server in C:\laragon\www\absensi_php\config\database.php:14
+Stack trace:
+#0 C:\laragon\www\absensi_php\config\database.php(14): mysqli_connect('192.168.62.156', 'root', Object(SensitiveParameterValue), 'db_absensi')
+#1 C:\laragon\www\absensi_php\auth\proses_login.php(6): require_once('C:\\laragon\\www\\...')
+#2 C:\laragon\www\absensi_php\index.php(35): require('C:\\laragon\\www\\...')
+#3 {main}
+  thrown in C:\laragon\www\absensi_php\config\database.php on line 14
