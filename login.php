@@ -16,67 +16,8 @@ if (isset($_SESSION['id_pegawai'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons for the 'eye' icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/assets/css/login.css">
     
-    <!-- Custom CSS for the new look -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-card {
-            background-color: #ffffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-        }
-        .login-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 24px;
-        }
-        .form-control {
-            border-radius: 5px;
-            padding: 12px 15px;
-            border: 1px solid #ced4da;
-            margin-bottom: 15px;
-        }
-        .form-control:focus {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-        .input-group-text {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 5;
-        }
-        .btn-login {
-            border-radius: 5px;
-            padding: 12px;
-            font-weight: bold;
-            width: 100%;
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-login:hover {
-            background-color: #0069d9;
-        }
-        .password-container {
-            position: relative;
-        }
-    </style>
 </head>
 <body>
 
