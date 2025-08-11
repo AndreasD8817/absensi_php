@@ -13,6 +13,8 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
 
 // Panggil file koneksi database jika diperlukan di banyak tempat
 require_once __DIR__ . '/../../config/database.php';
+// PANGGIL CSRF HELPER
+require_once __DIR__ . '/../../config/csrf_helper.php';
 ?>
 <!DOCTYPE html>
 <html lang="id">

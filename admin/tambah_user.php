@@ -15,6 +15,7 @@ if ($_SESSION['role'] != 'superadmin') {
     </div>
     <div class="card-body">
         <form action="/admin/proses/proses-tambah-user" method="POST">
+            <?php csrf_input_field(); ?>
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
                 <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required>

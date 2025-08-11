@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/csrf_helper.php'; // Panggil helper CSRF
 
 // Keamanan
 if ($_SESSION['role'] != 'superadmin') {
@@ -9,6 +10,10 @@ if ($_SESSION['role'] != 'superadmin') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_pegawai'])) {
+    // === VALIDASI CSRF TOKEN ===
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die('CSRF token validation failed.'); // Hentikan jika tidak valid
+    }
     
     if ($_FILES['file_pegawai']['error'] !== UPLOAD_ERR_OK) {
         header("Location: /admin/impor-pegawai?error=Terjadi kesalahan saat mengunggah file.");

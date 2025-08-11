@@ -147,9 +147,17 @@ function kirimAbsensi(event) {
         foto: fotoBase64,
       };
 
+      // Ambil CSRF token dari meta tag
+      const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
       fetch("public/proses_absensi.php", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken,
+        },
         body: JSON.stringify(data),
       })
         .then((response) => response.json())
@@ -191,8 +199,17 @@ function kirimDinasLuar(event) {
       const formData = new FormData(form);
       formData.append("latitude", posisi.coords.latitude);
       formData.append("longitude", posisi.coords.longitude);
+      // Ambil CSRF token dari meta tag
+      const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
       fetch("proses_dinas_luar.php", {
         method: "POST",
+        headers: {
+          // TAMBAHKAN HEADER BARU (tidak perlu Content-Type untuk FormData)
+          "X-CSRF-TOKEN": csrfToken,
+        },
         body: formData,
       })
         .then((response) => response.json())

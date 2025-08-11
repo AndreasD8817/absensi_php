@@ -38,6 +38,7 @@ if (!$user) {
     </div>
     <div class="card-body">
         <form action="/admin/proses/proses-edit-user" method="POST">
+            <?php csrf_input_field(); ?>
             <input type="hidden" name="id_pegawai" value="<?php echo $id_user; ?>">
             
             <div class="mb-3">

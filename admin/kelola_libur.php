@@ -16,6 +16,7 @@ $result = mysqli_query($koneksi, $query);
             </div>
             <div class="card-body">
                 <form action="/admin/proses/tambah-libur" method="POST">
+                    <?php csrf_input_field(); ?>
                     <div class="mb-3">
                         <label for="tanggal" class="form-label">Tanggal</label>
                         <input type="date" class="form-control" id="tanggal" name="tanggal" required>
@@ -65,7 +66,7 @@ $result = mysqli_query($koneksi, $query);
                                         <td><?php echo date('d F Y', strtotime($row['tanggal'])); ?></td>
                                         <td><?php echo htmlspecialchars($row['keterangan']); ?></td>
                                         <td>
-                                            <a href="/admin/proses/hapus-libur?tanggal=<?php echo $row['tanggal']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus hari libur ini?');">
+                                            <a href="/admin/proses/hapus-libur?tanggal=<?php echo $row['tanggal']; ?>&<?php echo csrf_query_string(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus hari libur ini?');">
                                                 <i class="bi bi-trash-fill"></i>
                                             </a>
                                         </td>

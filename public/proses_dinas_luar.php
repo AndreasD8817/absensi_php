@@ -1,6 +1,14 @@
 <?php
 session_start();
 header('Content-Type: application/json');
+require_once __DIR__ . '/../config/csrf_helper.php'; // Panggil helper CSRF
+
+// === VALIDASI CSRF TOKEN dari HEADER ===
+$header_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+if (!validate_csrf_token($header_token)) {
+    echo json_encode(['sukses' => false, 'pesan' => 'CSRF Token tidak valid. Silakan muat ulang halaman.']);
+    exit();
+}
 
 // Cek sesi login
 if (!isset($_SESSION['id_pegawai'])) {

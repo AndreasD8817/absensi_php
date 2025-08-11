@@ -36,6 +36,7 @@ if ($_SESSION['role'] != 'superadmin') {
         </div>
         
         <form action="/admin/proses/impor-pegawai" method="POST" enctype="multipart/form-data">
+            <?php csrf_input_field(); ?>
             <div class="mb-3">
                 <label for="file_pegawai" class="form-label">Pilih File Teks Data Pegawai (.txt)</label>
                 <input class="form-control" type="file" id="file_pegawai" name="file_pegawai" accept=".txt" required>

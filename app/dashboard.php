@@ -5,6 +5,10 @@
 
 session_start();
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/csrf_helper.php'; // Panggil helper CSRF
+
+// === TAMBAHKAN BARIS INI ===
+generate_csrf_token(); // Pastikan token selalu ada di sesi
 
 // 1. Keamanan: Redirect jika belum login
 if (!isset($_SESSION['id_pegawai'])) {

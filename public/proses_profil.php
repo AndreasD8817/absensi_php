@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/csrf_helper.php'; // Panggil helper
 
 // Keamanan: Pastikan pengguna sudah login
 if (!isset($_SESSION['id_pegawai'])) {
@@ -9,10 +10,14 @@ if (!isset($_SESSION['id_pegawai'])) {
 }
 
 // Pastikan request adalah POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: /dashboard");
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Gunakan '===' atau '=='
+    // === VALIDASI CSRF TOKEN DI SINI ===
+    if (!isset($_POST['csrf_token']) || !validate_csrf_token($_POST['csrf_token'])) {
+        // Redirect dengan pesan error yang lebih ramah pengguna
+        header("Location: /dashboard?error=Sesi tidak valid. Silakan coba lagi.");
+        exit();
+    }
+
 
 // Ambil data dari form
 $id_pegawai = $_SESSION['id_pegawai'];
@@ -20,6 +25,12 @@ $username_baru = trim($_POST['username']);
 $password_lama = $_POST['password_lama'];
 $password_baru = $_POST['password_baru'];
 $konfirmasi_password = $_POST['konfirmasi_password'];
+
+} else {
+    // Jika bukan POST, langsung redirect
+    header("Location: /dashboard");
+    exit();
+}
 
 // Ambil data pengguna saat ini dari database untuk verifikasi
 $sql_current_user = "SELECT username, password FROM tabel_pegawai WHERE id_pegawai = ?";

@@ -4,6 +4,8 @@ session_start();
 
 // Panggil file koneksi database
 require_once __DIR__ . '/../config/database.php';
+// PANGGIL CSRF HELPER BARU
+require_once __DIR__ . '/../config/csrf_helper.php';
 
 // Cek apakah data dikirim dari form
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -45,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
+
+            // === BARU: BUAT CSRF TOKEN SAAT LOGIN BERHASIL ===
+            generate_csrf_token();
 
             // Redirect ke halaman dashboard utama
             header("Location: /dashboard");

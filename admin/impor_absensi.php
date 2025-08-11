@@ -32,6 +32,7 @@ require_once 'partials/header.php';
         </div>
         
         <form action="proses/proses_impor.php" method="POST" enctype="multipart/form-data">
+            <?php csrf_input_field(); ?>
             <div class="mb-3">
                 <label for="file_absensi" class="form-label">Pilih File Teks Absensi (.txt)</label>
                 <input class="form-control" type="file" id="file_absensi" name="file_absensi" accept=".txt" required>

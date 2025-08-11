@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/csrf_helper.php'; // Panggil helper CSRF
 
 // Keamanan
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'superadmin')) {
@@ -10,6 +11,10 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_absensi'])) {
+    // === VALIDASI CSRF TOKEN ===
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die('CSRF token validation failed.'); // Hentikan jika tidak valid
+    }
     
     if ($_FILES['file_absensi']['error'] !== UPLOAD_ERR_OK) {
         header("Location: /admin/impor-absensi?error=Terjadi kesalahan saat mengunggah file.");

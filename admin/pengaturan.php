@@ -31,6 +31,7 @@ while($row = mysqli_fetch_assoc($result)) {
         <?php endif; ?>
 
         <form action="/admin/proses/proses-pengaturan" method="POST">
+            <?php csrf_input_field(); ?>
             <div class="mb-3">
                 <label for="lokasi_lat" class="form-label">Latitude Lokasi Kantor</label>
                 <input type="text" class="form-control" id="lokasi_lat" name="lokasi_lat" value="<?php echo htmlspecialchars($pengaturan['lokasi_lat'] ?? ''); ?>" required>

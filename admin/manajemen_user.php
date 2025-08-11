@@ -89,15 +89,15 @@ $result = mysqli_query($koneksi, $query);
                                     <!-- Tombol aksi tidak akan muncul untuk user yang sedang login -->
                                     <?php if ($_SESSION['id_pegawai'] != $row['id_pegawai']): ?>
                                         <?php if ($row['status'] == 'aktif'): ?>
-                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=non-aktif" class="btn btn-secondary btn-sm" onclick="return confirm('Apakah Anda yakin ingin menonaktifkan user ini?');" title="Non-aktifkan">
+                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=non-aktif&<?php echo csrf_query_string(); ?>" class="btn btn-secondary btn-sm" onclick="return confirm('Apakah Anda yakin ingin menonaktifkan user ini?');" title="Non-aktifkan">
                                                 <i class="bi bi-toggle-off"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=aktif" class="btn btn-success btn-sm" onclick="return confirm('Apakah Anda yakin ingin mengaktifkan user ini?');" title="Aktifkan">
+                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=aktif&<?php echo csrf_query_string(); ?>" class="btn btn-success btn-sm" onclick="return confirm('Apakah Anda yakin ingin mengaktifkan user ini?');" title="Aktifkan">
                                                 <i class="bi bi-toggle-on"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a href="/admin/proses/proses-hapus-user?id=<?php echo $row['id_pegawai']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('PERINGATAN: Menghapus user juga akan menghapus semua data absensinya. Apakah Anda yakin?');" title="Hapus User">
+                                        <a href="/admin/proses/proses-hapus-user?id=<?php echo $row['id_pegawai']; ?>&<?php echo csrf_query_string(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('PERINGATAN: Menghapus user juga akan menghapus semua data absensinya. Apakah Anda yakin?');" title="Hapus User">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     <?php endif; ?>

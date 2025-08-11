@@ -2,6 +2,7 @@
 session_start();
 // Menggunakan path yang benar sesuai struktur file Anda
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/csrf_helper.php'; // Panggil helper CSRF
 
 
 // "Penjaga Gerbang" Super Admin
@@ -12,6 +13,10 @@ if ($_SESSION['role'] != 'superadmin') {
 
 // Pastikan request adalah POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // === VALIDASI CSRF TOKEN ===
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die('CSRF token validation failed.'); // Hentikan jika tidak valid
+    }
     // Ambil semua data dari form
     $nama_lengkap = trim($_POST['nama_lengkap']);
     $username = trim($_POST['username']);

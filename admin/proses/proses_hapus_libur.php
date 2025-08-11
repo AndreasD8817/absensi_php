@@ -1,12 +1,17 @@
 <?php
 session_start();
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/csrf_helper.php'; // Panggil helper CSRF
 
 // Security check
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'superadmin')) {
     header("Location: /admin?error=Akses ditolak");
 
     exit();
+}
+// === VALIDASI CSRF TOKEN dari GET ===
+if (!validate_csrf_token($_GET['csrf_token'])) {
+    die('CSRF token validation failed.'); // Hentikan jika tidak valid
 }
 
 if (isset($_GET['tanggal'])) {
