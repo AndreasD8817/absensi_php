@@ -65,6 +65,7 @@ if ($batas_pulang_str != '' && $waktu_sekarang > $batas_pulang_str) {
 $sudah_selesai = ($status_terakhir === 'Pulang' || $status_terakhir === 'Dinas Luar');
 $bisa_absen_masuk = ($status_terakhir === null && !$lewat_jam_pulang);
 $bisa_absen_pulang = ($status_terakhir === 'Masuk' || ($lewat_jam_pulang && $status_terakhir === null));
+$bisa_dinas_luar = ($status_terakhir === null);
 
 // 5. Panggil View
 require_once 'templates/dashboard_view.php';

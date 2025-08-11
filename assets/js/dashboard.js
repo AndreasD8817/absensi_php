@@ -147,7 +147,7 @@ function kirimAbsensi(event) {
         foto: fotoBase64,
       };
 
-      fetch("proses_absensi.php", {
+      fetch("public/proses_absensi.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -11,9 +11,12 @@
 <body>
 
 <!-- === NAVBAR BARU DENGAN DROPDOWN === -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary shadow-sm">
   <div class="container">
-    <a class="navbar-brand" href="/dashboard">Aplikasi Absensi</a>
+    <a class="navbar-brand" href="/dashboard">
+      <img src="assets/img/logo/rekAbsen.png" alt="Logo RekAbsen" width="70" height="70" class="d-inline-block align-text-middle me-0">
+      RekAbsen
+    </a>
     <ul class="navbar-nav ms-auto">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,7 +83,7 @@
                 </a>
             </div>
             <div class="col-md-4 mb-3">
-                <a href="#" class="card-menu <?php if($sudah_selesai) echo 'disabled-card'; ?>" data-bs-toggle="modal" data-bs-target="#modalDinasLuar">
+                <a href="#" class="card-menu <?php if(!$bisa_dinas_luar) echo 'disabled-card'; ?>" data-bs-toggle="modal" data-bs-target="#modalDinasLuar">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <i class="bi bi-briefcase-fill icon-lg text-warning"></i>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 // Keamanan: Pastikan pengguna sudah login
 if (!isset($_SESSION['id_pegawai'])) {

@@ -8,7 +8,7 @@ if (!isset($_SESSION['id_pegawai'])) {
     exit();
 }
 
-require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 
 // --- VALIDASI INPUT & FILE ---
@@ -47,7 +47,7 @@ if (!in_array($mime_type, $allowed_types)) {
 }
 
 // --- PROSES UPLOAD FILE ---
-$folder_upload = 'uploads/';
+$folder_upload = 'uploads/foto_dinas_luar/';
 $nama_file_unik = $id_pegawai . '_' . time() . '_' . basename($file_surat['name']);
 $path_tujuan = $folder_upload . $nama_file_unik;
 

@@ -47,3 +47,21 @@ Stack trace:
 #1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
 #2 {main}
   thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
+[11-Aug-2025 09:56:06 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 09:56:06 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 09:56:06 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 09:56:16 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 09:56:16 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 09:56:16 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:24:06 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:24:06 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:24:06 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:27:03 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:27:03 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:27:03 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:28:00 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:28:00 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:28:00 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:28:07 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:28:07 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 10:28:07 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12

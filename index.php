@@ -26,7 +26,7 @@ switch ($request) {
         require 'dashboard.php';
         break;
     case 'proses-profil':
-        require 'proses_profil.php';
+        require 'public/proses_profil.php';
         break;
     case 'riwayat-absensi':
         require 'riwayat_absensi.php';
@@ -40,10 +40,10 @@ switch ($request) {
         require 'auth/logout.php';
         break;
     case 'proses-absensi':
-        require 'proses_absensi.php';
+        require 'public/proses_absensi.php';
         break;
     case 'proses-dinas-luar':
-        require 'proses_dinas_luar.php';
+        require 'public/proses_dinas_luar.php';
         break;
 
     // --- Routing untuk Halaman Admin ---
@@ -115,6 +115,5 @@ switch ($request) {
     default:
         // Jika tidak ada route yang cocok, tampilkan halaman 404
         http_response_code(404);
-        require '404.php'; // Anda perlu membuat file ini
-        break;
+        require '404.php';
 }
