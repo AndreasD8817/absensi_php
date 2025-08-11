@@ -124,9 +124,9 @@
 
 <?php
 // Memanggil modal yang sudah ada
-require_once 'templates/partials/modal_absen.php';
-require_once 'templates/partials/modal_dinas_luar.php';
-require_once 'templates/partials/modal_pengaturan.php';
+require_once 'partials/modal_absen.php';
+require_once 'partials/modal_dinas_luar.php';
+require_once 'partials/modal_pengaturan.php';
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

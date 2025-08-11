@@ -4,7 +4,7 @@
 // =================================================================
 
 session_start();
-require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 // 1. Keamanan: Redirect jika belum login
 if (!isset($_SESSION['id_pegawai'])) {

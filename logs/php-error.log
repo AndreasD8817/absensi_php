@@ -1,67 +1,44 @@
-[07-Aug-2025 07:33:21 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Host 'DESKTOP-SEKWAN-03' is not allowed to connect to this MySQL server in C:\laragon\www\absensi_php\config\database.php:14
+[11-Aug-2025 10:59:16 Asia/Jakarta] PHP Warning:  require_once(../templates/partials/modal_absen.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 10:59:16 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '../templates/partials/modal_absen.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:127
 Stack trace:
-#0 C:\laragon\www\absensi_php\config\database.php(14): mysqli_connect('192.168.62.156', 'root', Object(SensitiveParameterValue), 'db_absensi')
-#1 C:\laragon\www\absensi_php\auth\proses_login.php(6): require_once('C:\\laragon\\www\\...')
-#2 C:\laragon\www\absensi_php\index.php(35): require('C:\\laragon\\www\\...')
-#3 {main}
-  thrown in C:\laragon\www\absensi_php\config\database.php on line 14
-[09-Aug-2025 12:55:21 Asia/Jakarta] PHP Warning:  require_once(templates/partials/modal_pengaturan.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:21 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required 'templates/partials/modal_pengaturan.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:126
-Stack trace:
-#0 C:\laragon\www\absensi_php\dashboard.php(70): require_once()
+#0 C:\laragon\www\absensi_php\app\dashboard.php(71): require_once()
 #1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
 #2 {main}
-  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:21 Asia/Jakarta] PHP Warning:  require_once(templates/partials/modal_pengaturan.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:21 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required 'templates/partials/modal_pengaturan.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:126
+  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:29 Asia/Jakarta] PHP Warning:  require_once(../templates/partials/modal_absen.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:29 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '../templates/partials/modal_absen.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:127
 Stack trace:
-#0 C:\laragon\www\absensi_php\dashboard.php(70): require_once()
+#0 C:\laragon\www\absensi_php\app\dashboard.php(71): require_once()
 #1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
 #2 {main}
-  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:34 Asia/Jakarta] PHP Warning:  require_once(templates/partials/modal_pengaturan.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:34 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required 'templates/partials/modal_pengaturan.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:126
+  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:31 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:00:31 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:00:31 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:00:36 Asia/Jakarta] PHP Warning:  require_once(../templates/partials/modal_absen.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:36 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '../templates/partials/modal_absen.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:127
 Stack trace:
-#0 C:\laragon\www\absensi_php\dashboard.php(70): require_once()
+#0 C:\laragon\www\absensi_php\app\dashboard.php(71): require_once()
 #1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
 #2 {main}
-  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:34 Asia/Jakarta] PHP Warning:  require_once(templates/partials/modal_pengaturan.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 12:55:34 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required 'templates/partials/modal_pengaturan.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:126
+  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:40 Asia/Jakarta] PHP Warning:  require_once(../templates/partials/modal_absen.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:40 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '../templates/partials/modal_absen.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:127
 Stack trace:
-#0 C:\laragon\www\absensi_php\dashboard.php(70): require_once()
+#0 C:\laragon\www\absensi_php\app\dashboard.php(71): require_once()
 #1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
 #2 {main}
-  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 13:00:33 Asia/Jakarta] PHP Warning:  require_once(C:\laragon\www\absensi_php\templates/partials/modal_pengaturan.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 13:00:33 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\laragon\www\absensi_php\templates/partials/modal_pengaturan.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:126
+  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:48 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:00:48 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:00:48 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:00:50 Asia/Jakarta] PHP Warning:  require_once(../templates/partials/modal_absen.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:00:50 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '../templates/partials/modal_absen.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:127
 Stack trace:
-#0 C:\laragon\www\absensi_php\dashboard.php(70): require_once()
+#0 C:\laragon\www\absensi_php\app\dashboard.php(71): require_once()
 #1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
 #2 {main}
-  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 13:00:33 Asia/Jakarta] PHP Warning:  require_once(C:\laragon\www\absensi_php\templates/partials/modal_pengaturan.php): Failed to open stream: No such file or directory in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[09-Aug-2025 13:00:33 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\laragon\www\absensi_php\templates/partials/modal_pengaturan.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\absensi_php\templates\dashboard_view.php:126
-Stack trace:
-#0 C:\laragon\www\absensi_php\dashboard.php(70): require_once()
-#1 C:\laragon\www\absensi_php\index.php(26): require('C:\\laragon\\www\\...')
-#2 {main}
-  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 126
-[11-Aug-2025 09:56:06 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 09:56:06 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 09:56:06 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 09:56:16 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 09:56:16 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 09:56:16 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:24:06 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:24:06 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:24:06 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:27:03 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:27:03 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:27:03 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:28:00 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:28:00 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:28:00 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:28:07 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:28:07 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
-[11-Aug-2025 10:28:07 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+  thrown in C:\laragon\www\absensi_php\templates\dashboard_view.php on line 127
+[11-Aug-2025 11:01:52 Asia/Jakarta] PHP Warning:  Undefined variable $user in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:01:52 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12
+[11-Aug-2025 11:01:52 Asia/Jakarta] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\laragon\www\absensi_php\templates\partials\modal_pengaturan.php on line 12

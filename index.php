@@ -20,16 +20,16 @@ switch ($request) {
         require 'login.php';
         break;
     case 'login':
-        require 'login.php';
+        require 'app/login.php';
         break;
     case 'dashboard':
-        require 'dashboard.php';
+        require 'app/dashboard.php';
         break;
     case 'proses-profil':
         require 'public/proses_profil.php';
         break;
     case 'riwayat-absensi':
-        require 'riwayat_absensi.php';
+        require 'app/riwayat_absensi.php';
         break;
 
     // --- Routing untuk Proses Form ---
@@ -62,7 +62,7 @@ switch ($request) {
             require 'admin/edit_user.php';
         } else {
             http_response_code(404);
-            require '404.php'; // Halaman Error
+            require 'app/404.php'; // Halaman Error
         }
         break;
     case 'admin/impor-pegawai':
@@ -115,5 +115,5 @@ switch ($request) {
     default:
         // Jika tidak ada route yang cocok, tampilkan halaman 404
         http_response_code(404);
-        require '404.php';
+        require 'app/404.php';
 }
