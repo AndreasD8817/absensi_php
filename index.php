@@ -1,27 +1,45 @@
 <?php
 
+/**
+ * ----------------------------------------------------
+ * PENGATURAN MODE MAINTENANCE
+ * ----------------------------------------------------
+ * Ubah menjadi 'true' untuk mengaktifkan mode maintenance,
+ * atau 'false' untuk menonaktifkan dan menjalankan situs secara normal.
+ */
+$maintenance_mode = false;
 
-// Mendefinisikan base path proyek untuk semua link
-define('BASE_PATH', '');
+// ===================================================================
+
+// Jika mode maintenance aktif, tampilkan halaman maintenance dan hentikan skrip.
+if ($maintenance_mode) {
+    require 'app/maintenance.php';
+    exit();
+}
+
+// Jika mode maintenance TIDAK aktif, kode di bawah ini akan dijalankan.
+
+// Mendapatkan path URL yang diminta, tanpa query string
+
 // Mendapatkan path URL yang diminta, tanpa query string
 $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
-
-// Menghapus sub-direktori jika aplikasi Anda tidak berada di root domain
-// Contoh: jika URL adalah localhost/dashboard, kita ingin mendapatkan /dashboard
-$base_path = ''; // <-- SESUAIKAN JIKA PERLU
-$request = str_replace($base_path, '', $request_uri);
-$request = trim($request, '/');
+$request = trim($request_uri, '/');
 
 // Mengatur routing berdasarkan permintaan
 switch ($request) {
     // --- Routing Utama ---
+    
+    // KASUS 1: Ketika pengguna mengakses halaman root (misal: rekabsen.dprdsby.id)
+    // Ini akan memuat halaman login sebagai halaman utama.
     case '':
-    case '/':
-        require 'login.php';
+        require 'app/login.php';
         break;
+
+    // KASUS 2: Ketika pengguna secara eksplisit mengetik /login
     case 'login':
         require 'app/login.php';
         break;
+        
     case 'dashboard':
         require 'app/dashboard.php';
         break;
@@ -48,7 +66,6 @@ switch ($request) {
 
     // --- Routing untuk Halaman Admin ---
     case 'admin':
-    case 'admin/':
         require 'admin/index.php';
         break;
     case 'admin/manajemen-user':
@@ -57,12 +74,12 @@ switch ($request) {
     case 'admin/tambah-user':
         require 'admin/tambah_user.php';
         break;
-    case 'admin/edit-user': // Kita butuh ID, jadi ini akan ditangani secara khusus
+    case 'admin/edit-user': 
         if (isset($_GET['id'])) {
             require 'admin/edit_user.php';
         } else {
             http_response_code(404);
-            require 'app/404.php'; // Halaman Error
+            require 'app/404.php';
         }
         break;
     case 'admin/impor-pegawai':
@@ -82,7 +99,6 @@ switch ($request) {
         break;
         
     // --- Routing untuk Proses di Folder Admin ---
-    // (Tambahkan semua file dari folder admin/proses/ di sini)
     case 'admin/proses/proses-edit-user':
         require 'admin/proses/proses_edit_user.php';
         break;
@@ -110,7 +126,6 @@ switch ($request) {
     case 'admin/proses/proses-tambah-user':
         require 'admin/proses/proses_tambah_user.php';
         break;
-    // ... Tambahkan file proses lainnya di sini
 
     default:
         // Jika tidak ada route yang cocok, tampilkan halaman 404
