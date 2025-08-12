@@ -9,27 +9,10 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary shadow-sm">
-  <div class="container">
-    <a class="navbar-brand" href="/dashboard">
-      <img src="assets/img/logo/rekAbsen.png" alt="Logo RekAbsen" width="70" height="70" class="d-inline-block align-text-middle me-0">
-      RekAbsen
-    </a>
-    <ul class="navbar-nav ms-auto">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <!-- Tombol ini akan memicu modal -->
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPengaturan">Pengaturan Akun</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
-            </ul>
-        </li>
-    </ul>
-  </div>
-</nav>
+<?php
+// === PANGGIL NAVBAR BARU DI SINI ===
+require_once __DIR__ . '/partials/navbar.php'; 
+?>
 
 <div class="container mt-4">
     <div class="card">
@@ -217,10 +200,14 @@
         </div>
     </div>
 </div>
+
 <?php
+// === PANGGIL NAVBAR BARU DI SINI ===
 require_once 'partials/modal_pengaturan.php';
 ?>
 
+<!-- Script Bootstrap Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

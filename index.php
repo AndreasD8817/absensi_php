@@ -7,7 +7,7 @@
  * Ubah menjadi 'true' untuk mengaktifkan mode maintenance,
  * atau 'false' untuk menonaktifkan dan menjalankan situs secara normal.
  */
-$maintenance_mode = false;
+$maintenance_mode = true;
 
 // ===================================================================
 

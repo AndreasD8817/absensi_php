@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/database.php';
-
+require_once __DIR__ . '/../config/csrf_helper.php'; // Muat helper CSRF
 
 // Redirect jika belum login
 if (!isset($_SESSION['id_pegawai'])) {
@@ -10,6 +10,18 @@ if (!isset($_SESSION['id_pegawai'])) {
 }
 
 $id_pegawai = $_SESSION['id_pegawai'];
+
+// ====================================================================
+// === TAMBAHKAN BLOK INI UNTUK MEMPERBAIKI ERROR ===
+// Ambil data user yang sedang login untuk keperluan modal pengaturan
+$sql_user = "SELECT username FROM tabel_pegawai WHERE id_pegawai = ?";
+$stmt_user = mysqli_prepare($koneksi, $sql_user);
+mysqli_stmt_bind_param($stmt_user, "i", $id_pegawai);
+mysqli_stmt_execute($stmt_user);
+$result_user = mysqli_stmt_get_result($stmt_user);
+$user = mysqli_fetch_assoc($result_user);
+mysqli_stmt_close($stmt_user);
+// ====================================================================
 
 $tanggal_awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $tanggal_akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
