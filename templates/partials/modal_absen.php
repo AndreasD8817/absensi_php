@@ -11,18 +11,18 @@
             <input type="hidden" id="fotoBase64" name="foto">
             <div class="row mb-3">
               <div class="mb-3">
-                  <label class="form-label">Lokasi Terdeteksi</label>
+                  <span class="form-label badge bg-primary">Lokasi Terdeteksi</span>
                   <p id="alamatTerdeteksi" class="form-control-plaintext text-muted"><i>Menunggu data lokasi...</i></p>
               </div>
                 <div class="col-md-6">
-                    <label class="form-label">Preview Kamera</label>
+                    <span class="form-label badge bg-info">Preview Kamera</span>
                     <video id="videoElement" width="100%" height="auto" autoplay playsinline></video>
                     <div class="mt-2">
-                        <button type="button" class="btn btn-sm btn-info" id="btnSwitchCamera">Ganti Kamera</button>
+                        <button type="button" class="btn btn-sm btn-warning" id="btnSwitchCamera">Ganti Kamera</button>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Hasil Foto</label>
+                    <span class="form-label badge bg-success">Hasil Foto</span>
                     <canvas id="previewCanvas" style="display:none;"></canvas> 
                     <img id="previewImage" src="#" alt="Hasil Foto" style="display:none; width: 100%; height: auto;">
                     <p id="noFotoText" class="text-muted">Belum ada foto diambil.</p>
