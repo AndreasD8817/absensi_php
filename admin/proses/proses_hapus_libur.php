@@ -10,12 +10,12 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
     exit();
 }
 // === VALIDASI CSRF TOKEN dari GET ===
-if (!validate_csrf_token($_GET['csrf_token'])) {
+if (!validate_csrf_token($_POST['csrf_token'])) {
     die('CSRF token validation failed.'); // Hentikan jika tidak valid
 }
 
-if (isset($_GET['tanggal'])) {
-    $tanggal = $_GET['tanggal'];
+if (isset($_POST['tanggal'])) {
+    $tanggal = $_POST['tanggal'];
 
     $sql = "DELETE FROM tabel_hari_libur WHERE tanggal = ?";
     $stmt = mysqli_prepare($koneksi, $sql);

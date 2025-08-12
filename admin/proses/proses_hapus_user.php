@@ -9,12 +9,12 @@ if ($_SESSION['role'] != 'superadmin') {
     exit();
 }
 // === VALIDASI CSRF TOKEN dari GET ===
-if (!validate_csrf_token($_GET['csrf_token'])) {
+if (!validate_csrf_token($_POST['csrf_token'])) {
     die('CSRF token validation failed.'); // Hentikan jika tidak valid
 }
 
-if (isset($_GET['id'])) {
-    $id_pegawai = (int)$_GET['id'];
+if (isset($_POST['id'])) {
+    $id_pegawai = (int)$_POST['id'];
 
     // Jangan biarkan user menghapus dirinya sendiri
     if ($id_pegawai == $_SESSION['id_pegawai']) {

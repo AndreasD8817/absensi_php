@@ -86,20 +86,34 @@ $result = mysqli_query($koneksi, $query);
                                     <a href="/admin/edit-user?id=<?php echo $row['id_pegawai']; ?>" class="btn btn-warning btn-sm" title="Edit User">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <!-- Tombol aksi tidak akan muncul untuk user yang sedang login -->
+
                                     <?php if ($_SESSION['id_pegawai'] != $row['id_pegawai']): ?>
-                                        <?php if ($row['status'] == 'aktif'): ?>
-                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=non-aktif&<?php echo csrf_query_string(); ?>" class="btn btn-secondary btn-sm" onclick="return confirm('Apakah Anda yakin ingin menonaktifkan user ini?');" title="Non-aktifkan">
-                                                <i class="bi bi-toggle-off"></i>
-                                            </a>
-                                        <?php else: ?>
-                                            <a href="/admin/proses/ubah-status?id=<?php echo $row['id_pegawai']; ?>&status=aktif&<?php echo csrf_query_string(); ?>" class="btn btn-success btn-sm" onclick="return confirm('Apakah Anda yakin ingin mengaktifkan user ini?');" title="Aktifkan">
-                                                <i class="bi bi-toggle-on"></i>
-                                            </a>
-                                        <?php endif; ?>
-                                        <a href="/admin/proses/proses-hapus-user?id=<?php echo $row['id_pegawai']; ?>&<?php echo csrf_query_string(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('PERINGATAN: Menghapus user juga akan menghapus semua data absensinya. Apakah Anda yakin?');" title="Hapus User">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </a>
+
+                                        <form action="/admin/proses/ubah-status" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin mengubah status user ini?');">
+                                            <?php csrf_input_field(); ?>
+                                            <input type="hidden" name="id" value="<?php echo $row['id_pegawai']; ?>">
+                                            
+                                            <?php if ($row['status'] == 'aktif'): ?>
+                                                <input type="hidden" name="status" value="non-aktif">
+                                                <button type="submit" class="btn btn-secondary btn-sm" title="Non-aktifkan">
+                                                    <i class="bi bi-toggle-off"></i>
+                                                </button>
+                                            <?php else: ?>
+                                                <input type="hidden" name="status" value="aktif">
+                                                <button type="submit" class="btn btn-success btn-sm" title="Aktifkan">
+                                                    <i class="bi bi-toggle-on"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                        </form>
+
+                                        <form action="/admin/proses/proses-hapus-user" method="POST" style="display:inline;" onsubmit="return confirm('PERINGATAN: Menghapus user juga akan menghapus semua data absensinya. Apakah Anda yakin?');">
+                                            <?php csrf_input_field(); ?>
+                                            <input type="hidden" name="id" value="<?php echo $row['id_pegawai']; ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Hapus User">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                        
                                     <?php endif; ?>
                                 </td>
                             </tr>

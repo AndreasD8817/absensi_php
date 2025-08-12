@@ -66,9 +66,13 @@ $result = mysqli_query($koneksi, $query);
                                         <td><?php echo date('d F Y', strtotime($row['tanggal'])); ?></td>
                                         <td><?php echo htmlspecialchars($row['keterangan']); ?></td>
                                         <td>
-                                            <a href="/admin/proses/hapus-libur?tanggal=<?php echo $row['tanggal']; ?>&<?php echo csrf_query_string(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus hari libur ini?');">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
+                                            <form action="/admin/proses/hapus-libur" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus hari libur ini?');">
+                                                <?php csrf_input_field(); ?>
+                                                <input type="hidden" name="tanggal" value="<?php echo $row['tanggal']; ?>">
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
