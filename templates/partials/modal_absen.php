@@ -10,6 +10,10 @@
             <input type="hidden" id="absenTipe" name="tipe">
             <input type="hidden" id="fotoBase64" name="foto">
             <div class="row mb-3">
+              <div class="mb-3">
+                  <label class="form-label">Lokasi Terdeteksi</label>
+                  <p id="alamatTerdeteksi" class="form-control-plaintext text-muted"><i>Menunggu data lokasi...</i></p>
+              </div>
                 <div class="col-md-6">
                     <label class="form-label">Preview Kamera</label>
                     <video id="videoElement" width="100%" height="auto" autoplay playsinline></video>

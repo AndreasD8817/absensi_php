@@ -8,9 +8,61 @@ const btnTakePhoto = document.getElementById("btnTakePhoto");
 const btnSubmitAbsen = document.getElementById("btnSubmitAbsen");
 const fotoBase64Input = document.getElementById("fotoBase64");
 const modalAbsen = document.getElementById("modalAbsen");
+// Elemen baru untuk alamat
+const alamatTerdeteksiP = document.getElementById("alamatTerdeteksi");
 
 let currentStream;
 let facingMode = "user"; // 'user' untuk kamera depan, 'environment' untuk belakang
+// Variabel global untuk menyimpan alamat yang sudah dideteksi
+let alamatUntukWatermark = "Lokasi tidak terdeteksi";
+
+// --- Fungsi Geolocation & Reverse Geocoding ---
+function getAlamatFromCoords(lat, lon) {
+  // Menggunakan API gratis dari geocode.maps.co (berbasis OpenStreetMap)
+  const apiUrl = `https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}`;
+
+  alamatTerdeteksiP.innerHTML = "<i>Mencari nama alamat...</i>";
+
+  fetch(apiUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data && data.display_name) {
+        // Ambil alamat lengkap dari display_name
+        alamatUntukWatermark = data.display_name;
+        alamatTerdeteksiP.textContent = alamatUntukWatermark;
+      } else {
+        alamatTerdeteksiP.textContent = "Tidak dapat menemukan detail alamat.";
+        alamatUntukWatermark = `Lat: ${lat}, Lon: ${lon}`;
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching reverse geocoding:", error);
+      alamatTerdeteksiP.textContent =
+        "Gagal mendapatkan nama alamat. Koneksi bermasalah.";
+      alamatUntukWatermark = `Lat: ${lat}, Lon: ${lon}`;
+    });
+}
+
+function getLokasiPengguna() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (posisi) => {
+        // Setelah koordinat didapat, langsung cari nama alamatnya
+        getAlamatFromCoords(posisi.coords.latitude, posisi.coords.longitude);
+      },
+      () => {
+        alamatTerdeteksiP.textContent =
+          "Gagal mengambil lokasi. Pastikan izin lokasi diberikan.";
+        alert(
+          "Gagal mengambil lokasi. Pastikan izin lokasi pada browser Anda sudah diaktifkan untuk situs ini."
+        );
+      }
+    );
+  } else {
+    alamatTerdeteksiP.textContent =
+      "Geolocation tidak didukung oleh browser ini.";
+  }
+}
 
 // --- Fungsi Kamera ---
 function startCamera() {
@@ -24,9 +76,7 @@ function startCamera() {
       })
       .catch((error) => {
         console.error("Error accessing camera:", error);
-        alert(
-          "Gagal mengakses kamera. Pastikan izin kamera diberikan dan tidak ada aplikasi lain yang menggunakan kamera."
-        );
+        alert("Gagal mengakses kamera. Pastikan izin kamera diberikan.");
       });
   }
 }
@@ -43,6 +93,11 @@ function switchCamera() {
   startCamera();
 }
 
+/**
+ * ==================================================================
+ * === FUNGSI takePhoto() DENGAN LOGIKA TEXT WRAPPING (PERUBAHAN) ===
+ * ==================================================================
+ */
 function takePhoto() {
   const canvasContext = previewCanvas.getContext("2d");
   previewCanvas.width = videoElement.videoWidth;
@@ -55,7 +110,7 @@ function takePhoto() {
     previewCanvas.height
   );
 
-  // --- Logika Watermark Baru ---
+  // --- Data untuk Watermark ---
   const now = new Date();
   const waktu = now.toLocaleTimeString("id-ID", { hour12: false }) + " WIB";
   const tanggal = now.toLocaleDateString("id-ID", {
@@ -64,27 +119,62 @@ function takePhoto() {
     month: "long",
     year: "numeric",
   });
-  const lokasi = "Surabaya, Jawa Timur";
+  const lokasi = alamatUntukWatermark;
 
-  const padding = 10;
-  const lineHeight = 25;
-  const boxY = previewCanvas.height - lineHeight * 3 - padding * 2;
+  // --- Pengaturan Watermark ---
+  const padding = 15;
+  const fontSize = previewCanvas.width / 45; // Ukuran font dibuat sedikit lebih kecil
+  const lineHeight = fontSize * 1.5;
+  const maxWidth = previewCanvas.width - padding * 2;
 
-  // Latar Belakang
-  canvasContext.fillStyle = "rgba(0, 0, 0, 0.5)";
-  canvasContext.fillRect(
-    0,
-    boxY,
-    previewCanvas.width,
-    lineHeight * 3 + padding * 2
-  );
+  // --- Helper function untuk membungkus teks ---
+  const wrapText = (text) => {
+    let lines = [];
+    let currentLine = "";
+    const words = text.split(" ");
 
-  // Teks
-  canvasContext.font = `bold ${lineHeight - 5}px Arial`;
+    for (const word of words) {
+      const testLine = currentLine + word + " ";
+      const metrics = canvasContext.measureText(testLine);
+      if (metrics.width > maxWidth && currentLine.length > 0) {
+        lines.push(currentLine.trim());
+        currentLine = word + " ";
+      } else {
+        currentLine = testLine;
+      }
+    }
+    lines.push(currentLine.trim());
+    return lines;
+  };
+
+  // --- Logika Watermark ---
+  canvasContext.font = `bold ${fontSize}px Arial`;
+  const alamatLines = wrapText(lokasi); // Pecah alamat menjadi beberapa baris
+
+  // Hitung total tinggi background yang dibutuhkan
+  const totalLines = 2 + alamatLines.length; // 2 untuk waktu & tanggal
+  const boxHeight = lineHeight * totalLines + padding * 1.5;
+  const boxY = previewCanvas.height - boxHeight;
+
+  // Gambar latar belakang watermark
+  canvasContext.fillStyle = "rgba(0, 0, 0, 0.6)";
+  canvasContext.fillRect(0, boxY, previewCanvas.width, boxHeight);
+
+  // Tulis teks watermark baris per baris
   canvasContext.fillStyle = "white";
-  canvasContext.fillText(waktu, padding, boxY + padding + lineHeight * 0.8);
-  canvasContext.fillText(tanggal, padding, boxY + padding + lineHeight * 1.8);
-  canvasContext.fillText(lokasi, padding, boxY + padding + lineHeight * 2.8);
+  let currentY = boxY + padding + fontSize / 2; // Posisi Y awal
+
+  canvasContext.fillText(waktu, padding, currentY);
+  currentY += lineHeight; // Pindah ke baris berikutnya
+
+  canvasContext.fillText(tanggal, padding, currentY);
+  currentY += lineHeight; // Pindah ke baris berikutnya
+
+  // Tulis setiap baris alamat
+  alamatLines.forEach((line) => {
+    canvasContext.fillText(line, padding, currentY);
+    currentY += lineHeight;
+  });
 
   // --- Akhir Logika Watermark ---
 
@@ -92,13 +182,16 @@ function takePhoto() {
   previewImage.src = base64Image;
   fotoBase64Input.value = base64Image;
 
-  previewImage.style.display = "block"; // Tampilkan hasil foto
+  previewImage.style.display = "block";
   noFotoText.style.display = "none";
-  btnSubmitAbsen.disabled = false; // Aktifkan tombol kirim
+  btnSubmitAbsen.disabled = false;
 }
 
 // --- Event Listeners & Fungsi Modal ---
-modalAbsen.addEventListener("shown.bs.modal", startCamera);
+modalAbsen.addEventListener("shown.bs.modal", () => {
+  startCamera();
+  getLokasiPengguna();
+});
 modalAbsen.addEventListener("hidden.bs.modal", stopCamera);
 btnSwitchCamera.addEventListener("click", switchCamera);
 btnTakePhoto.addEventListener("click", takePhoto);
@@ -112,6 +205,7 @@ function bukaModalAbsen(tipe) {
   noFotoText.style.display = "block";
   fotoBase64Input.value = "";
   btnSubmitAbsen.disabled = true;
+  alamatTerdeteksiP.innerHTML = "<i>Menunggu data lokasi...</i>";
 }
 
 function kirimAbsensi(event) {
@@ -137,17 +231,18 @@ function kirimAbsensi(event) {
   const modal = bootstrap.Modal.getInstance(modalAbsen);
   modal.hide();
 
+  // Kita tetap perlu mengambil koordinat untuk dikirim ke backend
   navigator.geolocation.getCurrentPosition(
     (posisi) => {
       const data = {
         tipe: document.getElementById("absenTipe").value,
         latitude: posisi.coords.latitude,
         longitude: posisi.coords.longitude,
+        // TIDAK ADA "alamat" di sini
         catatan: catatan,
         foto: fotoBase64,
       };
 
-      // Ambil CSRF token dari meta tag
       const csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
@@ -174,7 +269,7 @@ function kirimAbsensi(event) {
     () => {
       notifikasi.className = "alert alert-danger";
       notifikasi.textContent =
-        "Gagal mengambil lokasi. Pastikan izin lokasi diberikan.";
+        "Gagal mengambil lokasi untuk pengiriman. Pastikan izin lokasi diberikan.";
     }
   );
 }
