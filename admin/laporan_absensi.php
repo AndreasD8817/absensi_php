@@ -1,6 +1,6 @@
-<?php 
+<?php
 $page_title = 'Laporan Absensi Seluruh Pegawai';
-require_once 'partials/header.php'; 
+require_once 'partials/header.php';
 
 // --- LOGIKA FILTER ---
 $pegawai_list = [];
@@ -14,10 +14,15 @@ $tanggal_awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $tanggal_akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 $pegawai_id_filter = isset($_GET['pegawai_id']) ? (int)$_GET['pegawai_id'] : 0;
 
-// --- LOGIKA PENGUMPULAN DATA BARU ---
+// --- PERUBAHAN 1: Kueri SQL diperbarui dengan LEFT JOIN ke tabel_dinas_luar ---
 $sql_data = "
-    SELECT p.nama_lengkap, a.* FROM tabel_absensi a 
+    SELECT 
+        p.nama_lengkap, 
+        a.*,
+        dl.file_surat_tugas  -- Ambil nama file surat tugas
+    FROM tabel_absensi a 
     JOIN tabel_pegawai p ON a.id_pegawai = p.id_pegawai 
+    LEFT JOIN tabel_dinas_luar dl ON a.id_absensi = dl.id_absensi -- Tambahkan LEFT JOIN
     WHERE DATE(a.waktu_absensi) BETWEEN ? AND ?";
 $params = [$tanggal_awal, $tanggal_akhir];
 $types = "ss";
@@ -50,12 +55,13 @@ while ($row = mysqli_fetch_assoc($result_data)) {
             'dinas_luar' => null
         ];
     }
+    // Simpan seluruh baris data ke dalam tipe absensi yang sesuai
     if ($row['tipe_absensi'] == 'Masuk') $laporan_harian[$key]['masuk'] = $row;
     if ($row['tipe_absensi'] == 'Pulang') $laporan_harian[$key]['pulang'] = $row;
     if ($row['tipe_absensi'] == 'Dinas Luar') $laporan_harian[$key]['dinas_luar'] = $row;
 }
 
-// --- LOGIKA PAGINATION ---
+// --- LOGIKA PAGINATION (Tidak berubah) ---
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 30;
 $total_records = count($laporan_harian);
@@ -63,14 +69,13 @@ $total_pages = ceil($total_records / $limit);
 $offset = ($page - 1) * $limit;
 $laporan_harian_page = array_slice($laporan_harian, $offset, $limit);
 
-// Inisialisasi total
+// Inisialisasi total (Tidak berubah)
 $total_h = 0; $total_m = 0; $total_dl = 0;
 $total_terlambat_menit_akumulasi = 0;
 $total_cepat_pulang_menit_akumulasi = 0;
 $total_persen_potongan = 0;
 ?>
 
-<!-- CSS tidak berubah -->
 <style>
     @media print { .no-print { display: none !important; } .card { border: none; box-shadow: none; } .table { font-size: 12px; } }
 </style>
@@ -80,7 +85,6 @@ $total_persen_potongan = 0;
         <h4 class="card-title"><i class="bi bi-file-earmark-spreadsheet-fill"></i> Laporan Absensi Pegawai</h4>
     </div>
     <div class="card-body">
-        <!-- Form Filter tidak berubah -->
         <form method="GET" action="" class="mb-4 no-print">
             <div class="row g-3 align-items-end">
                 <div class="col-md-3"><label for="awal" class="form-label">Tanggal Awal</label><input type="date" class="form-control" id="awal" name="awal" value="<?php echo htmlspecialchars($tanggal_awal); ?>"></div>
@@ -115,22 +119,19 @@ $total_persen_potongan = 0;
                         $nomor = $offset + 1;
                         $nama_hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
                         foreach($laporan_harian_page as $laporan):
+                            // Logika inisialisasi (tidak berubah)
                             $date_obj = new DateTime($laporan['tanggal']);
                             $hari_angka = $date_obj->format('w');
-                            
                             $absen_masuk = $laporan['masuk'] ? new DateTime($laporan['masuk']['waktu_absensi']) : null;
                             $absen_pulang = $laporan['pulang'] ? new DateTime($laporan['pulang']['waktu_absensi']) : null;
                             $dinas_luar = $laporan['dinas_luar'];
-                            
                             $status = ''; $persen = 0; $terlambat_jam = 0; $terlambat_menit = 0; $cepat_pulang_jam = 0; $cepat_pulang_menit = 0;
-                            
                             $batas_masuk_str = ''; $batas_pulang_str = '';
                             switch ($hari_angka) {
                                 case 1: case 2: case 3: case 4: $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; break;
                                 case 5: $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; break;
                                 case 6: $batas_masuk_str = '09:00:00'; $batas_pulang_str = '14:00:00'; break;
                             }
-
                             if ($dinas_luar) {
                                 $status = 'DL'; $total_dl++;
                             } elseif ($absen_masuk || $absen_pulang) {
@@ -139,14 +140,10 @@ $total_persen_potongan = 0;
                                 if (!empty($batas_masuk_str)) { $status = 'M'; $total_m++; } 
                                 else { $status = 'Libur'; }
                             }
-
-                            // --- LOGIKA PERHITUNGAN PERSENTASE BARU ---
                             if ($status == 'H' && !empty($batas_masuk_str)) {
                                 $batas_masuk_dt = new DateTime($laporan['tanggal'] . ' ' . $batas_masuk_str);
                                 $batas_pulang_dt = new DateTime($laporan['tanggal'] . ' ' . $batas_pulang_str);
                                 $durasi_kerja = $batas_masuk_dt->diff($batas_pulang_dt);
-
-                                // 1. Hitung penalti keterlambatan atau tidak absen masuk
                                 if ($absen_masuk) {
                                     if ($absen_masuk > $batas_masuk_dt) {
                                         $diff = $absen_masuk->diff($batas_masuk_dt);
@@ -160,10 +157,8 @@ $total_persen_potongan = 0;
                                 } else {
                                     $terlambat_jam = $durasi_kerja->h;
                                     $terlambat_menit = $durasi_kerja->i;
-                                    $persen += 1.5; // Penalti tidak absen masuk
+                                    $persen += 1.5;
                                 }
-
-                                // 2. Hitung penalti pulang cepat atau tidak absen pulang
                                 if ($absen_pulang) {
                                     if ($absen_pulang < $batas_pulang_dt) {
                                         $diff = $absen_pulang->diff($batas_pulang_dt);
@@ -173,11 +168,9 @@ $total_persen_potongan = 0;
                                 } else {
                                     $cepat_pulang_jam = $durasi_kerja->h;
                                     $cepat_pulang_menit = $durasi_kerja->i;
-                                    $persen += 1.5; // Penalti tidak absen pulang
+                                    $persen += 1.5;
                                 }
                             }
-                            
-                            // Akumulasi total
                             $total_terlambat_menit_akumulasi += ($terlambat_jam * 60) + $terlambat_menit;
                             $total_cepat_pulang_menit_akumulasi += ($cepat_pulang_jam * 60) + $cepat_pulang_menit;
                             $total_persen_potongan += $persen;
@@ -198,8 +191,16 @@ $total_persen_potongan = 0;
                                 <?php if ($laporan['masuk'] && $laporan['masuk']['foto']): ?>
                                     <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#proofModal" data-nama="<?php echo htmlspecialchars($laporan['nama_lengkap']); ?>" data-tipe="Masuk" data-jam="<?php echo $absen_masuk->format('H:i:s'); ?>" data-catatan="<?php echo htmlspecialchars($laporan['masuk']['catatan']); ?>" data-foto="../public/uploads/foto_absen/<?php echo $laporan['masuk']['foto']; ?>" data-lat="<?php echo $laporan['masuk']['latitude']; ?>" data-lon="<?php echo $laporan['masuk']['longitude']; ?>"><i class="bi bi-camera-fill"></i></button>
                                 <?php endif; ?>
+                                
                                 <?php if ($laporan['pulang'] && $laporan['pulang']['foto']): ?>
-                                    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proofModal" data-nama="<?php echo htmlspecialchars($laporan['nama_lengkap']); ?>" data-tipe="Pulang" data-jam="<?php echo $absen_pulang->format('H:i:s'); ?>" data-catatan="<?php echo htmlspecialchars($laporan['pulang']['catatan']); ?>" data-foto="../public/uploads/foto_absen/<?php echo $laporan['pulang']['foto']; ?>" data-lat="<?php echo $laporan['pulang']['latitude']; ?>" data-lon="<?php echo $laporan['pulang']['longitude']; ?>"><i class="bi bi-camera-fill"></i></button>
+                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#proofModal" data-nama="<?php echo htmlspecialchars($laporan['nama_lengkap']); ?>" data-tipe="Pulang" data-jam="<?php echo $absen_pulang->format('H:i:s'); ?>" data-catatan="<?php echo htmlspecialchars($laporan['pulang']['catatan']); ?>" data-foto="../public/uploads/foto_absen/<?php echo $laporan['pulang']['foto']; ?>" data-lat="<?php echo $laporan['pulang']['latitude']; ?>" data-lon="<?php echo $laporan['pulang']['longitude']; ?>"><i class="bi bi-camera-fill"></i></button>
+                                <?php endif; ?>
+
+                                <?php // -- BLOK BARU UNTUK BUKTI DINAS LUAR -- ?>
+                                <?php if ($dinas_luar && !empty($dinas_luar['file_surat_tugas'])): ?>
+                                    <a href="../public/uploads/foto_dinas_luar/<?php echo htmlspecialchars($dinas_luar['file_surat_tugas']); ?>" target="_blank" class="btn btn-warning btn-sm" title="Lihat Surat Tugas">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                                    </a>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -235,7 +236,6 @@ $total_persen_potongan = 0;
     </div>
 </div>
 
-<!-- Modal tidak berubah -->
 <div class="modal fade" id="proofModal" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -260,7 +260,6 @@ $total_persen_potongan = 0;
 
 <?php require_once 'partials/footer.php'; ?>
 
-<!-- JavaScript tidak berubah -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const proofModal = document.getElementById('proofModal');
@@ -287,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
         proofJam.textContent = jam;
         proofCatatan.textContent = catatan;
         if (lat && lon && lat != 0 && lon != 0) {
-            gmapsLink.href = `https://www.google.com/maps?q=${lat},${lon}`;
+            gmapsLink.href = `http://maps.google.com/maps?q=${lat},${lon}`;
             gmapsLink.style.display = 'block';
         } else {
             gmapsLink.style.display = 'none';
