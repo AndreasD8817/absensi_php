@@ -299,7 +299,7 @@ function kirimDinasLuar(event) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
 
-      fetch("proses_dinas_luar.php", {
+      fetch("/proses-dinas-luar", {
         method: "POST",
         headers: {
           // TAMBAHKAN HEADER BARU (tidak perlu Content-Type untuk FormData)

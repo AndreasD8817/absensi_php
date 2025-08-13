@@ -55,7 +55,15 @@ if (!in_array($mime_type, $allowed_types)) {
 }
 
 // --- PROSES UPLOAD FILE ---
-$folder_upload = 'uploads/foto_dinas_luar/';
+// Tujuan folder, relatif dari lokasi file (public/proses_dinas_luar.php)
+$folder_upload = 'public/uploads/foto_dinas_luar/';
+
+// Cek apakah folder sudah ada, jika tidak, buat folder tersebut
+if (!is_dir($folder_upload)) {
+    // Parameter ketiga 'true' memungkinkan pembuatan folder secara rekursif
+    mkdir($folder_upload, 0777, true);
+}
+
 $nama_file_unik = $id_pegawai . '_' . time() . '_' . basename($file_surat['name']);
 $path_tujuan = $folder_upload . $nama_file_unik;
 
