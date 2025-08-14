@@ -91,6 +91,9 @@ switch ($request) {
     case 'admin/kelola-libur':
         require 'admin/kelola_libur.php';
         break;
+    case 'admin/edit-absensi':
+        require 'admin/edit_absensi.php';
+        break;
     case 'admin/laporan-absensi':
         require 'admin/laporan_absensi.php';
         break;
@@ -101,6 +104,10 @@ switch ($request) {
     // --- Routing untuk Proses di Folder Admin ---
     case 'admin/proses/proses-edit-user':
         require 'admin/proses/proses_edit_user.php';
+        break;
+    // TAMBAHKAN CASE BARU DI SINI
+    case 'admin/proses/proses-edit-absensi':
+        require 'admin/proses/proses_edit_absensi.php';
         break;
     case 'admin/proses/proses-hapus-user':
         require 'admin/proses/proses_hapus_user.php';
