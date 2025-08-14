@@ -1,0 +1,5 @@
+# Folder dependensi Composer
+/vendor
+
+# File environment yang berisi rahasia
+.env
