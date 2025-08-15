@@ -10,6 +10,9 @@ const fotoBase64Input = document.getElementById("fotoBase64");
 const modalAbsen = document.getElementById("modalAbsen");
 // Elemen baru untuk alamat
 const alamatTerdeteksiP = document.getElementById("alamatTerdeteksi");
+// ======================= ELEMEN BARU =======================
+const btnRefreshLokasi = document.getElementById("btnRefreshLokasi");
+// ==========================================================
 
 let currentStream;
 let facingMode = "user"; // 'user' untuk kamera depan, 'environment' untuk belakang
@@ -17,51 +20,86 @@ let facingMode = "user"; // 'user' untuk kamera depan, 'environment' untuk belak
 let alamatUntukWatermark = "Lokasi tidak terdeteksi";
 
 // --- Fungsi Geolocation & Reverse Geocoding ---
+// --- Fungsi Geolocation & Reverse Geocoding (Dengan Teks Baru) ---
 function getAlamatFromCoords(lat, lon) {
-  // Menggunakan API gratis dari geocode.maps.co (berbasis OpenStreetMap)
   const apiUrl = `https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}`;
 
-  alamatTerdeteksiP.innerHTML = "<i>Mencari nama alamat...</i>";
+  // Teks diubah menjadi lebih ramah
+  alamatTerdeteksiP.innerHTML =
+    "<i>Sedang menerjemahkan koordinat ke alamat...</i>";
 
   fetch(apiUrl)
     .then((response) => response.json())
     .then((data) => {
       if (data && data.display_name) {
-        // Ambil alamat lengkap dari display_name
         alamatUntukWatermark = data.display_name;
         alamatTerdeteksiP.textContent = alamatUntukWatermark;
       } else {
-        alamatTerdeteksiP.textContent = "Tidak dapat menemukan detail alamat.";
+        // Teks diubah menjadi lebih ramah
+        alamatTerdeteksiP.textContent =
+          "Alamat detail tidak ditemukan, namun koordinat Anda berhasil direkam.";
         alamatUntukWatermark = `Lat: ${lat}, Lon: ${lon}`;
       }
     })
     .catch((error) => {
       console.error("Error fetching reverse geocoding:", error);
+      // Teks diubah menjadi lebih ramah
       alamatTerdeteksiP.textContent =
-        "Gagal mendapatkan nama alamat. Koneksi bermasalah.";
+        "Gagal mendapatkan nama alamat. Periksa koneksi internet Anda dan coba lagi.";
       alamatUntukWatermark = `Lat: ${lat}, Lon: ${lon}`;
     });
 }
 
+// --- Fungsi untuk mendapatkan lokasi (Dengan Logika Refresh) ---
+// Ganti fungsi getLokasiPengguna yang lama dengan yang ini
+
+// Ganti fungsi getLokasiPengguna yang lama dengan versi baru ini
+
+// Ganti fungsi getLokasiPengguna yang lama dengan versi baru ini
+
 function getLokasiPengguna() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (posisi) => {
-        // Setelah koordinat didapat, langsung cari nama alamatnya
-        getAlamatFromCoords(posisi.coords.latitude, posisi.coords.longitude);
-      },
-      () => {
-        alamatTerdeteksiP.textContent =
-          "Gagal mengambil lokasi. Pastikan izin lokasi diberikan.";
-        alert(
-          "Gagal mengambil lokasi. Pastikan izin lokasi pada browser Anda sudah diaktifkan untuk situs ini."
-        );
-      }
-    );
-  } else {
-    alamatTerdeteksiP.textContent =
-      "Geolocation tidak didukung oleh browser ini.";
-  }
+  // Langkah 1: Beri umpan balik visual INSTAN
+  alamatTerdeteksiP.innerHTML = "<i>Loading....</i>";
+  btnRefreshLokasi.disabled = true;
+  btnRefreshLokasi.innerHTML = '<i class="bi bi-arrow-repeat"></i> Mencari...';
+
+  // Langkah 2: Gunakan setTimeout untuk membuat jeda yang terasa
+  setTimeout(() => {
+    if (navigator.geolocation) {
+      // Langkah 3: Mulai proses pencarian lokasi setelah jeda
+      navigator.geolocation.getCurrentPosition(
+        (posisi) => {
+          // Jika berhasil, panggil fungsi untuk dapatkan nama alamat
+          getAlamatFromCoords(posisi.coords.latitude, posisi.coords.longitude);
+
+          // Aktifkan kembali tombol
+          btnRefreshLokasi.disabled = false;
+          btnRefreshLokasi.innerHTML =
+            '<i class="bi bi-arrow-repeat"></i> Refresh';
+        },
+        () => {
+          // Jika gagal, tampilkan pesan error
+          alamatTerdeteksiP.textContent =
+            "Lokasi gagal dideteksi. Pastikan izin lokasi sudah diberikan dan coba lagi.";
+          alert(
+            "Gagal mengambil lokasi. Pastikan izin lokasi pada browser Anda sudah diaktifkan untuk situs ini."
+          );
+
+          // Aktifkan kembali tombol
+          btnRefreshLokasi.disabled = false;
+          btnRefreshLokasi.innerHTML =
+            '<i class="bi bi-arrow-repeat"></i> Refresh';
+        }
+      );
+    } else {
+      alamatTerdeteksiP.textContent =
+        "Fitur Geolokasi tidak didukung oleh browser ini.";
+
+      // Aktifkan kembali tombol
+      btnRefreshLokasi.disabled = false;
+      btnRefreshLokasi.innerHTML = '<i class="bi bi-arrow-repeat"></i> Refresh';
+    }
+  }, 500); // Jeda 500 milidetik (setengah detik)
 }
 
 // --- Fungsi Kamera ---

@@ -11,9 +11,14 @@
             <input type="hidden" id="fotoBase64" name="foto">
             <div class="row mb-3">
               <div class="mb-3">
-                  <span class="form-label badge bg-primary">Lokasi Terdeteksi</span>
-                  <p id="alamatTerdeteksi" class="form-control-plaintext text-muted"><i>Menunggu data lokasi...</i></p>
-              </div>
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="form-label badge bg-primary">Lokasi Terdeteksi</span>
+                      <button type="button" class="btn btn-outline-primary btn-sm" id="btnRefreshLokasi">
+                          <i class="bi bi-arrow-repeat"></i> Refersh
+                      </button>
+                  </div>
+                  <p id="alamatTerdeteksi" class="form-control-plaintext text-muted"><i>Sedang mencari lokasi Anda...</i></p>
+                  </div>
                 <div class="col-md-6">
                     <span class="form-label badge bg-info">Preview Kamera</span>
                     <video id="videoElement" width="100%" height="auto" autoplay playsinline></video>
