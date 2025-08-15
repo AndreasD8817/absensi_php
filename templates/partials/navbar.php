@@ -27,6 +27,7 @@ if (session_status() == PHP_SESSION_NONE) {
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPengaturan"><i class="bi bi-gear-fill me-2"></i>Pengaturan Akun</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPanduan"><i class="bi bi-book-half me-2"></i>Panduan Pengguna</a></li>
             <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin')): ?>
                 <li><a class="dropdown-item" href="/admin"><i class="bi bi-shield-lock-fill me-2"></i>Panel Admin</a></li>
             <?php endif; ?>

@@ -36,6 +36,7 @@ require_once __DIR__ . '/partials/navbar.php';
         <h4 class="alert-heading">Selamat Datang!</h4>
         <p>Halo, <strong><?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?></strong>! Silakan lakukan absensi.</p>
     </div>
+    
 
     <div id="notifikasi" class="alert" style="display:none;"></div>
     
@@ -111,6 +112,7 @@ require_once __DIR__ . '/partials/navbar.php';
 require_once 'partials/modal_absen.php';
 require_once 'partials/modal_dinas_luar.php';
 require_once 'partials/modal_pengaturan.php';
+require_once 'partials/modal_panduan.php';
 ?>
 
 <?php require_once 'partials/footer.php'; ?>

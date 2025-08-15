@@ -23,9 +23,9 @@ if (isset($_SESSION['id_pegawai'])) {
 
 <div class="login-card">
     <div class="text-center mb-4">
-        <img src="/assets/img/logo/logo.png" alt="Logo" width="100">
+        <img src="/assets/img/logo/icon.png" alt="Logo" width="100">
     </div>
-    <h4 class="login-title">LOGIN ABSENSI PEGAWAI</h4>
+    <h4 class="login-title">LOGIN ABSENSI</h4>
     
     <?php
     // Tampilkan pesan error jika ada

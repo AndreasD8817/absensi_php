@@ -204,6 +204,7 @@ require_once __DIR__ . '/partials/navbar.php';
 <?php
 // === PANGGIL NAVBAR BARU DI SINI ===
 require_once 'partials/modal_pengaturan.php';
+require_once 'partials/modal_panduan.php';
 ?>
 
 <!-- Script Bootstrap Bundle -->
