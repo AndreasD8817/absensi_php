@@ -34,6 +34,10 @@ if (isset($_POST['id']) && isset($_POST['status'])) {
     mysqli_stmt_bind_param($stmt, "si", $status_baru, $id_pegawai);
 
     if (mysqli_stmt_execute($stmt)) {
+         // === TAMBAHKAN LOG DI SINI ===
+        $aktivitas = "Mengubah status user ID: $id_pegawai menjadi '$status_baru'.";
+        catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $aktivitas);
+        // =============================
         header("Location: /admin/manajemen-user?success=Status user berhasil diperbarui.");
     } else {
         header("Location: /admin/manajemen-user?error=Gagal memperbarui status user.");

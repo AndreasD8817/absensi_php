@@ -51,6 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // === BARU: BUAT CSRF TOKEN SAAT LOGIN BERHASIL ===
             generate_csrf_token();
 
+            // === TAMBAHKAN LOG DI SINI ===
+            catat_log($koneksi, $user['id_pegawai'], $user['role'], 'Login berhasil ke sistem.');
+            // =============================
+
             // Redirect ke halaman dashboard utama
             header("Location: /dashboard");
             exit();

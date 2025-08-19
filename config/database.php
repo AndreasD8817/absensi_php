@@ -31,4 +31,8 @@ if (!$koneksi) {
 
 // Mengatur zona waktu default
 date_default_timezone_set('Asia/Jakarta');
+// ======================================================
+// === MEMANGGIL HELPER LOG UNTUK PENCATATAN AKTIVITAS ===
+// ======================================================
+require_once __DIR__ . '/log_helper.php';
 ?>

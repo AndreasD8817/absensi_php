@@ -65,6 +65,13 @@ switch ($request) {
         break;
 
     // --- Routing untuk Halaman Admin ---
+    // --- TAMBAHKAN RUTE BARU UNTUK LOG ---
+    case 'admin/log-aktivitas':
+        require 'admin/log_aktivitas.php';
+        break;
+    case 'admin/export-log-csv':
+        require 'admin/export_log_csv.php';
+        break;
     case 'admin':
         require 'admin/index.php';
         break;

@@ -74,6 +74,7 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                         <li><a class="dropdown-item" href="/admin/impor-pegawai"><i class="bi bi-person-lines-fill me-2"></i>Impor Pegawai</a></li>
                         <li><a class="dropdown-item" href="/admin/manajemen-user"><i class="bi bi-people-fill me-2"></i>Manajemen User</a></li>
                         <li><a class="dropdown-item" href="/admin/pengaturan"><i class="bi bi-pin-map-fill me-2"></i>Pengaturan Jarak</a></li>
+                        <li><a class="dropdown-item" href="/admin/log-aktivitas"><i class="bi bi-clock-history me-2"></i>Log Aktivitas</a></li>
                     <?php endif; ?>
                 </ul>
             </li>

@@ -119,6 +119,10 @@ if (file_put_contents($path_foto, $imageData)) {
     mysqli_stmt_bind_param($stmt_insert, "issddss", $id_pegawai, $tipe_absensi, $waktu_sekarang, $latitude_user, $longitude_user, $catatan, $nama_file_foto);
 
     if (mysqli_stmt_execute($stmt_insert)) {
+        // === TAMBAHKAN LOG DI SINI ===
+        $aktivitas = "Melakukan absensi '$tipe_absensi' via aplikasi.";
+        catat_log($koneksi, $id_pegawai, $_SESSION['role'], $aktivitas);
+        // =============================
         echo json_encode(['sukses' => true, 'pesan' => 'Absen ' . $tipe_absensi . ' berhasil pada jam ' . date('H:i') . '.']);
     } else {
         // Jika gagal insert DB, hapus foto yang sudah terupload untuk mencegah sampah file.

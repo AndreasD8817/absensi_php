@@ -2,6 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/csrf_helper.php'; // Panggil helper CSRF
+require_once __DIR__ . '/../config/database.php'; // Panggil database untuk fungsi log
 
 // === VALIDASI CSRF TOKEN dari HEADER ===
 $header_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
@@ -16,15 +17,13 @@ if (!isset($_SESSION['id_pegawai'])) {
     exit();
 }
 
-require_once __DIR__ . '/../config/database.php';
-
-
 // --- VALIDASI INPUT & FILE ---
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['keterangan']) || empty($_FILES['surat_tugas'])) {
     echo json_encode(['sukses' => false, 'pesan' => 'Data tidak lengkap.']);
     exit();
 }
 
+// ... (sisa kode validasi file tidak berubah) ...
 $id_pegawai = $_SESSION['id_pegawai'];
 $keterangan = $_POST['keterangan'];
 $latitude_user = $_POST['latitude'];
@@ -72,6 +71,7 @@ if (!move_uploaded_file($file_surat['tmp_name'], $path_tujuan)) {
     exit();
 }
 
+
 // --- SIMPAN KE DATABASE (TRANSACTION) ---
 mysqli_begin_transaction($koneksi);
 
@@ -98,6 +98,12 @@ try {
 
     // Jika semua berhasil, commit transaksi
     mysqli_commit($koneksi);
+    
+    // === CATAT LOG AKTIVITAS ===
+    $aktivitas = "Mengajukan absensi Dinas Luar dengan keterangan: '$keterangan'.";
+    catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $aktivitas);
+    // ============================
+
     echo json_encode(['sukses' => true, 'pesan' => 'Absensi Dinas Luar berhasil direkam.']);
 
 } catch (Exception $e) {
