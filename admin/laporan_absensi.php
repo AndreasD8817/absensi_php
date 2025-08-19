@@ -79,6 +79,7 @@ foreach ($period as $date) {
 
 // --- LOGIKA PAGINATION ---
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+// UBAH LIMIT MENJADI 10
 $limit = 30;
 $total_records = count($laporan_final);
 $total_pages = ceil($total_records / $limit);
@@ -90,6 +91,14 @@ $total_h = 0; $total_m = 0; $total_dl = 0;
 $total_terlambat_menit_akumulasi = 0;
 $total_cepat_pulang_menit_akumulasi = 0;
 $total_persen_potongan = 0;
+
+// LOGIKA BARU UNTUK MENAMPILKAN NOMOR HALAMAN
+$max_links = 10;
+$start_page = max(1, $page - floor($max_links / 2));
+$end_page = min($total_pages, $start_page + $max_links - 1);
+if ($end_page - $start_page < $max_links - 1) {
+    $start_page = max(1, $end_page - $max_links + 1);
+}
 ?>
 
 <style>
@@ -254,11 +263,23 @@ $total_persen_potongan = 0;
         </div>
         <nav class="no-print">
             <ul class="pagination justify-content-center">
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <?php if ($page > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?awal=<?php echo $tanggal_awal; ?>&akhir=<?php echo $tanggal_akhir; ?>&pegawai_id=<?php echo $pegawai_id_filter; ?>&page=<?php echo $page - 1; ?>">Previous</a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
                     <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
                         <a class="page-link" href="?awal=<?php echo $tanggal_awal; ?>&akhir=<?php echo $tanggal_akhir; ?>&pegawai_id=<?php echo $pegawai_id_filter; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                     </li>
                 <?php endfor; ?>
+                
+                <?php if ($page < $total_pages): ?>
+                     <li class="page-item">
+                        <a class="page-link" href="?awal=<?php echo $tanggal_awal; ?>&akhir=<?php echo $tanggal_akhir; ?>&pegawai_id=<?php echo $pegawai_id_filter; ?>&page=<?php echo $page + 1; ?>">Next</a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </nav>
     </div>
@@ -314,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
         proofJam.textContent = jam;
         proofCatatan.textContent = catatan;
         if (lat && lon && lat != 0 && lon != 0) {
-            gmapsLink.href = `https://www.google.com/maps?q=${lat},${lon}`;
+            gmapsLink.href = `https://maps.google.com/?q=${lat},${lon}`;
             gmapsLink.style.display = 'block';
         } else {
             gmapsLink.style.display = 'none';
