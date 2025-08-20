@@ -81,5 +81,32 @@ $bisa_absen_masuk = ($status_terakhir === null && !$lewat_jam_pulang);
 $bisa_absen_pulang = ($status_terakhir === 'Masuk' || ($lewat_jam_pulang && $status_terakhir === null));
 $bisa_dinas_luar = ($status_terakhir === null);
 
+// =================================================================
+// === BARU: Ambil data untuk dashboard view baru ===
+// =================================================================
+$absen_hari_ini = [
+    'masuk' => null,
+    'pulang' => null
+];
+
+$sql_absensi_hari_ini = "SELECT tipe_absensi, waktu_absensi 
+                         FROM tabel_absensi 
+                         WHERE id_pegawai = ? AND DATE(waktu_absensi) = ? 
+                         ORDER BY waktu_absensi ASC";
+
+$stmt_absensi = mysqli_prepare($koneksi, $sql_absensi_hari_ini);
+mysqli_stmt_bind_param($stmt_absensi, "is", $id_pegawai, $hari_ini);
+mysqli_stmt_execute($stmt_absensi);
+$result_absensi = mysqli_stmt_get_result($stmt_absensi);
+
+while ($row = mysqli_fetch_assoc($result_absensi)) {
+    if ($row['tipe_absensi'] == 'Masuk') {
+        $absen_hari_ini['masuk'] = new DateTime($row['waktu_absensi']);
+    } elseif ($row['tipe_absensi'] == 'Pulang') {
+        $absen_hari_ini['pulang'] = new DateTime($row['waktu_absensi']);
+    }
+}
+// =================================================================
+
 // 5. Panggil View
 require_once 'templates/dashboard_view.php';

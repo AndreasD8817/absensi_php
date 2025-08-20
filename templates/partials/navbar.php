@@ -1,45 +1,75 @@
 <?php
-// Pastikan sesi sudah dimulai di file utama (seperti index.php)
-// agar variabel $_SESSION bisa diakses di sini.
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-<style>
-    /* CSS untuk gradien modern */
-    .navbar-rekabsen {
-        background: linear-gradient(90deg, rgba(3,53,119,1) 0%, rgba(32,96,203,1) 100%);
-        backdrop-filter: blur(5px);
-    }
-</style>
+<button class="btn btn-primary sidebar-toggle" type="button" id="sidebarToggle">
+    <i class="bi bi-list"></i>
+</button>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-rekabsen shadow-sm fixed-top">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="/dashboard">
-      <img src="/assets/img/logo/favicon1.png" alt="Logo RekAbsen" width="50" height="50" class="me-2">
-      <span class="fw-bold fs-4">RekAbsen</span>
-    </a>
-    <ul class="navbar-nav ms-auto">
-    <?php if (isset($_SESSION['id_pegawai'])): ?>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPengaturan"><i class="bi bi-gear-fill me-2"></i>Pengaturan Akun</a></li>
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPanduan"><i class="bi bi-book-half me-2"></i>Panduan Pengguna</a></li>
-            <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin')): ?>
-                <li><a class="dropdown-item" href="/admin"><i class="bi bi-shield-lock-fill me-2"></i>Panel Admin</a></li>
-            <?php endif; ?>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="/auth/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-        </ul>
-    </li>
-    <?php endif; ?>
+<div class="user-sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="/assets/img/logo/icon.png" alt="Avatar" class="logo">
+        <h5 class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?></h5>
+        <p class="user-role"><?php echo ucfirst(htmlspecialchars($_SESSION['role'])); ?></p>
+    </div>
+
+    <ul class="nav flex-column sidebar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/dashboard">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard Utama</span>
+            </a>
+        </li>
     </ul>
-  </div>
-</nav>
 
-<script>
-    document.body.style.paddingTop = document.querySelector('.navbar').offsetHeight + 'px';
-</script>
+    <hr class="sidebar-divider">
+
+    <div class="action-buttons">
+        <p class="action-title">AKSI HARI INI</p>
+        <button class="btn btn-masuk <?php if(!$bisa_absen_masuk) echo 'disabled'; ?>" <?php if(!$bisa_absen_masuk) echo 'disabled'; ?> data-bs-toggle="modal" data-bs-target="#modalAbsen" onclick="bukaModalAbsen('Masuk')">
+            <i class="bi bi-box-arrow-in-right"></i> Absen Masuk
+        </button>
+        <button class="btn btn-pulang <?php if(!$bisa_absen_pulang) echo 'disabled'; ?>" <?php if(!$bisa_absen_pulang) echo 'disabled'; ?> data-bs-toggle="modal" data-bs-target="#modalAbsen" onclick="bukaModalAbsen('Pulang')">
+            <i class="bi bi-box-arrow-right"></i> Absen Pulang
+        </button>
+        <button class="btn btn-dl <?php if(!$bisa_dinas_luar) echo 'disabled'; ?>" <?php if(!$bisa_dinas_luar) echo 'disabled'; ?> data-bs-toggle="modal" data-bs-target="#modalDinasLuar">
+            <i class="bi bi-briefcase-fill"></i> Dinas Luar
+        </button>
+    </div>
+
+    <hr class="sidebar-divider">
+    
+    <div class="history-button-wrapper">
+         <a class="btn btn-history" href="/riwayat-absensi">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Lihat Riwayat Absensi</span>
+        </a>
+    </div>
+
+
+    <ul class="nav flex-column sidebar-nav sidebar-footer">
+        <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin')): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">
+                    <i class="bi bi-shield-lock-fill"></i> Panel Admin
+                </a>
+            </li>
+        <?php endif; ?>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPanduan">
+                <i class="bi bi-book-half"></i> Panduan
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPengaturan">
+                <i class="bi bi-gear-fill"></i> Pengaturan Akun
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/auth/logout">
+                <i class="bi bi-box-arrow-left"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
