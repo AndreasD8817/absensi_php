@@ -90,6 +90,12 @@ if ($update_password) {
 
 // Eksekusi query
 if (mysqli_stmt_execute($stmt_update)) {
+    // === CATAT LOG AKTIVITAS ===
+    if (!empty($changes)) {
+        $log_message .= implode(' & ', $changes) . '.';
+        catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $log_message);
+    }
+    // ============================
     // Update sesi jika username berubah
     $_SESSION['username'] = $username_baru;
     header("Location: /dashboard?sukses=Data akun berhasil diperbarui.");

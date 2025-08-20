@@ -53,6 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (mysqli_stmt_execute($stmt)) {
+        // === CATAT LOG AKTIVITAS ===
+        $aktivitas = "Berhasil memperbarui data user: '$nama_lengkap' (ID: $id_pegawai).";
+        catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $aktivitas);
+        // ============================
         header("Location: /admin/manajemen-user?success=Data user berhasil diperbarui.");
     } else {
         // Cek jika error karena username duplikat

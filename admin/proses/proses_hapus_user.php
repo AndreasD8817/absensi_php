@@ -27,6 +27,10 @@ if (isset($_POST['id'])) {
     mysqli_stmt_bind_param($stmt, "i", $id_pegawai);
 
     if (mysqli_stmt_execute($stmt)) {
+        // === CATAT LOG AKTIVITAS ===
+        $aktivitas = "Menghapus user: '$nama_user_dihapus' (ID: $id_pegawai).";
+        catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $aktivitas);
+        // ============================
         header("Location: /admin/manajemen-user?success=User berhasil dihapus.");
     } else {
         header("Location: /admin/manajemen-user?error=Gagal menghapus user.");

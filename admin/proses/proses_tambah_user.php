@@ -59,6 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_bind_param($stmt, "sssssi", $nama_lengkap, $username, $hashed_password, $jabatan, $role, $radius_absensi);
 
     if (mysqli_stmt_execute($stmt)) {
+        // === CATAT LOG AKTIVITAS ===
+        $id_baru = mysqli_insert_id($koneksi);
+        $aktivitas = "Menambahkan user baru: '$nama_lengkap' (ID: $id_baru) dengan role '$role'.";
+        catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $aktivitas);
+        // ============================
         header("Location: /admin/manajemen-user?success=User baru berhasil ditambahkan.");
     } else {
         header("Location: /admin/tambah-user?error=Gagal menambahkan user. Error: " . mysqli_error($koneksi));

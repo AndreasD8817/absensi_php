@@ -22,6 +22,10 @@ if (isset($_POST['tanggal'])) {
     mysqli_stmt_bind_param($stmt, "s", $tanggal);
 
     if (mysqli_stmt_execute($stmt)) {
+        // === CATAT LOG AKTIVITAS ===
+        $aktivitas = "Menghapus hari libur pada tanggal $tanggal.";
+        catat_log($koneksi, $_SESSION['id_pegawai'], $_SESSION['role'], $aktivitas);
+        // ============================
         header("Location: /admin/kelola-libur?success=Hari libur berhasil dihapus.");
     } else {
         header("Location: /admin/kelola-libur?error=Gagal menghapus hari libur.");
