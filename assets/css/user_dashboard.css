@@ -1,0 +1,161 @@
+/* Tata Letak Dasar */
+body {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7fc; /* Warna latar yang lebih lembut */
+}
+
+/* Sidebar Styling */
+.user-sidebar {
+  width: 280px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  z-index: 1000;
+  transition: all 0.3s;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.sidebar-header .logo {
+  width: 60px;
+  margin-bottom: 1rem;
+}
+
+.sidebar-header .user-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+.sidebar-header .user-role {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* Tombol Aksi Utama */
+.action-buttons .btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-buttons .btn i {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.action-buttons .btn-masuk {
+  background-color: #d4edda;
+  color: #155724;
+}
+.action-buttons .btn-pulang {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.action-buttons .btn-dl {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.action-buttons .btn:not(.disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons .btn.disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* Menu Navigasi */
+.sidebar-nav {
+  margin-top: 1.5rem;
+}
+
+.sidebar-nav .nav-link {
+  color: #495057;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+}
+
+.sidebar-nav .nav-link:hover {
+  background-color: #f8f9fa;
+  color: #0d6efd;
+}
+
+.sidebar-nav .nav-link i {
+  margin-right: 1rem;
+}
+
+/* Bagian Bawah Sidebar */
+.sidebar-footer {
+  margin-top: auto; /* Mendorong ke bawah */
+}
+
+/* Konten Utama */
+.main-content {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  padding: 2rem;
+  transition: all 0.3s;
+}
+
+/* Jam Digital */
+.digital-clock {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #343a40;
+}
+.digital-date {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+/* Responsif untuk Mobile */
+.sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .user-sidebar {
+    left: -280px;
+  }
+  .user-sidebar.active {
+    left: 0;
+  }
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sidebar-toggle {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+  }
+}

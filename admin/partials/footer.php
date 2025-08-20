@@ -1,13 +1,4 @@
-</main> <footer class="mt-auto py-3 bg-light">
-    <div class="container text-center">
-        <hr>
-        <p class="text-muted mt-3">
-            &copy; <?php echo date('Y'); ?> <strong>Aplikasi Absensi (RekAbsen)</strong> - Dibuat dengan <i class="bi bi-heart-fill text-danger"></i> oleh Super Koor Arvin.
-        </p>
-    </div>
-</footer>
-
-<div class="modal fade" id="idleModal" tabindex="-1" aria-labelledby="idleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+</main> </div> <div class="modal fade" id="idleModal" tabindex="-1" aria-labelledby="idleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -30,6 +21,16 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+    }
+
+    // Logika Auto Logout
     let idleTimer;
     let warningTimer;
     let countdownInterval;

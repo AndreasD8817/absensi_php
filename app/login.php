@@ -11,68 +11,70 @@ if (isset($_SESSION['id_pegawai'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Absensi Pegawai</title>
-    <!-- Bootstrap CSS -->
+    <title>Login - Panel RekAbsen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons for the 'eye' icon -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/assets/css/login.css">
     
 </head>
 <body>
-
-<div class="login-card">
-    <div class="text-center mb-4">
-        <img src="/assets/img/logo/icon.png" alt="Logo" width="100">
-    </div>
-    <h4 class="login-title">LOGIN ABSENSI</h4>
     
-    <?php
-    // Tampilkan pesan error jika ada
-    if (isset($_GET['error'])) {
-        echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($_GET['error']) . '</div>';
-    }
-    ?>
-    
-    <form action="/auth/proses-login" method="POST">
-        <div class="mb-3">
-            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="/assets/img/logo/favicon1.png" alt="Logo RekAbsen">
+            <h1 class="logo-text">RekAbsen</h1>
+            <p>Sistem Absensi Digital</p>
         </div>
         
-        <div class="mb-3 password-container">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            <span class="input-group-text" id="togglePassword">
-                <i class="bi bi-eye-slash" id="toggleIcon"></i>
-            </span>
-        </div>
-
-        <div class="d-grid mt-4">
-            <button type="submit" class="btn btn-primary btn-login">LOGIN</button>
-        </div>
-    </form>
-</div>
-
-<!-- JavaScript for password toggle -->
-<script>
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const toggleIcon = document.getElementById('toggleIcon');
-
-    togglePassword.addEventListener('click', function () {
-        // Toggle the type attribute
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        // Toggle the icon
-        if (type === 'password') {
-            toggleIcon.classList.remove('bi-eye');
-            toggleIcon.classList.add('bi-eye-slash');
-        } else {
-            toggleIcon.classList.remove('bi-eye-slash');
-            toggleIcon.classList.add('bi-eye');
+        <?php
+        // Tampilkan pesan error jika ada
+        if (isset($_GET['error'])) {
+            echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($_GET['error']) . '</div>';
         }
-    });
-</script>
+        ?>
+        
+        <form action="/auth/proses-login" method="POST">
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="Masukkan username" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-login">Masuk</button>
+        </form>
+        
+        <div class="login-footer">
+            <a href="mailto:support.rekabsen@dprdsby.id">Lupa password? Hubungi Admin</a>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fitur lihat/sembunyikan password
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Mengubah ikon mata
+                const eyeIcon = this.querySelector('i');
+                eyeIcon.classList.toggle('fa-eye');
+                eyeIcon.classList.toggle('fa-eye-slash');
+            });
+        });
+    </script>
 </body>
 </html>
