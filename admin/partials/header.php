@@ -50,82 +50,83 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
         <h5>RekAbsen Panel</h5>
     </div>
 
-    <ul class="sidebar-nav nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" href="/admin">
-                <i class="bi bi-grid-fill"></i>
-                <span>Dashboard Admin</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/admin/laporan-absensi">
-                <i class="bi bi-file-earmark-spreadsheet-fill"></i>
-                <span>Laporan Absensi</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/admin/edit-absensi">
-                <i class="bi bi-pencil-square"></i>
-                <span>Kelola Absensi</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/admin/kelola-libur">
-                <i class="bi bi-calendar-plus-fill"></i>
-                <span>Input Hari Libur</span>
-            </a>
-        </li>
+    <div class="sidebar-nav-wrapper">
+        <ul class="sidebar-nav nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Dashboard Admin</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/laporan-absensi">
+                    <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                    <span>Laporan Absensi</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/edit-absensi">
+                    <i class="bi bi-pencil-square"></i>
+                    <span>Kelola Absensi</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/kelola-libur">
+                    <i class="bi bi-calendar-plus-fill"></i>
+                    <span>Input Hari Libur</span>
+                </a>
+            </li>
 
-        <?php if ($_SESSION['role'] == 'superadmin'): ?>
+            <?php if ($_SESSION['role'] == 'superadmin'): ?>
+                <hr class="text-white-50">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/manajemen-user">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Manajemen User</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/impor-pegawai">
+                        <i class="bi bi-person-lines-fill"></i>
+                        <span>Impor Pegawai</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/impor-absensi">
+                        <i class="bi bi-upload"></i>
+                        <span>Impor Absensi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/pengaturan">
+                        <i class="bi bi-pin-map-fill"></i>
+                        <span>Pengaturan Jarak</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/log-aktivitas">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Log Aktivitas</span>
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <hr class="text-white-50">
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/manajemen-user">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Manajemen User</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/impor-pegawai">
-                    <i class="bi bi-person-lines-fill"></i>
-                    <span>Impor Pegawai</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/impor-absensi">
-                    <i class="bi bi-upload"></i>
-                    <span>Impor Absensi</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/pengaturan">
-                    <i class="bi bi-pin-map-fill"></i>
-                    <span>Pengaturan Jarak</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/log-aktivitas">
-                    <i class="bi bi-clock-history"></i>
-                    <span>Log Aktivitas</span>
-                </a>
-            </li>
-        <?php endif; ?>
 
-        <hr class="text-white-50">
-
-        <li class="nav-item">
-            <a class="nav-link" href="/dashboard">
-                <i class="bi bi-person-workspace"></i>
-                <span>Dashboard Pegawai</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-danger" href="/auth/logout">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
-            </a>
-        </li>
-    </ul>
-</div>
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard">
+                    <i class="bi bi-person-workspace"></i>
+                    <span>Dashboard Pegawai</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-danger" href="/auth/logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div> </div>
 
 <div class="main-content">
     <main class="container-fluid">

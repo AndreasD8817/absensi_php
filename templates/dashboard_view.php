@@ -10,84 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/user_dashboard.css">
-    <style>
-        /* CSS Tambahan untuk Dashboard Baru */
-        .main-content {
-            padding: 0;
-            background: #f4f7fc;
-            color: var(--dark);
-        }
-
-        .dashboard-header {
-            background-color: #fff;
-            padding: 2rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .dashboard-header .title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #343a40;
-        }
-
-        .dashboard-header .subtitle {
-            font-size: 1.1rem;
-            color: #6c757d;
-        }
-        
-        .dashboard-container {
-            padding: 2rem;
-        }
-        
-        .time-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .digital-clock {
-            font-size: 4rem;
-            font-weight: 700;
-            color: #212529;
-        }
-
-        .date-display {
-            font-size: 1.25rem;
-            color: #495057;
-        }
-
-        .calendar-container, .attendance-status {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .calendar-title { font-size: 1.25rem; font-weight: 600; }
-        .calendar-nav button { background: #0d6efd; border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
-        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 600; margin-bottom: 0.5rem; color: #6c757d; }
-        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
-        .day { text-align: center; padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-        .day:hover { background: #e9ecef; }
-        .today { background: #0d6efd; color: white; font-weight: 700; }
-        .other-month { opacity: 0.4; }
-        
-        .status-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; }
-        .status-content { display: flex; justify-content: space-around; align-items: center; text-align: center; }
-        .status-value { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
-        .status-label { font-size: 0.9rem; color: #6c757d; }
-    </style>
+    <link rel="stylesheet" href="/assets/css/dashboard_view.css">
 </head>
 <body>
 
@@ -108,7 +31,7 @@ require_once __DIR__ . '/partials/navbar.php';
         <div id="notifikasi" class="alert" style="display:none;"></div>
         
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-7 col-md-12 mb-4">
                 <section class="calendar-container">
                     <div class="calendar-header">
                         <h2 class="calendar-title" id="calendar-title"></h2>
@@ -123,7 +46,7 @@ require_once __DIR__ . '/partials/navbar.php';
                     <div class="days" id="calendar-days"></div>
                 </section>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-5 col-md-12">
                 <section class="time-section p-4 rounded bg-white shadow-sm mb-4">
                     <div class="digital-clock" id="digital-clock">00:00:00</div>
                     <div class="date-display" id="date-display">...</div>

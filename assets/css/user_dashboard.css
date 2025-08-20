@@ -207,3 +207,19 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
 }
+/* Wrapper baru untuk konten sidebar */
+.sidebar-content-wrapper {
+  flex-grow: 1; /* Memastikan wrapper ini mengisi sisa ruang */
+  overflow-y: auto; /* Tambahkan scroll vertikal jika konten melebihi tinggi */
+  padding-bottom: 2rem; /* Beri sedikit ruang di bawah */
+}
+
+/* Penyesuaian untuk footer agar selalu di bawah */
+.user-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-footer {
+  margin-top: 1.5rem; /* Beri jarak dari elemen di atasnya */
+}

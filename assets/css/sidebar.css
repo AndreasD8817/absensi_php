@@ -131,3 +131,20 @@ body {
 .icon-lg {
   font-size: 3rem;
 }
+/* Tata Letak Flexbox untuk Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-header {
+  flex-shrink: 0; /* Header tidak akan menyusut */
+}
+
+/* Wrapper baru untuk menu navigasi */
+.sidebar-nav-wrapper {
+  flex-grow: 1; /* Wrapper akan mengisi ruang yang tersisa */
+  overflow-y: auto; /* Tambahkan scroll jika konten melebihi tinggi */
+  padding-bottom: 2rem; /* Jarak di bawah */
+}
