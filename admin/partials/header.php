@@ -10,6 +10,29 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
     header("Location: /login?error=Akses ditolak");
     exit();
 }
+// ======================================================
+// === BARU: LOGIKA AUTO LOGOUT JIKA IDLE (SERVER-SIDE) ===
+// ======================================================
+$idle_timeout = 1800; // 30 menit dalam detik (30 * 60)
+
+// Cek apakah waktu aktivitas terakhir sudah di-set
+if (isset($_SESSION['last_activity'])) {
+    // Hitung selisih waktu sekarang dengan aktivitas terakhir
+    $elapsed_time = time() - $_SESSION['last_activity'];
+
+    if ($elapsed_time > $idle_timeout) {
+        // Hancurkan sesi jika waktu idle terlampaui
+        session_unset();
+        session_destroy();
+        // Redirect ke halaman login dengan pesan
+        header("Location: /login?error=Sesi Anda telah berakhir karena tidak ada aktivitas.");
+        exit();
+    }
+}
+
+// Perbarui waktu aktivitas terakhir ke waktu saat ini di setiap request
+$_SESSION['last_activity'] = time();
+// ======================================================
 
 // Panggil file koneksi database jika diperlukan di banyak tempat
 require_once __DIR__ . '/../../config/database.php';

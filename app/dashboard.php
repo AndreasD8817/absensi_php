@@ -4,6 +4,16 @@
 // =================================================================
 
 session_start();
+// === TAMBAHKAN BLOK AUTO LOGOUT DI SINI ===
+$idle_timeout = 1800; // 30 menit
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $idle_timeout)) {
+    session_unset();
+    session_destroy();
+    header("Location: /login?error=Sesi Anda telah berakhir karena tidak ada aktivitas.");
+    exit();
+}
+$_SESSION['last_activity'] = time(); // Perbarui waktu aktivitas
+// =======================================
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/csrf_helper.php'; // Panggil helper CSRF
 
