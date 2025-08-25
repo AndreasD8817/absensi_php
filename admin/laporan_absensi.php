@@ -165,7 +165,7 @@ if ($end_page - $start_page < $max_links - 1) {
                             if (!$is_libur_nasional) {
                                 switch ($hari_angka) {
                                     case 1: case 2: case 3: case 4: case 5: $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; break;
-                                    case 6: $batas_masuk_str = '09:00:00'; $batas_pulang_str = '14:00:00'; break;
+                                    case 6: $batas_masuk_str = '08:00:00'; $batas_pulang_str = '14:00:00'; break;
                                 }
                             }
 

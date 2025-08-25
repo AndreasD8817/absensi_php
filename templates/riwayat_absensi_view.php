@@ -88,7 +88,7 @@ require_once __DIR__ . '/partials/navbar.php';
                                                 $jam_kerja_mulai = '07:30:00'; $jam_kerja_selesai = '16:00:00';
                                                 break;
                                             case 6:
-                                                $jam_kerja_mulai = '09:00:00'; $jam_kerja_selesai = '14:00:00';
+                                                $jam_kerja_mulai = '08:00:00'; $jam_kerja_selesai = '14:00:00';
                                                 break;
                                             default:
                                                 $jam_kerja_mulai = 'Libur';
