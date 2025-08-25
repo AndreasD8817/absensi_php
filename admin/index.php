@@ -2,8 +2,15 @@
 $page_title = 'Dashboard Admin';
 require_once 'partials/header.php'; 
 
-// === LOGIKA PENGAMBILAN DATA UNTUK KARTU STATISTIK ===
+// --- LOGIKA PENGAMBILAN DATA UNTUK KARTU STATISTIK ---
 $hari_ini = date('Y-m-d');
+$hari_angka = date('w'); // 0 untuk Minggu, 6 untuk Sabtu
+
+// Tentukan batas waktu terlambat berdasarkan hari
+$batas_terlambat = '07:30:00'; // Default untuk hari kerja biasa
+if ($hari_angka == 6) { // Jika hari ini Sabtu
+    $batas_terlambat = '08:00:00';
+}
 
 // 1. Total Karyawan
 $result_total_pegawai = mysqli_query($koneksi, "SELECT COUNT(id_pegawai) as total FROM tabel_pegawai WHERE status = 'aktif'");
@@ -13,9 +20,12 @@ $total_pegawai = mysqli_fetch_assoc($result_total_pegawai)['total'];
 $result_hadir = mysqli_query($koneksi, "SELECT COUNT(DISTINCT id_pegawai) as total FROM tabel_absensi WHERE DATE(waktu_absensi) = '$hari_ini' AND tipe_absensi = 'Masuk'");
 $total_hadir_hari_ini = mysqli_fetch_assoc($result_hadir)['total'];
 
-// 3. Terlambat Hari Ini (Asumsi jam masuk > 07:30)
-$result_terlambat = mysqli_query($koneksi, "SELECT COUNT(id_absensi) as total FROM tabel_absensi WHERE DATE(waktu_absensi) = '$hari_ini' AND tipe_absensi = 'Masuk' AND TIME(waktu_absensi) > '07:30:00'");
-$total_terlambat = mysqli_fetch_assoc($result_terlambat)['total'];
+// 3. Terlambat Hari Ini (Logika sudah dinamis)
+$sql_terlambat = "SELECT COUNT(id_absensi) as total FROM tabel_absensi WHERE DATE(waktu_absensi) = ? AND tipe_absensi = 'Masuk' AND TIME(waktu_absensi) > ?";
+$stmt_terlambat = mysqli_prepare($koneksi, $sql_terlambat);
+mysqli_stmt_bind_param($stmt_terlambat, "ss", $hari_ini, $batas_terlambat);
+mysqli_stmt_execute($stmt_terlambat);
+$total_terlambat = mysqli_stmt_get_result($stmt_terlambat)->fetch_assoc()['total'];
 
 // 4. Dinas Luar Hari Ini
 $result_dl = mysqli_query($koneksi, "SELECT COUNT(id_absensi) as total FROM tabel_absensi WHERE DATE(waktu_absensi) = '$hari_ini' AND tipe_absensi = 'Dinas Luar'");
