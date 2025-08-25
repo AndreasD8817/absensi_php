@@ -56,10 +56,25 @@ if ($row = mysqli_fetch_assoc($result_cek)) {
     $status_terakhir = $row['tipe_absensi'];
 }
 
-// Logika untuk menentukan batas jam pulang
-$hari_angka = date('w'); 
+// === LOGIKA BARU UNTUK HARI LIBUR NASIONAL/CUTI BERSAMA ===
+$sql_libur = "SELECT tanggal FROM tabel_hari_libur WHERE tanggal = ?";
+$stmt_libur = mysqli_prepare($koneksi, $sql_libur);
+mysqli_stmt_bind_param($stmt_libur, "s", $hari_ini);
+mysqli_stmt_execute($stmt_libur);
+$result_libur = mysqli_stmt_get_result($stmt_libur);
+$is_libur_ditetapkan = mysqli_num_rows($result_libur) > 0;
+// ========================================================
+
+// Logika untuk menentukan batas jam pulang dan hari libur
+$hari_angka = date('w'); // 0 untuk Minggu, 6 untuk Sabtu
 $waktu_sekarang = date('H:i:s');
 $batas_pulang_str = ''; 
+$is_hari_kerja = true; // Asumsikan hari ini adalah hari kerja
+
+// Jika hari ini adalah Minggu ATAU terdaftar sebagai hari libur
+if ($hari_angka == 0 || $is_libur_ditetapkan) { 
+    $is_hari_kerja = false;
+}
 
 switch ($hari_angka) {
     case 1: case 2: case 3: case 4: case 5:
@@ -77,9 +92,16 @@ if ($batas_pulang_str != '' && $waktu_sekarang > $batas_pulang_str) {
 
 // 4. Siapkan variabel untuk View
 $sudah_selesai = ($status_terakhir === 'Pulang' || $status_terakhir === 'Dinas Luar');
-$bisa_absen_masuk = ($status_terakhir === null && !$lewat_jam_pulang);
-$bisa_absen_pulang = ($status_terakhir === 'Masuk' || ($lewat_jam_pulang && $status_terakhir === null));
-$bisa_dinas_luar = ($status_terakhir === null);
+$bisa_absen_masuk = ($status_terakhir === null && !$lewat_jam_pulang && $is_hari_kerja);
+$bisa_absen_pulang = (($status_terakhir === 'Masuk' || ($lewat_jam_pulang && $status_terakhir === null)) && $is_hari_kerja);
+$bisa_dinas_luar = ($status_terakhir === null && $is_hari_kerja);
+
+// Jika hari ini bukan hari kerja, pastikan semua tombol non-aktif
+if (!$is_hari_kerja) {
+    $bisa_absen_masuk = false;
+    $bisa_absen_pulang = false;
+    $bisa_dinas_luar = false;
+}
 
 // =================================================================
 // === BARU: Ambil data untuk dashboard view baru ===
