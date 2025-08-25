@@ -81,6 +81,12 @@ switch ($request) {
     case 'admin/tambah-user':
         require 'admin/tambah_user.php';
         break;
+    case 'admin/proses/nonaktifkan-semua':
+        require 'admin/proses/proses_nonaktifkan_semua.php';
+        break;
+    case 'admin/proses/aktifkan-semua':
+        require 'admin/proses/proses_aktifkan_semua.php';
+        break;
     case 'admin/edit-user': 
         if (isset($_GET['id'])) {
             require 'admin/edit_user.php';

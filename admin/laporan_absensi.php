@@ -4,7 +4,8 @@ require_once 'partials/header.php';
 
 // --- LOGIKA FILTER ---
 $pegawai_list = [];
-$sql_pegawai = "SELECT id_pegawai, nama_lengkap FROM tabel_pegawai WHERE status = 'aktif' ORDER BY nama_lengkap ASC";
+// --- PERUBAHAN DI SINI: Menghapus filter status = 'aktif' ---
+$sql_pegawai = "SELECT id_pegawai, nama_lengkap FROM tabel_pegawai ORDER BY nama_lengkap ASC";
 $result_pegawai = mysqli_query($koneksi, $sql_pegawai);
 while($row = mysqli_fetch_assoc($result_pegawai)) {
     $pegawai_list[] = $row;
@@ -65,7 +66,19 @@ $period = new DatePeriod(
 );
 
 // Filter pegawai yang akan ditampilkan di laporan
-$pegawai_untuk_laporan = $pegawai_id_filter != 0 ? array_filter($pegawai_list, function($p) use ($pegawai_id_filter) { return $p['id_pegawai'] == $pegawai_id_filter; }) : $pegawai_list;
+// --- PERUBAHAN DI SINI: Query untuk pegawai di laporan tidak lagi mem-filter status aktif ---
+$pegawai_untuk_laporan_sql = "SELECT id_pegawai, nama_lengkap FROM tabel_pegawai";
+if ($pegawai_id_filter != 0) {
+    $pegawai_untuk_laporan_sql .= " WHERE id_pegawai = " . $pegawai_id_filter;
+}
+$pegawai_untuk_laporan_sql .= " ORDER BY nama_lengkap ASC";
+
+$pegawai_untuk_laporan_result = mysqli_query($koneksi, $pegawai_untuk_laporan_sql);
+$pegawai_untuk_laporan = [];
+while($row = mysqli_fetch_assoc($pegawai_untuk_laporan_result)) {
+    $pegawai_untuk_laporan[] = $row;
+}
+
 
 foreach ($period as $date) {
     foreach ($pegawai_untuk_laporan as $pegawai) {

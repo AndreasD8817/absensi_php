@@ -10,7 +10,8 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
 
 // --- AMBIL SEMUA DATA PEGAWAI UNTUK DROPDOWN ---
 $pegawai_list = [];
-$sql_pegawai = "SELECT id_pegawai, nama_lengkap FROM tabel_pegawai WHERE status = 'aktif' ORDER BY nama_lengkap ASC";
+// --- PERUBAHAN DI SINI: Menghapus filter status = 'aktif' dari query ---
+$sql_pegawai = "SELECT id_pegawai, nama_lengkap FROM tabel_pegawai ORDER BY nama_lengkap ASC";
 $result_pegawai_list = mysqli_query($koneksi, $sql_pegawai);
 while($row = mysqli_fetch_assoc($result_pegawai_list)) {
     $pegawai_list[] = $row;

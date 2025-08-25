@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // PENTING: Cek status akun SEBELUM verifikasi password
         if ($user['status'] == 'non-aktif') {
-            header("Location: /login?error=Akun Anda telah dinonaktifkan. Silakan hubungi Super Koor Arvin.");
+            header("Location: /login?error=Akun Anda telah dinonaktifkan Sementara.");
             exit();
         }
 
