@@ -64,7 +64,7 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Laporan Absensi</span>
                 </a>
             </li>
-            <?php if ($_SESSION['role'] == 'superadmin'): ?>
+            <?php if ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin'): ?>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/laporan-penggajian">
                     <i class="bi bi-cash-stack"></i>
