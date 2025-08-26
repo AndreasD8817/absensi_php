@@ -9,13 +9,11 @@ if ($_SESSION['role'] != 'superadmin') {
 }
 
 // --- LOGIKA PENGAMBILAN DATA & FILTER ---
-// Ambil semua parameter filter dari URL
 $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
 $id_pegawai_filter = isset($_GET['id_pegawai']) ? (int)$_GET['id_pegawai'] : 0;
 $tanggal_awal = isset($_GET['tanggal_awal']) && !empty($_GET['tanggal_awal']) ? $_GET['tanggal_awal'] : '';
 $tanggal_akhir = isset($_GET['tanggal_akhir']) && !empty($_GET['tanggal_akhir']) ? $_GET['tanggal_akhir'] : '';
 
-// Ambil daftar pegawai untuk dropdown filter
 $pegawai_list = [];
 $sql_pegawai = "SELECT id_pegawai, nama_lengkap FROM tabel_pegawai ORDER BY nama_lengkap ASC";
 $result_pegawai = mysqli_query($koneksi, $sql_pegawai);
@@ -32,11 +30,8 @@ $offset = ($page - 1) * $limit;
 $params = [];
 $types = '';
 $where_clauses = [];
-
-// Base query
 $sql_base = "FROM log_aktivitas l JOIN tabel_pegawai p ON l.id_pegawai = p.id_pegawai";
 
-// Tambahkan kondisi WHERE jika filter aktif
 if (!empty($keyword)) {
     $where_clauses[] = "l.aktivitas LIKE ?";
     $params[] = "%" . $keyword . "%";
@@ -59,7 +54,6 @@ if (!empty($where_clauses)) {
     $where_sql = " WHERE " . implode(' AND ', $where_clauses);
 }
 
-// Query untuk menghitung total data
 $sql_total = "SELECT COUNT(*) " . $sql_base . $where_sql;
 $stmt_total = mysqli_prepare($koneksi, $sql_total);
 if (!empty($params)) {
@@ -69,7 +63,6 @@ mysqli_stmt_execute($stmt_total);
 $total_records = mysqli_stmt_get_result($stmt_total)->fetch_row()[0];
 $total_pages = ceil($total_records / $limit);
 
-// Query untuk mengambil data log dengan limit
 $sql_data = "SELECT l.*, p.nama_lengkap " . $sql_base . $where_sql . " ORDER BY l.waktu_log DESC LIMIT ? OFFSET ?";
 $params_data = $params;
 $params_data[] = $limit;
@@ -83,12 +76,38 @@ $result = mysqli_stmt_get_result($stmt_data);
 ?>
 
 <style>
-    /* CSS untuk menyembunyikan elemen saat mencetak */
+    .pagination .page-link {
+        transition: all 0.3s;
+    }
+    .pagination .page-item.active .page-link {
+        transform: scale(1.1);
+        z-index: 2;
+    }
+    
+    /* --- PERBAIKAN CSS DI SINI --- */
+
+    /* Aturan HANYA untuk mencetak (print) */
     @media print {
         .no-print { display: none !important; }
         .card { border: none; box-shadow: none; }
         .table { font-size: 11px; }
-        .pagination { display: none; }
+    }
+
+    /* Aturan HANYA untuk layar kecil (mobile) */
+    @media (max-width: 767px) {
+        .form-action-buttons {
+            flex-direction: column;
+        }
+        .form-action-buttons .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        .form-action-buttons .btn:last-child {
+            margin-bottom: 0;
+        }
+        .table {
+            font-size: 14px;
+        }
     }
 </style>
 
@@ -100,11 +119,11 @@ $result = mysqli_stmt_get_result($stmt_data);
         
         <form action="" method="GET" class="mb-4 p-3 border rounded bg-light no-print">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-12 col-lg-4">
                     <label for="keyword" class="form-label">Cari Aktivitas</label>
                     <input type="text" id="keyword" name="keyword" class="form-control" placeholder="Cth: login, menghapus..." value="<?php echo htmlspecialchars($keyword); ?>">
                 </div>
-                <div class="col-md-4">
+                <div class="col-12 col-lg-4">
                     <label for="id_pegawai" class="form-label">Filter Pengguna</label>
                     <select id="id_pegawai" name="id_pegawai" class="form-select">
                         <option value="0">-- Semua Pengguna --</option>
@@ -115,28 +134,27 @@ $result = mysqli_stmt_get_result($stmt_data);
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-12 col-md-6 col-lg-2">
                     <label for="tanggal_awal" class="form-label">Dari Tanggal</label>
                     <input type="date" id="tanggal_awal" name="tanggal_awal" class="form-control" value="<?php echo htmlspecialchars($tanggal_awal); ?>">
                 </div>
-                <div class="col-md-2">
+                <div class="col-12 col-md-6 col-lg-2">
                     <label for="tanggal_akhir" class="form-label">Sampai Tanggal</label>
                     <input type="date" id="tanggal_akhir" name="tanggal_akhir" class="form-control" value="<?php echo htmlspecialchars($tanggal_akhir); ?>">
                 </div>
             </div>
             <hr>
-            <div class="d-flex justify-content-end gap-2">
+            <div class="d-flex justify-content-end gap-2 form-action-buttons">
                 <a href="/admin/log-aktivitas" class="btn btn-secondary"><i class="bi bi-arrow-repeat"></i> Reset Filter</a>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-funnel-fill"></i> Terapkan Filter</button>
                 
                 <?php
-                    // Buat query string dari filter yang aktif untuk link ekspor
-                    $export_query = http_build_query([
+                    $export_query = http_build_query(array_filter([
                         'keyword' => $keyword,
                         'id_pegawai' => $id_pegawai_filter,
                         'tanggal_awal' => $tanggal_awal,
                         'tanggal_akhir' => $tanggal_akhir
-                    ]);
+                    ]));
                 ?>
                 <a href="/admin/export-log-csv?<?php echo $export_query; ?>" class="btn btn-success"><i class="bi bi-file-earmark-spreadsheet"></i> Ekspor CSV</a>
                 <button type="button" class="btn btn-info" onclick="window.print();"><i class="bi bi-printer"></i> Cetak</button>
@@ -172,24 +190,59 @@ $result = mysqli_stmt_get_result($stmt_data);
             </table>
         </div>
 
-        <nav class="no-print">
-            <ul class="pagination justify-content-center">
+        <?php if($total_pages > 1): ?>
+        <nav class="no-print mt-4">
+            <ul class="pagination justify-content-center flex-wrap">
                 <?php
-                    // Pastikan link pagination juga membawa parameter filter
-                    $pagination_query = http_build_query([
+                    $pagination_query = http_build_query(array_filter([
                         'keyword' => $keyword,
                         'id_pegawai' => $id_pegawai_filter,
                         'tanggal_awal' => $tanggal_awal,
                         'tanggal_akhir' => $tanggal_akhir
-                    ]);
+                    ]));
+                    
+                    if($page > 1){
+                        echo "<li class='page-item'><a class='page-link' href='?page=".($page - 1)."&{$pagination_query}'>&laquo;</a></li>";
+                    } else {
+                        echo "<li class='page-item disabled'><span class='page-link'>&laquo;</span></li>";
+                    }
+
+                    $links_limit = 5;
+                    $start = max(1, $page - floor($links_limit / 2));
+                    $end = min($total_pages, $start + $links_limit - 1);
+
+                    if ($end - $start < $links_limit - 1) {
+                        $start = max(1, $end - $links_limit + 1);
+                    }
+
+                    if ($start > 1) {
+                        echo "<li class='page-item'><a class='page-link' href='?page=1&{$pagination_query}'>1</a></li>";
+                        if ($start > 2) {
+                            echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
+                        }
+                    }
+
+                    for ($i = $start; $i <= $end; $i++) {
+                        $active_class = ($page == $i) ? 'active' : '';
+                        echo "<li class='page-item {$active_class}'><a class='page-link' href='?page={$i}&{$pagination_query}'>{$i}</a></li>";
+                    }
+
+                    if ($end < $total_pages) {
+                        if ($end < $total_pages - 1) {
+                            echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
+                        }
+                        echo "<li class='page-item'><a class='page-link' href='?page={$total_pages}&{$pagination_query}'>{$total_pages}</a></li>";
+                    }
+
+                    if($page < $total_pages){
+                        echo "<li class='page-item'><a class='page-link' href='?page=".($page + 1)."&{$pagination_query}'>&raquo;</a></li>";
+                    } else {
+                        echo "<li class='page-item disabled'><span class='page-link'>&raquo;</span></li>";
+                    }
                 ?>
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?php if($page == $i) echo 'active'; ?>">
-                    <a class="page-link" href="?page=<?php echo $i; ?>&<?php echo $pagination_query; ?>"><?php echo $i; ?></a>
-                </li>
-                <?php endfor; ?>
             </ul>
         </nav>
+        <?php endif; ?>
     </div>
 </div>
 

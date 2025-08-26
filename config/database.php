@@ -29,6 +29,12 @@ if (!$koneksi) {
     die("Koneksi ke server gagal. Silakan coba beberapa saat lagi.");
 }
 
+// === TAMBAHKAN BARIS INI UNTUK MENYAMAKAN ZONA WAKTU DATABASE ===
+mysqli_set_charset($koneksi, 'utf8mb4');
+//mysqli_query($koneksi, "SET time_zone = 'Asia/Jakarta'");
+mysqli_query($koneksi, "SET time_zone = '+07:00'");
+// ===============================================================
+
 // Mengatur zona waktu default
 date_default_timezone_set('Asia/Jakarta');
 // ======================================================
