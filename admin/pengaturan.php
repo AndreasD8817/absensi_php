@@ -19,7 +19,7 @@ while($row = mysqli_fetch_assoc($result)) {
 
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title"><i class="bi bi-gear-fill"></i> Pengaturan Absensi Global</h4>
+        <h4 class="card-title"><i class="bi bi-gear-fill"></i> Pengaturan Umum Aplikasi</h4>
     </div>
     <div class="card-body">
         <!-- Tampilkan notifikasi -->
@@ -32,23 +32,41 @@ while($row = mysqli_fetch_assoc($result)) {
 
         <form action="/admin/proses/proses-pengaturan" method="POST">
             <?php csrf_input_field(); ?>
-            <div class="mb-3">
-                <label for="lokasi_lat" class="form-label">Latitude Lokasi Kantor</label>
-                <input type="text" class="form-control" id="lokasi_lat" name="lokasi_lat" value="<?php echo htmlspecialchars($pengaturan['lokasi_lat'] ?? ''); ?>" required>
-                <div class="form-text">Dapatkan dari Google Maps. Contoh: -7.263062</div>
-            </div>
-            <div class="mb-3">
-                <label for="lokasi_lon" class="form-label">Longitude Lokasi Kantor</label>
-                <input type="text" class="form-control" id="lokasi_lon" name="lokasi_lon" value="<?php echo htmlspecialchars($pengaturan['lokasi_lon'] ?? ''); ?>" required>
-                <div class="form-text">Dapatkan dari Google Maps. Contoh: 112.745645</div>
-            </div>
-            <div class="mb-3">
-                <label for="radius_meter" class="form-label">Radius Jarak Absensi (dalam meter)</label>
-                <input type="number" class="form-control" id="radius_meter" name="radius_meter" value="<?php echo htmlspecialchars($pengaturan['radius_meter'] ?? '100'); ?>" required>
-                <div class="form-text">Jarak toleransi maksimal pegawai bisa melakukan absensi dari lokasi kantor.</div>
-            </div>
             
-            <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2 h6">Pengaturan Absensi</legend>
+                <div class="mb-3">
+                    <label for="lokasi_lat" class="form-label">Latitude Lokasi Kantor</label>
+                    <input type="text" class="form-control" id="lokasi_lat" name="lokasi_lat" value="<?php echo htmlspecialchars($pengaturan['lokasi_lat'] ?? ''); ?>" required>
+                    <div class="form-text">Dapatkan dari Google Maps. Contoh: -7.263062</div>
+                </div>
+                <div class="mb-3">
+                    <label for="lokasi_lon" class="form-label">Longitude Lokasi Kantor</label>
+                    <input type="text" class="form-control" id="lokasi_lon" name="lokasi_lon" value="<?php echo htmlspecialchars($pengaturan['lokasi_lon'] ?? ''); ?>" required>
+                    <div class="form-text">Dapatkan dari Google Maps. Contoh: 112.745645</div>
+                </div>
+                <div class="mb-3">
+                    <label for="radius_meter" class="form-label">Radius Jarak Absensi Global (dalam meter)</label>
+                    <input type="number" class="form-control" id="radius_meter" name="radius_meter" value="<?php echo htmlspecialchars($pengaturan['radius_meter'] ?? '100'); ?>" required>
+                    <div class="form-text">Jarak toleransi maksimal pegawai bisa melakukan absensi dari lokasi kantor.</div>
+                </div>
+            </fieldset>
+
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2 h6">Pengaturan Penggajian</legend>
+                <div class="mb-3">
+                    <label for="gaji_harian" class="form-label">Gaji Harian (Rp)</label>
+                    <input type="number" class="form-control" id="gaji_harian" name="gaji_harian" value="<?php echo htmlspecialchars($pengaturan['gaji_harian'] ?? '160700'); ?>" required>
+                    <div class="form-text">Nominal gaji per hari untuk setiap kehadiran.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="potongan_tetap" class="form-label">Potongan Tetap / IURAN JKK JK (Rp)</label>
+                    <input type="number" class="form-control" id="potongan_tetap" name="potongan_tetap" value="<?php echo htmlspecialchars($pengaturan['potongan_tetap'] ?? '41300'); ?>" required>
+                    <div class="form-text">Nominal potongan tetap yang dibebankan per periode penggajian.</div>
+                </div>
+            </fieldset>
+            
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save-fill"></i> Simpan Semua Pengaturan</button>
         </form>
     </div>
 </div>

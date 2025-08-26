@@ -64,6 +64,14 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Laporan Absensi</span>
                 </a>
             </li>
+            <?php if ($_SESSION['role'] == 'superadmin'): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/laporan-penggajian">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>Laporan Penggajian</span>
+                </a>
+            </li>
+            <?php endif; ?>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/edit-absensi">
                     <i class="bi bi-pencil-square"></i>
@@ -100,7 +108,7 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/pengaturan">
                         <i class="bi bi-pin-map-fill"></i>
-                        <span>Pengaturan Jarak</span>
+                        <span>Pengaturan Jarak & Potongan</span>
                     </a>
                 </li>
                 <li class="nav-item">

@@ -75,6 +75,12 @@ switch ($request) {
     case 'admin':
         require 'admin/index.php';
         break;
+    case 'admin/laporan-penggajian':
+        require 'admin/laporan_penggajian.php';
+        break;
+    case 'admin/detail-penggajian':
+        require 'admin/detail_penggajian.php';
+        break;
     case 'admin/manajemen-user':
         require 'admin/manajemen_user.php';
         break;
@@ -112,6 +118,14 @@ switch ($request) {
         break;
     case 'admin/pengaturan':
         require 'admin/pengaturan.php';
+        break;
+
+    // --- RUTE BARU UNTUK EXPORT PDF ---
+    case 'admin/proses/proses-export-pdf':
+        require 'admin/proses/proses_export_pdf.php';
+        break;
+    case 'admin/proses/proses-export-detail-pdf':
+        require 'admin/proses/proses_export_detail_pdf.php';
         break;
         
     // --- Routing untuk Proses di Folder Admin ---
