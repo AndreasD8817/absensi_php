@@ -58,13 +58,17 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Dashboard Admin</span>
                 </a>
             </li>
+            
+            <?php if ($_SESSION['role'] == 'superadmin'): ?>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/laporan-absensi">
                     <i class="bi bi-file-earmark-spreadsheet-fill"></i>
                     <span>Laporan Absensi</span>
                 </a>
             </li>
-            <?php if ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin'): ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin')): ?>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/laporan-penggajian">
                     <i class="bi bi-cash-stack"></i>
@@ -72,6 +76,8 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                 </a>
             </li>
             <?php endif; ?>
+
+            <?php if ($_SESSION['role'] == 'superadmin'): ?>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/edit-absensi">
                     <i class="bi bi-pencil-square"></i>
@@ -84,6 +90,7 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Input Hari Libur</span>
                 </a>
             </li>
+            <?php endif; ?>
 
             <?php if ($_SESSION['role'] == 'superadmin'): ?>
                 <hr class="text-white-50">

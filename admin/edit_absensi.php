@@ -1,6 +1,12 @@
 <?php 
 $page_title = 'Kelola Absensi Pegawai';
-require_once 'partials/header.php'; 
+require_once 'partials/header.php';
+
+// Keamanan ekstra, hanya untuk superadmin
+if ($_SESSION['role'] != 'superadmin') {
+    header("Location: /admin?error=Akses ditolak.");
+    exit();
+}
 
 // "Penjaga Gerbang" - Hanya admin & superadmin yang bisa akses
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'superadmin')) {

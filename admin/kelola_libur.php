@@ -1,6 +1,12 @@
 <?php 
 $page_title = 'Kelola Hari Libur';
-require_once 'partials/header.php'; 
+require_once 'partials/header.php';
+
+// Keamanan ekstra, hanya untuk superadmin
+if ($_SESSION['role'] != 'superadmin') {
+    header("Location: /admin?error=Akses ditolak.");
+    exit();
+}
 
 // Ambil semua data hari libur untuk ditampilkan
 $query = "SELECT tanggal, keterangan FROM tabel_hari_libur ORDER BY tanggal DESC";

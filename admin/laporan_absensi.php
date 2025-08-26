@@ -2,6 +2,12 @@
 $page_title = 'Laporan Absensi Seluruh Pegawai';
 require_once 'partials/header.php';
 
+// Keamanan ekstra, hanya untuk superadmin
+if ($_SESSION['role'] != 'superadmin') {
+    header("Location: /admin?error=Akses ditolak.");
+    exit();
+}
+
 // --- LOGIKA FILTER ---
 $pegawai_list = [];
 // --- PERUBAHAN DI SINI: Menghapus filter status = 'aktif' ---
