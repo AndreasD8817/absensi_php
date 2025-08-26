@@ -44,7 +44,6 @@ if (!$pegawai) {
             </h4>
             <p class="mb-0 text-muted">Periode: <?php echo date('d M Y', strtotime($tanggal_awal)) . ' s/d ' . date('d M Y', strtotime($tanggal_akhir)); ?></p>
         </div>
-        <!-- Tombol Cetak PDF dengan link yang sudah diperbaiki (tanpa .php) -->
         <a href="/admin/proses/proses-export-detail-pdf?id_pegawai=<?php echo $id_pegawai; ?>&awal=<?php echo $tanggal_awal; ?>&akhir=<?php echo $tanggal_akhir; ?>" class="btn btn-danger" target="_blank">
             <i class="bi bi-file-earmark-pdf-fill"></i> Cetak PDF
         </a>
@@ -84,34 +83,61 @@ if (!$pegawai) {
                             $data_hari_ini[$row['tipe_absensi']] = $row;
                         }
 
-                        $jam_masuk = $data_hari_ini['Masuk']['waktu_absensi'] ?? '-';
-                        $jam_pulang = $data_hari_ini['Pulang']['waktu_absensi'] ?? '-';
+                        $jam_masuk = $data_hari_ini['Masuk']['waktu_absensi'] ?? null;
+                        $jam_pulang = $data_hari_ini['Pulang']['waktu_absensi'] ?? null;
                         $keterangan = $data_hari_ini['Masuk']['catatan'] ?? '';
                         if(isset($data_hari_ini['Pulang']['catatan'])) {
-                            $keterangan .= ' | ' . $data_hari_ini['Pulang']['catatan'];
+                            $keterangan .= ($keterangan ? ' | ' : '') . $data_hari_ini['Pulang']['catatan'];
                         }
                         
                         $status = 'M';
                         $persen_harian = 0;
 
+                        $batas_masuk_str = ''; $batas_pulang_str = '';
+                        if ($hari_angka >= 1 && $hari_angka <= 5) { $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; }
+                        elseif ($hari_angka == 6) { $batas_masuk_str = '08:00:00'; $batas_pulang_str = '14:00:00'; }
+
                         if(isset($data_hari_ini['Dinas Luar'])) {
                             $status = 'DL';
                             $keterangan = 'Dinas Luar';
                             $total_hadir++;
-                        } elseif (isset($data_hari_ini['Masuk'])) {
+                        } elseif (isset($data_hari_ini['Masuk']) || isset($data_hari_ini['Pulang'])) {
                             $status = 'H';
                             $total_hadir++;
-                            $batas_masuk_str = ($hari_angka == 6) ? '08:00:00' : '07:30:00';
-                            $absen_masuk_dt = new DateTime($jam_masuk);
-                            $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
-                            if ($absen_masuk_dt > $batas_masuk_dt) {
-                                $diff = $absen_masuk_dt->diff($batas_masuk_dt);
-                                $menit_telat = ($diff->h * 60) + $diff->i;
-                                if ($menit_telat >= 1 && $menit_telat <= 15) $persen_harian = 0.25;
-                                elseif ($menit_telat >= 16 && $menit_telat <= 60) $persen_harian = 0.5;
-                                elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_harian = 1.0;
-                                elseif ($menit_telat > 120) $persen_harian = 1.5;
+                            
+                            // --- LOGIKA PERHITUNGAN POTONGAN YANG DIPERBARUI ---
+                            if (!empty($batas_masuk_str)) { // Hanya hitung jika ini hari kerja
+                                $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
+                                $batas_pulang_dt = new DateTime($tanggal_loop . ' ' . $batas_pulang_str);
+                                
+                                // Cek potongan karena tidak absen masuk
+                                if (!$jam_masuk) {
+                                    $persen_harian += 1.5;
+                                } else {
+                                    // Cek potongan karena terlambat
+                                    $absen_masuk_dt = new DateTime($jam_masuk);
+                                    if ($absen_masuk_dt > $batas_masuk_dt) {
+                                        $diff = $absen_masuk_dt->diff($batas_masuk_dt);
+                                        $menit_telat = ($diff->h * 60) + $diff->i;
+                                        if ($menit_telat >= 1 && $menit_telat <= 15) $persen_harian += 0.25;
+                                        elseif ($menit_telat >= 16 && $menit_telat <= 60) $persen_harian += 0.5;
+                                        elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_harian += 1.0;
+                                        elseif ($menit_telat > 120) $persen_harian += 1.5;
+                                    }
+                                }
+
+                                // Cek potongan karena tidak absen pulang
+                                if (!$jam_pulang) {
+                                    $persen_harian += 1.5;
+                                } else {
+                                    // Cek potongan karena pulang cepat
+                                    $absen_pulang_dt = new DateTime($jam_pulang);
+                                    if ($absen_pulang_dt < $batas_pulang_dt) {
+                                        $persen_harian += 1.5;
+                                    }
+                                }
                             }
+                            // --- AKHIR LOGIKA PERHITUNGAN ---
                         }
                         
                         if ($hari_angka == 0) { $status = 'Libur'; }
@@ -120,8 +146,8 @@ if (!$pegawai) {
                     ?>
                     <tr>
                         <td><?php echo $nama_hari[$hari_angka] . ", " . $date->format('d-m-Y'); ?></td>
-                        <td><?php echo $jam_masuk !== '-' ? date('H:i:s', strtotime($jam_masuk)) : '-'; ?></td>
-                        <td><?php echo $jam_pulang !== '-' ? date('H:i:s', strtotime($jam_pulang)) : '-'; ?></td>
+                        <td><?php echo $jam_masuk ? date('H:i:s', strtotime($jam_masuk)) : '-'; ?></td>
+                        <td><?php echo $jam_pulang ? date('H:i:s', strtotime($jam_pulang)) : '-'; ?></td>
                         <td>
                             <span class="badge <?php if($status=='H') echo 'bg-success'; elseif($status=='DL') echo 'bg-warning text-dark'; elseif($status=='M') echo 'bg-danger'; else echo 'bg-info'; ?>">
                                 <?php echo $status; ?>

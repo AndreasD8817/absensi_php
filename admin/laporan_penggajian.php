@@ -53,8 +53,8 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
     }
 
     $jumlah_hari_masuk = 0;
-    $total_potongan_keterlambatan = 0;
-    $total_persen_potongan_periode = 0; // Variabel baru untuk total persentase
+    $total_potongan_rupiah = 0;
+    $total_persen_potongan_periode = 0;
 
     $period = new DatePeriod(new DateTime($tanggal_awal), new DateInterval('P1D'), (new DateTime($tanggal_akhir))->modify('+1 day'));
 
@@ -65,42 +65,62 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
         $is_hari_kerja = ($hari_angka != 0 && !in_array($tanggal_loop, $daftar_libur));
 
         if ($is_hari_kerja) {
-            $hadir = isset($rekap_harian[$tanggal_loop]['Masuk']) || isset($rekap_harian[$tanggal_loop]['Dinas Luar']);
+            $hadir = isset($rekap_harian[$tanggal_loop]['Masuk']) || isset($rekap_harian[$tanggal_loop]['Dinas Luar']) || isset($rekap_harian[$tanggal_loop]['Pulang']);
             if ($hadir) {
                 $jumlah_hari_masuk++;
+                
+                $persen_harian = 0;
+                $jam_masuk = $rekap_harian[$tanggal_loop]['Masuk'] ?? null;
+                $jam_pulang = $rekap_harian[$tanggal_loop]['Pulang'] ?? null;
 
-                if (isset($rekap_harian[$tanggal_loop]['Masuk'])) {
-                    $batas_masuk_str = ($hari_angka == 6) ? '08:00:00' : '07:30:00';
-                    $absen_masuk_dt = new DateTime($rekap_harian[$tanggal_loop]['Masuk']);
+                // Hanya hitung potongan jika bukan dinas luar
+                if (!isset($rekap_harian[$tanggal_loop]['Dinas Luar'])) {
+                    $batas_masuk_str = ($hari_angka >= 1 && $hari_angka <= 5) ? '07:30:00' : '08:00:00';
+                    $batas_pulang_str = ($hari_angka >= 1 && $hari_angka <= 5) ? '16:00:00' : '14:00:00';
+
                     $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
+                    $batas_pulang_dt = new DateTime($tanggal_loop . ' ' . $batas_pulang_str);
+                    
+                    if (!$jam_masuk) {
+                        $persen_harian += 1.5;
+                    } else {
+                        $absen_masuk_dt = new DateTime($jam_masuk);
+                        if ($absen_masuk_dt > $batas_masuk_dt) {
+                            $diff = $absen_masuk_dt->diff($batas_masuk_dt);
+                            $menit_telat = ($diff->h * 60) + $diff->i;
+                            if ($menit_telat >= 1 && $menit_telat <= 15) $persen_harian += 0.25;
+                            elseif ($menit_telat >= 16 && $menit_telat <= 60) $persen_harian += 0.5;
+                            elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_harian += 1.0;
+                            elseif ($menit_telat > 120) $persen_harian += 1.5;
+                        }
+                    }
 
-                    if ($absen_masuk_dt > $batas_masuk_dt) {
-                        $diff = $absen_masuk_dt->diff($batas_masuk_dt);
-                        $menit_telat = ($diff->h * 60) + $diff->i;
-                        $persen_potongan = 0;
-                        if ($menit_telat >= 1 && $menit_telat <= 15) $persen_potongan = 0.25;
-                        elseif ($menit_telat >= 16 && $menit_telat <= 60) $persen_potongan = 0.5;
-                        elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_potongan = 1.0;
-                        elseif ($menit_telat > 120) $persen_potongan = 1.5;
-                        
-                        $total_potongan_keterlambatan += ($gaji_harian_default * $persen_potongan) / 100;
-                        $total_persen_potongan_periode += $persen_potongan; // Akumulasi persentase
+                    if (!$jam_pulang) {
+                        $persen_harian += 1.5;
+                    } else {
+                        $absen_pulang_dt = new DateTime($jam_pulang);
+                        if ($absen_pulang_dt < $batas_pulang_dt) {
+                            $persen_harian += 1.5;
+                        }
                     }
                 }
+                
+                $total_persen_potongan_periode += $persen_harian;
+                $total_potongan_rupiah += ($gaji_harian_default * $persen_harian) / 100;
             }
         }
     }
 
     $gaji_kotor = $jumlah_hari_masuk * $gaji_harian_default;
-    $gaji_bersih = $gaji_kotor - $potongan_tetap_default - $total_potongan_keterlambatan;
+    $gaji_bersih = $gaji_kotor - $potongan_tetap_default - $total_potongan_rupiah;
 
     $laporan_penggajian[] = [
         'id_pegawai' => $id_pegawai,
         'nama_lengkap' => $pegawai['nama_lengkap'],
         'jumlah_hari_masuk' => $jumlah_hari_masuk,
         'gaji_kotor' => $gaji_kotor,
-        'potongan_keterlambatan' => $total_potongan_keterlambatan,
-        'total_persen_potongan' => $total_persen_potongan_periode, // Simpan total persentase
+        'potongan_keterlambatan' => $total_potongan_rupiah,
+        'total_persen_potongan' => $total_persen_potongan_periode,
         'potongan_tetap' => $potongan_tetap_default,
         'gaji_bersih' => $gaji_bersih
     ];
@@ -139,8 +159,8 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
                         <th>Nama Pegawai</th>
                         <th>Hari Masuk</th>
                         <th>Gaji Kotor</th>
-                        <th>Total Persen Potongan</th> <!-- Kolom Baru -->
-                        <th>Potongan Terlambat</th>
+                        <th>Total Persen Potongan</th>
+                        <th>Potongan (Rp)</th>
                         <th>Potongan Tetap (IURAN JKK JK)</th>
                         <th>Gaji Bersih</th>
                         <th>Aksi</th>
@@ -156,7 +176,7 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
                             <td class="text-start"><?php echo htmlspecialchars($laporan['nama_lengkap']); ?></td>
                             <td><?php echo $laporan['jumlah_hari_masuk']; ?></td>
                             <td>Rp <?php echo number_format($laporan['gaji_kotor'], 0, ',', '.'); ?></td>
-                            <td><?php echo number_format($laporan['total_persen_potongan'], 2, ',', '.'); ?>%</td> <!-- Data Baru -->
+                            <td><?php echo number_format($laporan['total_persen_potongan'], 2, ',', '.'); ?>%</td>
                             <td>Rp <?php echo number_format($laporan['potongan_keterlambatan'], 0, ',', '.'); ?></td>
                             <td>Rp <?php echo number_format($laporan['potongan_tetap'], 0, ',', '.'); ?></td>
                             <td class="fw-bold">Rp <?php echo number_format($laporan['gaji_bersih'], 0, ',', '.'); ?></td>
