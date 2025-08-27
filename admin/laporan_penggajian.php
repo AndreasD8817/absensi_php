@@ -84,8 +84,20 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
                     if (!$jam_masuk) {
                         $persen_harian += 1.5;
                     } else {
+                        // =======================================================
+                        // ========= PERUBAHAN LOGIKA TERLAMBAT DIMULAI ==========
+                        // =======================================================
                         $absen_masuk_dt = new DateTime($jam_masuk);
-                        if ($absen_masuk_dt > $batas_masuk_dt) {
+
+                        // Ambil waktu absen dan batas masuk, lalu set detiknya menjadi 00
+                        $absen_masuk_menit = clone $absen_masuk_dt;
+                        $absen_masuk_menit->setTime($absen_masuk_dt->format('H'), $absen_masuk_dt->format('i'), 0);
+                        
+                        $batas_masuk_menit = clone $batas_masuk_dt;
+                        $batas_masuk_menit->setTime($batas_masuk_dt->format('H'), $batas_masuk_dt->format('i'), 0);
+
+                        // Bandingkan waktu yang sudah dibulatkan ke menit
+                        if ($absen_masuk_menit > $batas_masuk_menit) {
                             $diff = $absen_masuk_dt->diff($batas_masuk_dt);
                             $menit_telat = ($diff->h * 60) + $diff->i;
                             if ($menit_telat >= 1 && $menit_telat <= 15) $persen_harian += 0.25;
@@ -93,15 +105,33 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
                             elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_harian += 1.0;
                             elseif ($menit_telat > 120) $persen_harian += 1.5;
                         }
+                        // =======================================================
+                        // ========= PERUBAHAN LOGIKA TERLAMBAT SELESAI ==========
+                        // =======================================================
                     }
 
                     if (!$jam_pulang) {
                         $persen_harian += 1.5;
                     } else {
+                        // =========================================================
+                        // ========= PERUBAHAN LOGIKA PULANG CEPAT DIMULAI =========
+                        // =========================================================
                         $absen_pulang_dt = new DateTime($jam_pulang);
-                        if ($absen_pulang_dt < $batas_pulang_dt) {
+
+                        // Ambil waktu absen dan batas pulang, lalu set detiknya menjadi 00
+                        $absen_pulang_menit = clone $absen_pulang_dt;
+                        $absen_pulang_menit->setTime($absen_pulang_dt->format('H'), $absen_pulang_dt->format('i'), 0);
+
+                        $batas_pulang_menit = clone $batas_pulang_dt;
+                        $batas_pulang_menit->setTime($batas_pulang_dt->format('H'), $batas_pulang_dt->format('i'), 0);
+
+                        // Bandingkan waktu yang sudah dibulatkan ke menit
+                        if ($absen_pulang_menit < $batas_pulang_menit) {
                             $persen_harian += 1.5;
                         }
+                        // =========================================================
+                        // ========= PERUBAHAN LOGIKA PULANG CEPAT SELESAI =========
+                        // =========================================================
                     }
                 }
                 

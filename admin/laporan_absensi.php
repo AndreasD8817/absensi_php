@@ -204,7 +204,16 @@ if ($end_page - $start_page < $max_links - 1) {
                                 $batas_pulang_dt = new DateTime($tanggal . ' ' . $batas_pulang_str);
                                 
                                 if ($absen_masuk) {
-                                    if ($absen_masuk > $batas_masuk_dt) {
+                                    // =======================================================
+                                    // ========= PERUBAHAN LOGIKA TERLAMBAT DIMULAI ==========
+                                    // =======================================================
+                                    $absen_masuk_menit = clone $absen_masuk;
+                                    $absen_masuk_menit->setTime($absen_masuk->format('H'), $absen_masuk->format('i'), 0);
+
+                                    $batas_masuk_menit = clone $batas_masuk_dt;
+                                    $batas_masuk_menit->setTime($batas_masuk_dt->format('H'), $batas_masuk_dt->format('i'), 0);
+
+                                    if ($absen_masuk_menit > $batas_masuk_menit) {
                                         $diff = $absen_masuk->diff($batas_masuk_dt);
                                         $terlambat_jam = $diff->h; $terlambat_menit = $diff->i;
                                         $menit_telat = ($terlambat_jam * 60) + $terlambat_menit;
@@ -213,16 +222,31 @@ if ($end_page - $start_page < $max_links - 1) {
                                         elseif ($menit_telat > 60 && $menit_telat <= 120) $persen += 1.0;
                                         elseif ($menit_telat > 120) $persen += 1.5;
                                     }
+                                    // =======================================================
+                                    // ========= PERUBAHAN LOGIKA TERLAMBAT SELESAI ==========
+                                    // =======================================================
                                 } else {
                                     $persen += 1.5;
                                 }
 
                                 if ($absen_pulang) {
-                                    if ($absen_pulang < $batas_pulang_dt) {
+                                    // =========================================================
+                                    // ========= PERUBAHAN LOGIKA PULANG CEPAT DIMULAI =========
+                                    // =========================================================
+                                    $absen_pulang_menit = clone $absen_pulang;
+                                    $absen_pulang_menit->setTime($absen_pulang->format('H'), $absen_pulang->format('i'), 0);
+
+                                    $batas_pulang_menit = clone $batas_pulang_dt;
+                                    $batas_pulang_menit->setTime($batas_pulang_dt->format('H'), $batas_pulang_dt->format('i'), 0);
+                                    
+                                    if ($absen_pulang_menit < $batas_pulang_menit) {
                                         $diff = $absen_pulang->diff($batas_pulang_dt);
                                         $cepat_pulang_jam = $diff->h; $cepat_pulang_menit = $diff->i;
                                         $persen += 1.5;
                                     }
+                                    // =========================================================
+                                    // ========= PERUBAHAN LOGIKA PULANG CEPAT SELESAI =========
+                                    // =========================================================
                                 } else {
                                     $persen += 1.5;
                                 }

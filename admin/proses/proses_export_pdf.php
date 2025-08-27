@@ -77,7 +77,16 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
                     $absen_masuk_dt = new DateTime($rekap_harian[$tanggal_loop]['Masuk']);
                     $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
 
-                    if ($absen_masuk_dt > $batas_masuk_dt) {
+                    // =======================================================
+                    // ========= PERUBAHAN LOGIKA TERLAMBAT DIMULAI ==========
+                    // =======================================================
+                    $absen_masuk_menit = clone $absen_masuk_dt;
+                    $absen_masuk_menit->setTime($absen_masuk_dt->format('H'), $absen_masuk_dt->format('i'), 0);
+
+                    $batas_masuk_menit = clone $batas_masuk_dt;
+                    $batas_masuk_menit->setTime($batas_masuk_dt->format('H'), $batas_masuk_dt->format('i'), 0);
+                    
+                    if ($absen_masuk_menit > $batas_masuk_menit) {
                         $diff = $absen_masuk_dt->diff($batas_masuk_dt);
                         $menit_telat = ($diff->h * 60) + $diff->i;
                         $persen_potongan = 0;
@@ -87,6 +96,9 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
                         elseif ($menit_telat > 120) $persen_potongan = 1.5;
                         $total_potongan_keterlambatan += ($gaji_harian_default * $persen_potongan) / 100;
                     }
+                    // =======================================================
+                    // ========= PERUBAHAN LOGIKA TERLAMBAT SELESAI ==========
+                    // =======================================================
                 }
             }
         }
