@@ -11,11 +11,11 @@
     <style>
         /* CSS tambahan khusus untuk halaman riwayat */
         .history-card {
-            background-color: #ffffff;
+            background-color: var(--card-bg-color, #ffffff);
             border-radius: 12px;
             margin-bottom: 1rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-            border: none;
+            border: 1px solid var(--border-color, #e9ecef);
         }
         .history-card .card-header {
             background-color: #f8f9fa;
@@ -60,25 +60,26 @@
         </div>
     </header>
 
-    <!-- Wrapper baru untuk konten yang bisa di-scroll -->
-    <div class="scrollable-content">
-        <div class="container-fluid">
-            <form method="GET" action="" class="mb-4 card p-3 shadow-sm">
-                <div class="row g-2 align-items-end">
-                    <div class="col-6">
-                        <label for="awal" class="form-label fw-bold">Dari</label>
-                        <input type="date" class="form-control" id="awal" name="awal" value="<?php echo htmlspecialchars($tanggal_awal); ?>">
-                    </div>
-                    <div class="col-6">
-                        <label for="akhir" class="form-label fw-bold">Sampai</label>
-                        <input type="date" class="form-control" id="akhir" name="akhir" value="<?php echo htmlspecialchars($tanggal_akhir); ?>">
-                    </div>
-                    <div class="col-12 mt-3">
-                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill"></i> Filter</button>
-                    </div>
-                </div>
-            </form>
+    <!-- Filter Form dibuat sticky di bawah header -->
+    <form method="GET" action="" class="sticky-filter-form">
+        <div class="row g-2 align-items-end">
+            <div class="col-6">
+                <label for="awal" class="form-label fw-bold">Dari</label>
+                <input type="date" class="form-control" id="awal" name="awal" value="<?php echo htmlspecialchars($tanggal_awal); ?>">
+            </div>
+            <div class="col-6">
+                <label for="akhir" class="form-label fw-bold">Sampai</label>
+                <input type="date" class="form-control" id="akhir" name="akhir" value="<?php echo htmlspecialchars($tanggal_akhir); ?>">
+            </div>
+            <div class="col-12 mt-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill"></i> Filter</button>
+            </div>
+        </div>
+    </form>
 
+    <!-- Konten Riwayat yang bisa di-scroll -->
+    <div class="scrollable-content">
+        <div class="container-fluid p-0">
             <?php if (empty($dates_on_page)): ?>
                 <div class="alert alert-info text-center">Tidak ada data pada rentang tanggal ini.</div>
             <?php else: ?>

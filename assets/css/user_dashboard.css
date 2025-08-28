@@ -1,28 +1,48 @@
 /* Tata Letak Dasar untuk Mobile-First */
 body {
-  background-color: #f4f7fc;
-  padding-bottom: 80px; /* Memberi ruang untuk bottom navbar */
+  background-color: var(--bg-color, #f4f7fc);
+  padding-bottom: 70px; /* Memberi ruang untuk bottom navbar */
+  color: var(--text-color, #212529);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Konten Utama */
 .main-content {
-  width: 100%;
+  padding: 0; /* Hapus padding agar header bisa full-width */
+}
+
+/* --- HEADER & FILTER STICKY --- */
+.profile-header {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background-color: var(--header-bg-color, #ffffff);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0.75rem 1rem; /* Beri padding horizontal agar konten tidak menempel di tepi */
+  border-bottom: 1px solid var(--border-color, #dee2e6);
+}
+
+.sticky-filter-form {
+  position: sticky;
+  top: 73px; /* Sesuaikan dengan tinggi header Anda, sekitar 73px */
+  z-index: 1019;
+  background-color: var(--bg-color, #f8f9fa);
   padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Tombol Toggle Sidebar Lama (opsional, bisa dihapus atau disembunyikan) */
-.sidebar-toggle {
-  display: none;
+/* Kontainer untuk konten yang bisa di-scroll */
+.scrollable-content {
+  padding: 1rem; /* Padding untuk konten di dalam area scroll */
 }
 
-/* --- BOTTOM NAVIGATION BAR BARU (PENGGANTI SIDEBAR) --- */
+/* --- BOTTOM NAVIGATION BAR --- */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 70px;
-  background-color: #ffffff;
+  background-color: var(--bottom-nav-bg-color, #ffffff);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-around;
@@ -34,13 +54,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #6c757d;
+  color: var(--muted-text-color, #6c757d);
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .nav-item-bottom.active {
-  color: #0d6efd; /* Warna biru untuk item aktif */
+  color: var(--fab-gradient-start, #0d6efd);
 }
 
 .nav-item-bottom i {
@@ -53,11 +73,14 @@ body {
   font-weight: 500;
 }
 
-/* Tombol Absen Utama (FAB - Floating Action Button) */
 .fab-absen {
   position: absolute;
-  top: -25px; /* Setengah dari tingginya di atas nav */
-  background: linear-gradient(45deg, #0d6efd, #6f42c1);
+  top: -25px;
+  background: linear-gradient(
+    45deg,
+    var(--fab-gradient-start, #0d6efd),
+    var(--fab-gradient-end, #6f42c1)
+  );
   color: white;
   width: 60px;
   height: 60px;
@@ -66,25 +89,12 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
-  border: 3px solid white;
+  border: 3px solid var(--card-bg-color, white);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 
-.fab-absen.disabled {
-  background: #e9ecef;
-  color: #adb5bd;
-  cursor: not-allowed;
-}
-
 /* Header Profil di Dashboard */
-.profile-header {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-}
-
 .profile-header .logo {
   width: 50px;
   height: 50px;
@@ -100,10 +110,16 @@ body {
 .profile-header .user-info p {
   margin: 0;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--muted-text-color, #6c757d);
 }
 
-/* Tombol Aksi (Absen Masuk/Pulang/DL) di Modal atau Halaman Lain */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Tombol Aksi (Absen Masuk/Pulang/DL) di Modal */
 .action-buttons .btn {
   display: flex;
   align-items: center;
@@ -129,165 +145,44 @@ body {
   background-color: #fff3cd;
   color: #856404;
 }
-
 .action-buttons .btn.disabled {
   background-color: #e9ecef;
   color: #adb5bd;
   opacity: 0.8;
   cursor: not-allowed;
 }
-/* --- Tambahan untuk Tombol di Header --- */
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.header-actions {
-  display: flex;
-  align-items: center;
-}
-.form-check-input:checked {
-  background-color: #4361ee;
-  border-color: #4361ee;
-}
 
-/* --- SKEMA WARNA BARU UNTUK LIGHT & DARK MODE --- */
+/* Dark Mode Variables (jika Anda menggunakannya) */
 :root {
-  /* Light Mode */
-  --bg-color: #f8f9fa; /* Sangat terang, hampir putih */
+  --bg-color: #f8f9fa;
   --card-bg-color: #ffffff;
-  --text-color: #212529; /* Hampir hitam */
+  --text-color: #212529;
   --muted-text-color: #6c757d;
   --border-color: #e9ecef;
-  --shadow-color: rgba(0, 0, 0, 0.05);
   --header-bg-color: #ffffff;
   --bottom-nav-bg-color: #ffffff;
-  --fab-gradient-start: #0d6efd; /* Biru Bootstrap */
-  --fab-gradient-end: #6f42c1; /* Ungu */
+  --fab-gradient-start: #0d6efd;
+  --fab-gradient-end: #6f42c1;
 }
 
-/* Penerapan variabel CSS ke elemen */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease; /* Transisi halus */
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --card-bg-color: #2c2c2c;
+  --text-color: #e0e0e0;
+  --muted-text-color: #adb5bd;
+  --border-color: #444444;
+  --header-bg-color: #2c2c2c;
+  --bottom-nav-bg-color: #2c2c2c;
+  --fab-gradient-start: #4361ee;
+  --fab-gradient-end: #b5179e;
 }
-
-/* Mengatur ulang beberapa default Bootstrap agar mengikuti tema */
-.card,
-.history-card,
-.modal-content,
-.accordion-button,
-.accordion-body,
-.alert,
-.form-control {
-  background-color: var(--card-bg-color) !important;
-  color: var(--text-color) !important;
-  border-color: var(--border-color) !important;
-  box-shadow: 0 4px 15px var(--shadow-color) !important; /* Bayangan menyesuaikan */
-}
-
-/* Header dan Bottom Nav agar sesuai tema */
-.profile-header {
-  background-color: var(--header-bg-color) !important;
-  border-bottom: 1px solid var(--border-color); /* Menambah garis pemisah */
-}
-.bottom-nav {
-  background-color: var(--bottom-nav-bg-color) !important;
-  box-shadow: 0 -4px 15px var(--shadow-color) !important; /* Bayangan menyesuaikan */
-}
-
-.user-info p,
-.history-label,
-.status-label,
-.form-label,
-.modal-title {
-  color: var(--muted-text-color) !important;
-}
-
-/* Untuk input field agar kontras di dark mode */
-.form-control {
-  background-color: var(--bg-color); /* Atau card-bg-color */
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-}
-.form-control:focus {
-  border-color: var(--fab-gradient-start); /* Warna fokus yang konsisten */
-  box-shadow: 0 0 0 0.25rem rgba(var(--fab-gradient-start-rgb), 0.25);
-}
-
-/* Tombol close modal agar terlihat di dark mode */
-.modal-header .btn-close {
-  filter: invert(
-    var(--bs-btn-close-color-filter)
-  ); /* Memanfaatkan variabel Bootstrap */
-}
-[data-theme="dark"] .modal-header .btn-close {
-  filter: invert(1) grayscale(100%) brightness(200%); /* Pastikan terlihat putih */
-}
-
-/* Nav item bottom color */
-.nav-item-bottom {
-  color: var(--muted-text-color);
-}
-.nav-item-bottom.active {
-  color: var(--fab-gradient-start); /* Menggunakan warna primary */
-}
-
-/* FAB Absen */
-.fab-absen {
-  background: linear-gradient(
-    45deg,
-    var(--fab-gradient-start),
-    var(--fab-gradient-end)
-  );
-  border: 3px solid var(--card-bg-color); /* Border mengikuti warna kartu */
-  box-shadow: 0 6px 20px var(--shadow-color);
-}
-
-/* Kalender */
-.calendar-container {
-  background-color: var(--card-bg-color);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 15px var(--shadow-color);
-}
-.calendar-header h2,
-.weekdays div,
-.days .day {
-  color: var(--text-color);
-}
-.calendar-nav button {
-  color: var(--muted-text-color);
-  background-color: transparent;
-  border: 1px solid var(--border-color);
-}
-.calendar-nav button:hover {
-  background-color: var(--border-color);
-}
-.day.today {
-  background-color: var(--fab-gradient-start);
-  color: white;
-}
+/* Menambahkan kembali style untuk tanggal libur di kalender */
 .day.holiday {
-  color: #dc3545; /* Merah tetap merah */
+  color: #dc3545; /* Warna merah untuk teks */
+  font-weight: 600;
 }
+
+/* Memberi latar belakang merah muda pada hari libur (kecuali hari ini) */
 .day.holiday:not(.today) {
   background-color: rgba(220, 53, 69, 0.1);
-}
-
-/* CSS untuk membuat header tetap di atas (sticky) */
-.profile-header {
-  position: sticky;
-  top: 0;
-  z-index: 1020; /* Pastikan di atas elemen lain */
-  background-color: var(
-    --header-bg-color,
-    #ffffff
-  ); /* Tambahkan background color */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Tambahkan shadow agar terlihat terpisah */
-}
-
-/* Wrapper untuk konten yang bisa di-scroll */
-.scrollable-content {
-  padding-top: 1rem; /* Beri jarak dari header */
 }
