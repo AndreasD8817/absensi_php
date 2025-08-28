@@ -60,92 +60,93 @@
         </div>
     </header>
 
-    <div class="container-fluid">
-        <form method="GET" action="" class="mb-4 card p-3 shadow-sm">
-            <div class="row g-2 align-items-end">
-                <div class="col-6">
-                    <label for="awal" class="form-label fw-bold">Dari</label>
-                    <input type="date" class="form-control" id="awal" name="awal" value="<?php echo htmlspecialchars($tanggal_awal); ?>">
-                </div>
-                <div class="col-6">
-                    <label for="akhir" class="form-label fw-bold">Sampai</label>
-                    <input type="date" class="form-control" id="akhir" name="akhir" value="<?php echo htmlspecialchars($tanggal_akhir); ?>">
-                </div>
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill"></i> Filter</button>
-                </div>
-            </div>
-        </form>
-
-        <?php if (empty($dates_on_page)): ?>
-            <div class="alert alert-info text-center">Tidak ada data pada rentang tanggal ini.</div>
-        <?php else: ?>
-            <?php 
-            $nama_hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-            foreach ($dates_on_page as $date): 
-                // ... (Logika PHP untuk mengambil data harian tetap sama) ...
-                $tanggal_loop = $date->format('Y-m-d');
-                $hari_angka = $date->format('w');
-
-                $is_libur_nasional = isset($daftar_libur[$tanggal_loop]);
-                $keterangan_libur = $is_libur_nasional ? $daftar_libur[$tanggal_loop] : '';
-
-                // ... (Logika PHP untuk mengambil data absensi harian) ...
-                $sql = "SELECT a.tipe_absensi, a.waktu_absensi, a.catatan, dl.keterangan AS keterangan_dl FROM tabel_absensi a LEFT JOIN tabel_dinas_luar dl ON a.id_absensi = dl.id_absensi WHERE a.id_pegawai = ? AND DATE(a.waktu_absensi) = ? ORDER BY a.waktu_absensi ASC";
-                $stmt = mysqli_prepare($koneksi, $sql);
-                mysqli_stmt_bind_param($stmt, "is", $id_pegawai, $tanggal_loop);
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result($stmt);
-
-                $absen_masuk = null;
-                $absen_pulang = null;
-                $dinas_luar = false;
-
-                while($row = mysqli_fetch_assoc($result)) {
-                    if ($row['tipe_absensi'] == 'Masuk') $absen_masuk = new DateTime($row['waktu_absensi']);
-                    elseif ($row['tipe_absensi'] == 'Pulang') $absen_pulang = new DateTime($row['waktu_absensi']);
-                    elseif ($row['tipe_absensi'] == 'Dinas Luar') $dinas_luar = true;
-                }
-
-                 $status = '';
-                 if ($dinas_luar) { $status = 'DL'; }
-                 elseif ($absen_masuk || $absen_pulang) { $status = 'H'; }
-                 else { $status = ($hari_angka == 0 || $is_libur_nasional) ? 'Libur' : 'M'; }
-
-            ?>
-            <div class="card history-card">
-                <div class="card-header">
-                    <?php echo $nama_hari[$hari_angka] . ", " . $date->format('d F Y'); ?>
-                </div>
-                <div class="card-body p-3">
-                    <div class="history-item">
-                        <span class="history-label">Status</span>
-                        <span class="history-value">
-                             <span class="badge <?php if($status == 'H') echo 'bg-success'; elseif($status == 'DL') echo 'bg-warning text-dark'; elseif($status == 'M') echo 'bg-danger'; else echo 'bg-info'; ?>"><?php echo $status; ?></span>
-                        </span>
+    <!-- Wrapper baru untuk konten yang bisa di-scroll -->
+    <div class="scrollable-content">
+        <div class="container-fluid">
+            <form method="GET" action="" class="mb-4 card p-3 shadow-sm">
+                <div class="row g-2 align-items-end">
+                    <div class="col-6">
+                        <label for="awal" class="form-label fw-bold">Dari</label>
+                        <input type="date" class="form-control" id="awal" name="awal" value="<?php echo htmlspecialchars($tanggal_awal); ?>">
                     </div>
-                    <div class="history-item">
-                        <span class="history-label">Jam Masuk</span>
-                        <span class="history-value"><?php echo $absen_masuk ? $absen_masuk->format('H:i:s') : '-'; ?></span>
+                    <div class="col-6">
+                        <label for="akhir" class="form-label fw-bold">Sampai</label>
+                        <input type="date" class="form-control" id="akhir" name="akhir" value="<?php echo htmlspecialchars($tanggal_akhir); ?>">
                     </div>
-                    <div class="history-item">
-                        <span class="history-label">Jam Pulang</span>
-                        <span class="history-value"><?php echo $absen_pulang ? $absen_pulang->format('H:i:s') : '-'; ?></span>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill"></i> Filter</button>
                     </div>
                 </div>
-            </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        
-        <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-                 <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
-                        <a class="page-link" href="?awal=<?php echo $tanggal_awal; ?>&akhir=<?php echo $tanggal_akhir; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                    </li>
-                <?php endfor; ?>
-            </ul>
-        </nav>
+            </form>
+
+            <?php if (empty($dates_on_page)): ?>
+                <div class="alert alert-info text-center">Tidak ada data pada rentang tanggal ini.</div>
+            <?php else: ?>
+                <?php 
+                $nama_hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                foreach ($dates_on_page as $date): 
+                    $tanggal_loop = $date->format('Y-m-d');
+                    $hari_angka = $date->format('w');
+
+                    $is_libur_nasional = isset($daftar_libur[$tanggal_loop]);
+                    $keterangan_libur = $is_libur_nasional ? $daftar_libur[$tanggal_loop] : '';
+
+                    $sql = "SELECT a.tipe_absensi, a.waktu_absensi, a.catatan, dl.keterangan AS keterangan_dl FROM tabel_absensi a LEFT JOIN tabel_dinas_luar dl ON a.id_absensi = dl.id_absensi WHERE a.id_pegawai = ? AND DATE(a.waktu_absensi) = ? ORDER BY a.waktu_absensi ASC";
+                    $stmt = mysqli_prepare($koneksi, $sql);
+                    mysqli_stmt_bind_param($stmt, "is", $id_pegawai, $tanggal_loop);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+
+                    $absen_masuk = null;
+                    $absen_pulang = null;
+                    $dinas_luar = false;
+
+                    while($row = mysqli_fetch_assoc($result)) {
+                        if ($row['tipe_absensi'] == 'Masuk') $absen_masuk = new DateTime($row['waktu_absensi']);
+                        elseif ($row['tipe_absensi'] == 'Pulang') $absen_pulang = new DateTime($row['waktu_absensi']);
+                        elseif ($row['tipe_absensi'] == 'Dinas Luar') $dinas_luar = true;
+                    }
+
+                     $status = '';
+                     if ($dinas_luar) { $status = 'DL'; }
+                     elseif ($absen_masuk || $absen_pulang) { $status = 'H'; }
+                     else { $status = ($hari_angka == 0 || $is_libur_nasional) ? 'Libur' : 'M'; }
+
+                ?>
+                <div class="card history-card">
+                    <div class="card-header">
+                        <?php echo $nama_hari[$hari_angka] . ", " . $date->format('d F Y'); ?>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="history-item">
+                            <span class="history-label">Status</span>
+                            <span class="history-value">
+                                 <span class="badge <?php if($status == 'H') echo 'bg-success'; elseif($status == 'DL') echo 'bg-warning text-dark'; elseif($status == 'M') echo 'bg-danger'; else echo 'bg-info'; ?>"><?php echo $status; ?></span>
+                            </span>
+                        </div>
+                        <div class="history-item">
+                            <span class="history-label">Jam Masuk</span>
+                            <span class="history-value"><?php echo $absen_masuk ? $absen_masuk->format('H:i:s') : '-'; ?></span>
+                        </div>
+                        <div class="history-item">
+                            <span class="history-label">Jam Pulang</span>
+                            <span class="history-value"><?php echo $absen_pulang ? $absen_pulang->format('H:i:s') : '-'; ?></span>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                            <a class="page-link" href="?awal=<?php echo $tanggal_awal; ?>&akhir=<?php echo $tanggal_akhir; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
 

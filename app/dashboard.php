@@ -42,16 +42,24 @@ $result_user = mysqli_stmt_get_result($stmt_user);
 $user = mysqli_fetch_assoc($result_user);
 
 // 3. Logika Bisnis: Cek status absensi terakhir hari ini
-$sql_cek = "SELECT tipe_absensi FROM tabel_absensi 
-            WHERE id_pegawai = ? AND DATE(waktu_absensi) = ? 
-            ORDER BY waktu_absensi DESC LIMIT 1";
+// --- PERUBAHAN DI SINI: Ambil juga file_surat_tugas jika ada ---
+$sql_cek = "SELECT a.tipe_absensi, dl.file_surat_tugas 
+            FROM tabel_absensi a
+            LEFT JOIN tabel_dinas_luar dl ON a.id_absensi = dl.id_absensi
+            WHERE a.id_pegawai = ? AND DATE(a.waktu_absensi) = ? 
+            ORDER BY a.waktu_absensi DESC LIMIT 1";
 $stmt_cek = mysqli_prepare($koneksi, $sql_cek);
 mysqli_stmt_bind_param($stmt_cek, "is", $id_pegawai, $hari_ini);
 mysqli_stmt_execute($stmt_cek);
 $result_cek = mysqli_stmt_get_result($stmt_cek);
+
 $status_terakhir = null;
+$file_dinas_luar_hari_ini = null; // Variabel baru untuk menyimpan nama file
 if ($row = mysqli_fetch_assoc($result_cek)) {
     $status_terakhir = $row['tipe_absensi'];
+    if ($status_terakhir === 'Dinas Luar') {
+        $file_dinas_luar_hari_ini = $row['file_surat_tugas'];
+    }
 }
 
 // =================================================================

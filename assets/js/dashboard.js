@@ -252,30 +252,39 @@ function bukaModalAbsen(tipe) {
 
 function kirimAbsensi(event) {
   event.preventDefault();
-  const notifikasi = document.getElementById("notifikasi");
   const form = document.getElementById("formAbsen");
   const catatan = document.getElementById("catatan").value;
   const fotoBase64 = fotoBase64Input.value;
 
   if (!lokasiSudahDidapat) {
-    alert("Anda harus mendapatkan lokasi terlebih dahulu.");
+    Swal.fire(
+      "Oops...",
+      "Anda harus mendapatkan lokasi terlebih dahulu.",
+      "error"
+    );
     return;
   }
   if (catatan.trim() === "") {
-    alert("Catatan wajib diisi.");
+    Swal.fire("Oops...", "Catatan wajib diisi.", "error");
     return;
   }
   if (!fotoBase64) {
-    alert("Anda harus mengambil foto.");
+    Swal.fire("Oops...", "Anda harus mengambil foto.", "error");
     return;
   }
 
-  notifikasi.style.display = "block";
-  notifikasi.className = "alert alert-info";
-  notifikasi.textContent = "Sedang memproses absensi...";
-
   const modal = bootstrap.Modal.getInstance(modalAbsen);
   modal.hide();
+
+  // Tampilkan modal loading
+  Swal.fire({
+    title: "Memproses Absensi",
+    text: "Mohon tunggu...",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
 
   navigator.geolocation.getCurrentPosition(
     (posisi) => {
@@ -301,38 +310,62 @@ function kirimAbsensi(event) {
       })
         .then((response) => response.json())
         .then((hasil) => {
-          notifikasi.className = hasil.sukses
-            ? "alert alert-success"
-            : "alert alert-danger";
-          notifikasi.textContent = hasil.pesan;
           if (hasil.sukses) {
-            setTimeout(() => window.location.reload(), 1500);
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: hasil.pesan,
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text: hasil.pesan,
+            });
           }
         });
     },
     () => {
-      notifikasi.className = "alert alert-danger";
-      notifikasi.textContent =
-        "Gagal mengambil lokasi untuk pengiriman. Pastikan izin lokasi diberikan.";
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: "Gagal mengambil lokasi untuk pengiriman. Pastikan izin lokasi diberikan.",
+      });
     }
   );
 }
 
-// Fungsi kirimDinasLuar tidak diubah
 function kirimDinasLuar(event) {
   event.preventDefault();
-  const notifikasi = document.getElementById("notifikasi");
   const form = document.getElementById("formDinasLuar");
   const suratInput = document.getElementById("surat_tugas");
   const file = suratInput.files[0];
 
   if (!file) {
-    alert("Anda harus memilih file surat tugas.");
+    Swal.fire("Oops...", "Anda harus memilih file surat tugas.", "error");
     return;
   }
-  notifikasi.style.display = "block";
-  notifikasi.className = "alert alert-info";
-  notifikasi.textContent = "Sedang mengambil lokasi dan mengunggah file...";
+
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("modalDinasLuar")
+  );
+  modal.hide();
+
+  // Tampilkan modal loading
+  Swal.fire({
+    title: "Mengirim Data Dinas Luar",
+    text: "Mohon tunggu...",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
+
   navigator.geolocation.getCurrentPosition(
     (posisi) => {
       const formData = new FormData(form);
@@ -352,22 +385,31 @@ function kirimDinasLuar(event) {
         .then((response) => response.json())
         .then((hasil) => {
           if (hasil.sukses) {
-            notifikasi.className = "alert alert-success";
-            const modal = bootstrap.Modal.getInstance(
-              document.getElementById("modalDinasLuar")
-            );
-            modal.hide();
-            setTimeout(() => window.location.reload(), 1500);
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: hasil.pesan,
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+            }).then(() => {
+              window.location.reload();
+            });
           } else {
-            notifikasi.className = "alert alert-danger";
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text: hasil.pesan,
+            });
           }
-          notifikasi.textContent = hasil.pesan;
         });
     },
     () => {
-      notifikasi.className = "alert alert-danger";
-      notifikasi.textContent =
-        "Gagal mengambil lokasi. Pastikan Anda mengizinkan akses lokasi.";
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: "Gagal mengambil lokasi. Pastikan Anda mengizinkan akses lokasi.",
+      });
     }
   );
 }

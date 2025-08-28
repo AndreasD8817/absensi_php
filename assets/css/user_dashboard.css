@@ -166,20 +166,6 @@ body {
   --fab-gradient-end: #6f42c1; /* Ungu */
 }
 
-[data-theme="dark"] {
-  /* Dark Mode */
-  --bg-color: #1a1a1a; /* Abu-abu gelap, bukan hitam pekat */
-  --card-bg-color: #2c2c2c; /* Kartu sedikit lebih terang dari background */
-  --text-color: #e0e0e0; /* Putih keabu-abuan */
-  --muted-text-color: #adb5bd; /* Abu-abu terang */
-  --border-color: #444444;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --header-bg-color: #2c2c2c;
-  --bottom-nav-bg-color: #2c2c2c;
-  --fab-gradient-start: #4361ee; /* Biru lebih terang */
-  --fab-gradient-end: #b5179e; /* Pink-ungu */
-}
-
 /* Penerapan variabel CSS ke elemen */
 body {
   background-color: var(--bg-color);
@@ -287,4 +273,21 @@ body {
 }
 .day.holiday:not(.today) {
   background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* CSS untuk membuat header tetap di atas (sticky) */
+.profile-header {
+  position: sticky;
+  top: 0;
+  z-index: 1020; /* Pastikan di atas elemen lain */
+  background-color: var(
+    --header-bg-color,
+    #ffffff
+  ); /* Tambahkan background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Tambahkan shadow agar terlihat terpisah */
+}
+
+/* Wrapper untuk konten yang bisa di-scroll */
+.scrollable-content {
+  padding-top: 1rem; /* Beri jarak dari header */
 }
