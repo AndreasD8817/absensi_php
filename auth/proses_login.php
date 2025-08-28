@@ -56,8 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // =============================
 
             // Redirect ke halaman dashboard utama
-            header("Location: /dashboard");
+            // header("Location: /dashboard");
+            // exit();
+
+            // --- PERUBAHAN LOGIKA REDIRECT ---
+            // Cek role dan arahkan ke halaman yang sesuai
+            if ($user['role'] == 'admin' || $user['role'] == 'superadmin') {
+                header("Location: /admin"); // Langsung ke dashboard admin
+            } else {
+                header("Location: /dashboard"); // Pegawai ke dashboard pegawai
+            }
             exit();
+            // --- AKHIR PERUBAHAN ---
+            
         } else {
             // Password salah
             header("Location: /login?error=Password salah");

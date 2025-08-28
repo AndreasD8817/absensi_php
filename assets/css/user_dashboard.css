@@ -1,50 +1,109 @@
-/* Tata Letak Dasar */
+/* Tata Letak Dasar untuk Mobile-First */
 body {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f4f7fc; /* Warna latar yang lebih lembut */
+  background-color: #f4f7fc;
+  padding-bottom: 80px; /* Memberi ruang untuk bottom navbar */
 }
 
-/* Sidebar Styling */
-.user-sidebar {
-  width: 280px;
+/* Konten Utama */
+.main-content {
+  width: 100%;
+  padding: 1rem;
+}
+
+/* Tombol Toggle Sidebar Lama (opsional, bisa dihapus atau disembunyikan) */
+.sidebar-toggle {
+  display: none;
+}
+
+/* --- BOTTOM NAVIGATION BAR BARU (PENGGANTI SIDEBAR) --- */
+.bottom-nav {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
-  height: 100%;
-  background: #ffffff;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 70px;
+  background-color: #ffffff;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+}
+
+.nav-item-bottom {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  z-index: 1000;
-  transition: all 0.3s;
+  align-items: center;
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
-.sidebar-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e9ecef;
+.nav-item-bottom.active {
+  color: #0d6efd; /* Warna biru untuk item aktif */
 }
 
-.sidebar-header .logo {
+.nav-item-bottom i {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.nav-item-bottom span {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Tombol Absen Utama (FAB - Floating Action Button) */
+.fab-absen {
+  position: absolute;
+  top: -25px; /* Setengah dari tingginya di atas nav */
+  background: linear-gradient(45deg, #0d6efd, #6f42c1);
+  color: white;
   width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.fab-absen.disabled {
+  background: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+/* Header Profil di Dashboard */
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.sidebar-header .user-name {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #343a40;
+.profile-header .logo {
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
 }
 
-.sidebar-header .user-role {
-  font-size: 0.85rem;
+.profile-header .user-info h5 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.profile-header .user-info p {
+  margin: 0;
+  font-size: 0.9rem;
   color: #6c757d;
 }
 
-/* Tombol Aksi Utama */
+/* Tombol Aksi (Absen Masuk/Pulang/DL) di Modal atau Halaman Lain */
 .action-buttons .btn {
   display: flex;
   align-items: center;
@@ -56,12 +115,6 @@ body {
   font-weight: 500;
   border-radius: 0.5rem;
   border: none;
-  transition: all 0.3s ease;
-}
-
-.action-buttons .btn i {
-  font-size: 1.5rem;
-  margin-right: 1rem;
 }
 
 .action-buttons .btn-masuk {
@@ -77,149 +130,161 @@ body {
   color: #856404;
 }
 
-.action-buttons .btn:not(.disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
 .action-buttons .btn.disabled {
   background-color: #e9ecef;
   color: #adb5bd;
   opacity: 0.8;
   cursor: not-allowed;
 }
-
-/* Menu Navigasi */
-.sidebar-nav {
-  margin-top: 1.5rem;
+/* --- Tambahan untuk Tombol di Header --- */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
-.sidebar-nav .nav-link {
-  color: #495057;
-  padding: 0.75rem 1rem;
+.header-actions {
   display: flex;
   align-items: center;
-  border-radius: 0.5rem;
+}
+.form-check-input:checked {
+  background-color: #4361ee;
+  border-color: #4361ee;
 }
 
-.sidebar-nav .nav-link:hover {
-  background-color: #f8f9fa;
-  color: #0d6efd;
+/* --- SKEMA WARNA BARU UNTUK LIGHT & DARK MODE --- */
+:root {
+  /* Light Mode */
+  --bg-color: #f8f9fa; /* Sangat terang, hampir putih */
+  --card-bg-color: #ffffff;
+  --text-color: #212529; /* Hampir hitam */
+  --muted-text-color: #6c757d;
+  --border-color: #e9ecef;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --header-bg-color: #ffffff;
+  --bottom-nav-bg-color: #ffffff;
+  --fab-gradient-start: #0d6efd; /* Biru Bootstrap */
+  --fab-gradient-end: #6f42c1; /* Ungu */
 }
 
-.sidebar-nav .nav-link i {
-  margin-right: 1rem;
+[data-theme="dark"] {
+  /* Dark Mode */
+  --bg-color: #1a1a1a; /* Abu-abu gelap, bukan hitam pekat */
+  --card-bg-color: #2c2c2c; /* Kartu sedikit lebih terang dari background */
+  --text-color: #e0e0e0; /* Putih keabu-abuan */
+  --muted-text-color: #adb5bd; /* Abu-abu terang */
+  --border-color: #444444;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --header-bg-color: #2c2c2c;
+  --bottom-nav-bg-color: #2c2c2c;
+  --fab-gradient-start: #4361ee; /* Biru lebih terang */
+  --fab-gradient-end: #b5179e; /* Pink-ungu */
 }
 
-/* Bagian Bawah Sidebar */
-.sidebar-footer {
-  margin-top: auto; /* Mendorong ke bawah */
+/* Penerapan variabel CSS ke elemen */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transisi halus */
 }
 
-/* Konten Utama */
-.main-content {
-  margin-left: 280px;
-  width: calc(100% - 280px);
-  padding: 2rem;
-  transition: all 0.3s;
+/* Mengatur ulang beberapa default Bootstrap agar mengikuti tema */
+.card,
+.history-card,
+.modal-content,
+.accordion-button,
+.accordion-body,
+.alert,
+.form-control {
+  background-color: var(--card-bg-color) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 4px 15px var(--shadow-color) !important; /* Bayangan menyesuaikan */
 }
 
-/* Jam Digital */
-.digital-clock {
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: #343a40;
+/* Header dan Bottom Nav agar sesuai tema */
+.profile-header {
+  background-color: var(--header-bg-color) !important;
+  border-bottom: 1px solid var(--border-color); /* Menambah garis pemisah */
 }
-.digital-date {
-  font-size: 1.2rem;
-  color: #6c757d;
-}
-
-/* Responsif untuk Mobile */
-.sidebar-toggle {
-  display: none;
+.bottom-nav {
+  background-color: var(--bottom-nav-bg-color) !important;
+  box-shadow: 0 -4px 15px var(--shadow-color) !important; /* Bayangan menyesuaikan */
 }
 
-@media (max-width: 992px) {
-  .user-sidebar {
-    left: -280px;
-  }
-  .user-sidebar.active {
-    left: 0;
-  }
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-  }
-  .sidebar-toggle {
-    display: block;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 1001;
-  }
-}
-/* Garis pemisah antar bagian di sidebar */
-.sidebar-divider {
-  margin: 1.5rem 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+.user-info p,
+.history-label,
+.status-label,
+.form-label,
+.modal-title {
+  color: var(--muted-text-color) !important;
 }
 
-/* Judul kecil untuk bagian Aksi */
-.action-buttons .action-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #6c757d;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  padding-left: 0.5rem;
+/* Untuk input field agar kontras di dark mode */
+.form-control {
+  background-color: var(--bg-color); /* Atau card-bg-color */
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+.form-control:focus {
+  border-color: var(--fab-gradient-start); /* Warna fokus yang konsisten */
+  box-shadow: 0 0 0 0.25rem rgba(var(--fab-gradient-start-rgb), 0.25);
 }
 
-/* Wrapper untuk tombol riwayat */
-.history-button-wrapper {
-  padding: 0 0.5rem;
+/* Tombol close modal agar terlihat di dark mode */
+.modal-header .btn-close {
+  filter: invert(
+    var(--bs-btn-close-color-filter)
+  ); /* Memanfaatkan variabel Bootstrap */
+}
+[data-theme="dark"] .modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%); /* Pastikan terlihat putih */
 }
 
-/* Tombol Riwayat Absensi yang Dipercantik */
-.btn-history {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 0.75rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  background-color: #e2eafc;
-  color: #0d6efd;
-  border: 1px solid #c2d4f8;
-  transition: all 0.3s ease;
-  text-decoration: none; /* Hapus underline dari link */
+/* Nav item bottom color */
+.nav-item-bottom {
+  color: var(--muted-text-color);
+}
+.nav-item-bottom.active {
+  color: var(--fab-gradient-start); /* Menggunakan warna primary */
 }
 
-.btn-history i {
-  margin-right: 0.75rem;
-  font-size: 1.2rem;
+/* FAB Absen */
+.fab-absen {
+  background: linear-gradient(
+    45deg,
+    var(--fab-gradient-start),
+    var(--fab-gradient-end)
+  );
+  border: 3px solid var(--card-bg-color); /* Border mengikuti warna kartu */
+  box-shadow: 0 6px 20px var(--shadow-color);
 }
 
-.btn-history:hover {
-  background-color: #0d6efd;
-  color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+/* Kalender */
+.calendar-container {
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px var(--shadow-color);
 }
-/* Wrapper baru untuk konten sidebar */
-.sidebar-content-wrapper {
-  flex-grow: 1; /* Memastikan wrapper ini mengisi sisa ruang */
-  overflow-y: auto; /* Tambahkan scroll vertikal jika konten melebihi tinggi */
-  padding-bottom: 2rem; /* Beri sedikit ruang di bawah */
+.calendar-header h2,
+.weekdays div,
+.days .day {
+  color: var(--text-color);
 }
-
-/* Penyesuaian untuk footer agar selalu di bawah */
-.user-sidebar {
-  display: flex;
-  flex-direction: column;
+.calendar-nav button {
+  color: var(--muted-text-color);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
 }
-
-.sidebar-footer {
-  margin-top: 1.5rem; /* Beri jarak dari elemen di atasnya */
+.calendar-nav button:hover {
+  background-color: var(--border-color);
+}
+.day.today {
+  background-color: var(--fab-gradient-start);
+  color: white;
+}
+.day.holiday {
+  color: #dc3545; /* Merah tetap merah */
+}
+.day.holiday:not(.today) {
+  background-color: rgba(220, 53, 69, 0.1);
 }

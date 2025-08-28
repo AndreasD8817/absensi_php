@@ -58,6 +58,19 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Dashboard Admin</span>
                 </a>
             </li>
+            <?php
+            // --- TAMBAHKAN KODE INI ---
+            // Tampilkan link ini HANYA jika yang login adalah superadmin dengan ID 1
+            if ($_SESSION['role'] == 'superadmin' && $_SESSION['id_pegawai'] == 1) :
+            ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard" target="_blank">
+                    <i class="bi bi-phone-fill"></i>
+                    <span>Lihat Tampilan Pegawai</span>
+                </a>
+            </li>
+            <?php endif; ?>
+            <!-- --- AKHIR KODE TAMBAHAN --- -->
             
             <?php if ($_SESSION['role'] == 'superadmin'): ?>
             <li class="nav-item">
@@ -128,12 +141,20 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
 
             <hr class="text-white-50">
 
+            <?php
+            // ===================================================================
+            // === PERUBAHAN DI SINI: Tombol hanya tampil untuk Superadmin ID 1 ===
+            // ===================================================================
+            if ($_SESSION['role'] == 'superadmin' && $_SESSION['id_pegawai'] == 1) :
+            ?>
             <li class="nav-item">
                 <a class="nav-link" href="/dashboard">
                     <i class="bi bi-person-workspace"></i>
                     <span>Dashboard Pegawai</span>
                 </a>
             </li>
+            <?php endif; ?>
+            
             <li class="nav-item">
                 <a class="nav-link text-danger" href="/auth/logout">
                     <i class="bi bi-box-arrow-right"></i>

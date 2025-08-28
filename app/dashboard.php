@@ -1,10 +1,10 @@
 <?php
 // =================================================================
-// CONTROLLER: dashboard.php
+// CONTROLLER: dashboard.php (Versi Perbaikan)
 // =================================================================
 
 session_start();
-// === TAMBAHKAN BLOK AUTO LOGOUT DI SINI ===
+// Blok auto logout
 $idle_timeout = 1800; // 30 menit
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $idle_timeout)) {
     session_unset();
@@ -13,11 +13,10 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
     exit();
 }
 $_SESSION['last_activity'] = time(); // Perbarui waktu aktivitas
-// =======================================
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/csrf_helper.php'; // Panggil helper CSRF
 
-// === TAMBAHKAN BARIS INI ===
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/csrf_helper.php';
+
 generate_csrf_token(); // Pastikan token selalu ada di sesi
 
 // 1. Keamanan: Redirect jika belum login
@@ -31,39 +30,48 @@ $id_pegawai = $_SESSION['id_pegawai'];
 $nama_lengkap = $_SESSION['nama_lengkap'];
 $role = $_SESSION['role'];
 $hari_ini = date('Y-m-d');
+$bulan_awal = date('Y-m-01');
+$bulan_akhir = date('Y-m-t');
 
-// === BARU: Ambil data username untuk modal pengaturan ===
+// Ambil data username untuk modal pengaturan
 $sql_user = "SELECT username FROM tabel_pegawai WHERE id_pegawai = ?";
 $stmt_user = mysqli_prepare($koneksi, $sql_user);
 mysqli_stmt_bind_param($stmt_user, "i", $id_pegawai);
 mysqli_stmt_execute($stmt_user);
 $result_user = mysqli_stmt_get_result($stmt_user);
 $user = mysqli_fetch_assoc($result_user);
-// ========================================================
 
 // 3. Logika Bisnis: Cek status absensi terakhir hari ini
 $sql_cek = "SELECT tipe_absensi FROM tabel_absensi 
             WHERE id_pegawai = ? AND DATE(waktu_absensi) = ? 
             ORDER BY waktu_absensi DESC LIMIT 1";
-
 $stmt_cek = mysqli_prepare($koneksi, $sql_cek);
 mysqli_stmt_bind_param($stmt_cek, "is", $id_pegawai, $hari_ini);
 mysqli_stmt_execute($stmt_cek);
 $result_cek = mysqli_stmt_get_result($stmt_cek);
-
 $status_terakhir = null;
 if ($row = mysqli_fetch_assoc($result_cek)) {
     $status_terakhir = $row['tipe_absensi'];
 }
 
-// === LOGIKA BARU UNTUK HARI LIBUR NASIONAL/CUTI BERSAMA ===
-$sql_libur = "SELECT tanggal FROM tabel_hari_libur WHERE tanggal = ?";
+// =================================================================
+// === PERBAIKAN UTAMA: AMBIL SEMUA HARI LIBUR UNTUK KALENDER ===
+// =================================================================
+$daftar_libur = [];
+// Query untuk mengambil semua hari libur pada rentang bulan ini
+$sql_libur = "SELECT tanggal, keterangan FROM tabel_hari_libur WHERE tanggal BETWEEN ? AND ?";
 $stmt_libur = mysqli_prepare($koneksi, $sql_libur);
-mysqli_stmt_bind_param($stmt_libur, "s", $hari_ini);
+mysqli_stmt_bind_param($stmt_libur, "ss", $bulan_awal, $bulan_akhir);
 mysqli_stmt_execute($stmt_libur);
 $result_libur = mysqli_stmt_get_result($stmt_libur);
-$is_libur_ditetapkan = mysqli_num_rows($result_libur) > 0;
-// ========================================================
+// Simpan hasilnya dalam array agar bisa digunakan di view
+while($row_libur = mysqli_fetch_assoc($result_libur)) {
+    $daftar_libur[$row_libur['tanggal']] = $row_libur['keterangan'];
+}
+// Cek apakah hari ini adalah hari libur yang ditetapkan admin
+$is_libur_ditetapkan = isset($daftar_libur[$hari_ini]);
+// ===============================================================
+
 
 // Logika untuk menentukan batas jam pulang dan hari libur
 $hari_angka = date('w'); // 0 untuk Minggu, 6 untuk Sabtu
@@ -103,9 +111,7 @@ if (!$is_hari_kerja) {
     $bisa_dinas_luar = false;
 }
 
-// =================================================================
-// === BARU: Ambil data untuk dashboard view baru ===
-// =================================================================
+// Ambil data untuk rekap hari ini
 $absen_hari_ini = [
     'masuk' => null,
     'pulang' => null
@@ -128,7 +134,6 @@ while ($row = mysqli_fetch_assoc($result_absensi)) {
         $absen_hari_ini['pulang'] = new DateTime($row['waktu_absensi']);
     }
 }
-// =================================================================
 
 // 5. Panggil View
-require_once 'templates/dashboard_view.php';
+require_once __DIR__ . '/../templates/dashboard_view.php';
