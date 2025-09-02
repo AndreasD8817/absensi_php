@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/assets/img/logo/favicon.png" type="image/png">
+    <!-- PERBAIKAN: Menggunakan BASE_URL untuk path aset -->
+    <link rel="icon" href="<?php echo BASE_URL; ?>/assets/img/logo/favicon.png" type="image/png">
     <title>Riwayat Absensi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/assets/css/user_dashboard.css">
+    <!-- PERBAIKAN: Menggunakan BASE_URL untuk path aset -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/user_dashboard.css">
     <style>
         /* CSS tambahan khusus untuk halaman riwayat */
         .history-card {
@@ -47,14 +49,16 @@
     
     <header class="profile-header">
         <div class="d-flex align-items-center">
-            <img src="/assets/img/logo/icon.png" alt="Avatar" class="logo">
+            <!-- PERBAIKAN: Menggunakan BASE_URL untuk path aset -->
+            <img src="<?php echo BASE_URL; ?>/assets/img/logo/icon.png" alt="Avatar" class="logo">
             <div class="user-info">
                 <h5><?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?></h5>
                 <p><?php echo ucfirst(htmlspecialchars($_SESSION['role'])); ?></p>
             </div>
         </div>
         <div class="header-actions">
-            <a href="/auth/logout" class="btn btn-danger btn-sm" title="Logout">
+            <!-- PERBAIKAN: Menggunakan BASE_URL untuk path tautan -->
+            <a href="<?php echo BASE_URL; ?>/auth/logout" class="btn btn-danger btn-sm" title="Logout">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -152,11 +156,13 @@
 </div>
 
 <div class="bottom-nav">
-    <a href="/dashboard" class="nav-item-bottom">
+    <!-- PERBAIKAN: Menggunakan BASE_URL untuk path tautan -->
+    <a href="<?php echo BASE_URL; ?>/dashboard" class="nav-item-bottom">
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Home</span>
     </a>
-    <a href="/riwayat-absensi" class="nav-item-bottom active">
+    <!-- PERBAIKAN: Menggunakan BASE_URL untuk path tautan -->
+    <a href="<?php echo BASE_URL; ?>/riwayat-absensi" class="nav-item-bottom active">
         <i class="bi bi-file-earmark-text-fill"></i>
         <span>Riwayat</span>
     </a>
@@ -204,6 +210,7 @@ require_once 'partials/modal_panduan.php';
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/js/dashboard.js"></script>
+<!-- PERBAIKAN: Menggunakan BASE_URL untuk path aset -->
+<script src="<?php echo BASE_URL; ?>/assets/js/dashboard.js"></script>
 </body>
 </html>

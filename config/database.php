@@ -2,6 +2,19 @@
 // Memuat autoloader dari Composer
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// --- DEFINISI BASE_URL DINAMIS ---
+// Kode ini akan secara otomatis mendeteksi alamat dasar website Anda
+// baik di server lokal (Laragon) maupun di hosting produksi.
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$host = $_SERVER['HTTP_HOST'];
+// Menentukan path dasar dari skrip yang sedang berjalan
+$script_name = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+// Menghapus subdirektori '/public' jika ada, untuk mendapatkan root proyek yang benar
+$base_path = rtrim(str_replace('/public', '', $script_name), '/');
+// Mendefinisikan konstanta BASE_URL yang bisa diakses di seluruh file
+define('BASE_URL', $protocol . $host . $base_path);
+// ------------------------------------
+
 // Menggunakan library Dotenv untuk memuat file .env
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
