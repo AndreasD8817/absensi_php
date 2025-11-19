@@ -154,7 +154,7 @@ require_once 'partials/modal_panduan.php';
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body action-buttons">
-            <button class="btn btn-masuk <?php if(!$bisa_absen_masuk) echo 'disabled'; ?>" <?php if(!$bisa_absen_masuk) echo 'disabled'; ?> data-bs-toggle="modal" data-bs-target="#modalAbsen" onclick="bukaModalAbsen('Masuk')">
+            <button class="btn btn-masuk <?php if(!$bisa_absen_masuk || (int)date('H') < 5) echo 'disabled'; ?>" <?php if(!$bisa_absen_masuk || (int)date('H') < 5) echo 'disabled'; ?> data-bs-toggle="modal" data-bs-target="#modalAbsen" onclick="bukaModalAbsen('Masuk')">
                 <i class="bi bi-box-arrow-in-right"></i> Absen Masuk
             </button>
             <button class="btn btn-pulang <?php if(!$bisa_absen_pulang) echo 'disabled'; ?>" <?php if(!$bisa_absen_pulang) echo 'disabled'; ?> data-bs-toggle="modal" data-bs-target="#modalAbsen" onclick="bukaModalAbsen('Pulang')">

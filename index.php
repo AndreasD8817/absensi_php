@@ -116,6 +116,9 @@ switch ($request) {
     case 'admin/laporan-absensi':
         require 'admin/laporan_absensi.php';
         break;
+    case 'admin/rekap-harian':
+        require 'admin/rekap_harian.php';
+        break;
     case 'admin/pengaturan':
         require 'admin/pengaturan.php';
         break;

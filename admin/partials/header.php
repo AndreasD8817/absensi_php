@@ -79,6 +79,12 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Laporan Absensi</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/rekap-harian">
+                    <i class="bi bi-calendar-check-fill"></i>
+                    <span>Rekap Harian</span>
+                </a>
+            </li>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'superadmin')): ?>
