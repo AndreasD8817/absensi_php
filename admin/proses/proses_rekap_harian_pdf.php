@@ -72,28 +72,7 @@ while ($row = mysqli_fetch_assoc($res_absen)) {
 // MULAI GENERATE PDF
 // =================================================================================
 
-$pdf = new TCPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
-
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Sistem Absensi');
-$periode_laporan = date_format($tgl_awal_obj, 'd M Y') . ' - ' . date_format($tgl_akhir_obj, 'd M Y');
-$pdf->SetTitle('Rekap Absensi Harian - ' . $periode_laporan);
-
-$pdf->SetMargins(10, 10, 10);
-$pdf->SetAutoPageBreak(TRUE, 10);
-
-$pdf->setPrintHeader(false);
-$pdf->setPrintFooter(false);
-
-$pdf->AddPage();
-
-$pdf->SetFont('helvetica', 'B', 14);
-$pdf->Cell(0, 8, 'REKAPITULASI ABSENSI HARIAN PEGAWAI', 0, 1, 'C');
-$pdf->SetFont('helvetica', '', 12);
-$pdf->Cell(0, 6, 'PERIODE: ' . $periode_laporan, 0, 1, 'C');
-$pdf->Ln(5);
-
-// Buat periode tanggal untuk iterasi
+// Buat periode tanggal untuk iterasi lebih awal agar bisa diakses di Header
 $period = new DatePeriod(
     $tgl_awal_obj,
     new DateInterval('P1D'),
@@ -110,20 +89,61 @@ $w_tgl = $available_width / $jumlah_hari;
 if ($w_tgl > 8) $w_tgl = 8; // Batas maks lebar tgl
 if ($w_tgl < 5) $w_tgl = 5; // Batas min lebar tgl
 
-$pdf->SetFont('helvetica', 'B', 7);
-$pdf->SetFillColor(200, 200, 200);
+// Buat class PDF khusus untuk header berulang
+class MYPDF extends TCPDF {
+    // Properti untuk menyimpan variabel yang dibutuhkan di header
+    public $periode_laporan;
+    public $period;
+    public $w_no, $w_nama, $w_tgl, $w_total;
 
-$pdf->Cell($w_no, 10, 'NO', 1, 0, 'C', 1);
-$pdf->Cell($w_nama, 10, 'NAMA PEGAWAI', 1, 0, 'C', 1);
+    // Override method Header
+    public function Header() {
+        $this->SetFont('helvetica', 'B', 14);
+        $this->Cell(0, 8, 'REKAPITULASI ABSENSI HARIAN PEGAWAI', 0, 1, 'C');
+        $this->SetFont('helvetica', '', 12);
+        $this->Cell(0, 6, 'PERIODE: ' . $this->periode_laporan, 0, 1, 'C');
+        $this->Ln(5);
 
-// Header Tanggal
-foreach ($period as $date) {
-    $pdf->Cell($w_tgl, 10, $date->format('d'), 1, 0, 'C', 1);
+        // Header Tabel
+        $this->SetFont('helvetica', 'B', 7);
+        $this->SetFillColor(200, 200, 200);
+        $this->Cell($this->w_no, 10, 'NO', 1, 0, 'C', 1);
+        $this->Cell($this->w_nama, 10, 'NAMA PEGAWAI', 1, 0, 'C', 1);
+        foreach ($this->period as $date) {
+            $this->Cell($this->w_tgl, 10, $date->format('d'), 1, 0, 'C', 1);
+        }
+        $this->Cell($this->w_total, 10, 'H', 1, 0, 'C', 1);
+        $this->Cell($this->w_total, 10, 'DL', 1, 0, 'C', 1);
+        $this->Cell($this->w_total, 10, 'M', 1, 1, 'C', 1);
+    }
 }
 
-$pdf->Cell($w_total, 10, 'H', 1, 0, 'C', 1);
-$pdf->Cell($w_total, 10, 'DL', 1, 0, 'C', 1);
-$pdf->Cell($w_total, 10, 'A', 1, 1, 'C', 1);
+// Gunakan class MYPDF yang sudah kita buat
+$pdf = new MYPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
+
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Sistem Absensi');
+$periode_laporan = date_format($tgl_awal_obj, 'd M Y') . ' - ' . date_format($tgl_akhir_obj, 'd M Y');
+$pdf->SetTitle('Rekap Absensi Harian - ' . $periode_laporan);
+
+// Set properti yang dibutuhkan oleh Header
+$pdf->periode_laporan = $periode_laporan;
+$pdf->period = $period;
+$pdf->w_no = $w_no;
+$pdf->w_nama = $w_nama;
+$pdf->w_tgl = $w_tgl;
+$pdf->w_total = $w_total;
+
+// Set margin. Margin atas (35) harus cukup besar untuk header kustom kita.
+// Margin bawah (15) untuk footer.
+$pdf->SetMargins(10, 35, 10);
+$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+$pdf->SetAutoPageBreak(TRUE, 15);
+
+$pdf->setPrintHeader(true); // Aktifkan header
+$pdf->setPrintFooter(false);
+
+$pdf->AddPage();
 
 $pdf->SetFont('helvetica', '', 7);
 $no = 1;
@@ -135,12 +155,12 @@ foreach ($data_pegawai as $id_pgw => $pgw) {
 
     $total_hadir = 0;
     $total_dl = 0;
-    $total_alpha = 0;
+    $total_mangkir = 0;
 
     foreach ($period as $date) {
         $current_date_str = $date->format('Y-m-d');
         $nama_hari = $date->format('N'); // 1 (Mon) - 7 (Sun)
-        $is_weekend = ($nama_hari >= 6); // Sabtu atau Minggu
+        $is_weekend = ($nama_hari == 7); // Minggu
         $is_holiday = isset($data_libur[$current_date_str]);
         
         $status = '';
@@ -156,8 +176,8 @@ foreach ($data_pegawai as $id_pgw => $pgw) {
                 $pdf->SetFillColor(255, 200, 200); // Merah muda untuk libur
                 $fill = true;
             } else {
-                $status = '-'; // Alpha
-                $total_alpha++;
+                $status = 'M'; // Mangkir
+                $total_mangkir++;
             }
         }
         $pdf->Cell($w_tgl, 6, $status, 1, 0, 'C', $fill);
@@ -165,13 +185,13 @@ foreach ($data_pegawai as $id_pgw => $pgw) {
 
     $pdf->Cell($w_total, 6, $total_hadir, 1, 0, 'C');
     $pdf->Cell($w_total, 6, $total_dl, 1, 0, 'C');
-    $pdf->Cell($w_total, 6, $total_alpha, 1, 1, 'C');
+    $pdf->Cell($w_total, 6, $total_mangkir, 1, 1, 'C');
 }
 
 // --- Keterangan Kaki ---
 $pdf->Ln(5);
 $pdf->SetFont('helvetica', 'I', 8);
-$pdf->Cell(0, 4, 'Keterangan: H=Hadir, DL=Dinas Luar, L=Libur/Minggu, - = Tanpa Keterangan (Alpha)', 0, 1, 'L');
+$pdf->Cell(0, 4, 'Keterangan: H=Hadir, DL=Dinas Luar, L=Libur/Minggu, M = Tanpa Keterangan (Mangkir)', 0, 1, 'L');
 $pdf->Cell(0, 4, 'Dicetak pada: ' . date('d-m-Y H:i:s'), 0, 1, 'L');
 
 // Output PDF
