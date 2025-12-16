@@ -1,6 +1,0 @@
-[19-Nov-2025 10:27:26 Asia/Jakarta] PHP Warning:  Undefined variable $conn in C:\laragon\www\absensi_php\admin\proses\proses_rekap_harian_pdf.php on line 36
-[19-Nov-2025 10:27:26 Asia/Jakarta] PHP Fatal error:  Uncaught TypeError: mysqli_query(): Argument #1 ($mysql) must be of type mysqli, null given in C:\laragon\www\absensi_php\admin\proses\proses_rekap_harian_pdf.php:36
-Stack trace:
-#0 C:\laragon\www\absensi_php\admin\proses\proses_rekap_harian_pdf.php(36): mysqli_query(NULL, 'SELECT DAY(tang...')
-#1 {main}
-  thrown in C:\laragon\www\absensi_php\admin\proses\proses_rekap_harian_pdf.php on line 36

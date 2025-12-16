@@ -226,6 +226,10 @@ if ($end_page - $start_page < $max_links - 1) {
                                     // ========= PERUBAHAN LOGIKA TERLAMBAT SELESAI ==========
                                     // =======================================================
                                 } else {
+                                    // Jika tidak ada absen masuk, hitung terlambat sepanjang hari kerja
+                                    $diff = $batas_masuk_dt->diff($batas_pulang_dt);
+                                    $terlambat_jam = $diff->h;
+                                    $terlambat_menit = $diff->i;
                                     $persen += 1.5;
                                 }
 
@@ -248,6 +252,10 @@ if ($end_page - $start_page < $max_links - 1) {
                                     // ========= PERUBAHAN LOGIKA PULANG CEPAT SELESAI =========
                                     // =========================================================
                                 } else {
+                                    // Jika tidak ada absen pulang, hitung cepat pulang sepanjang hari kerja
+                                    $diff = $batas_masuk_dt->diff($batas_pulang_dt);
+                                    $cepat_pulang_jam = $diff->h;
+                                    $cepat_pulang_menit = $diff->i;
                                     $persen += 1.5;
                                 }
                             }
@@ -261,11 +269,11 @@ if ($end_page - $start_page < $max_links - 1) {
                             <td><?php echo $nama_hari[$hari_angka] . ", " . $date_obj->format('d-m-Y'); ?></td>
                             <td><?php echo htmlspecialchars($laporan['nama_lengkap']); ?></td>
                             <td><?php echo $absen_masuk ? $absen_masuk->format('H:i:s') : '-'; ?></td>
-                            <td><?php echo $terlambat_jam ?: '-'; ?></td>
-                            <td><?php echo $terlambat_menit ?: '-'; ?></td>
+                            <td><?php echo ($terlambat_jam > 0 || $terlambat_menit > 0) ? $terlambat_jam : '-'; ?></td>
+                            <td><?php echo ($terlambat_jam > 0 || $terlambat_menit > 0) ? $terlambat_menit : '-'; ?></td>
                             <td><?php echo $absen_pulang ? $absen_pulang->format('H:i:s') : '-'; ?></td>
-                            <td><?php echo $cepat_pulang_jam ?: '-'; ?></td>
-                            <td><?php echo $cepat_pulang_menit ?: '-'; ?></td>
+                            <td><?php echo $cepat_pulang_jam; ?></td>
+                            <td><?php echo $cepat_pulang_menit; ?></td>
                             <td><span class="badge <?php if($status=='H') echo 'bg-success'; elseif($status=='DL') echo 'bg-warning text-dark'; elseif($status=='M') echo 'bg-danger'; else echo 'bg-info'; ?>"><?php echo $status; ?></span></td>
                             <td><?php echo $persen > 0 ? number_format($persen, 2) . '%' : '-'; ?></td>
                             <td>
