@@ -54,7 +54,7 @@ $query_absen = "SELECT id_pegawai, DATE(waktu_absensi) as tgl, tipe_absensi
                 FROM tabel_absensi 
                 WHERE id_pegawai IN ($ids_string) 
                 AND DATE(waktu_absensi) BETWEEN '$tanggal_awal' AND '$tanggal_akhir'
-                AND tipe_absensi IN ('Masuk', 'Dinas Luar')";
+                AND tipe_absensi IN ('Masuk', 'Pulang', 'Dinas Luar')";
 
 $res_absen = mysqli_query($koneksi, $query_absen);
 while ($row = mysqli_fetch_assoc($res_absen)) {
