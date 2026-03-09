@@ -33,6 +33,28 @@ if (!$pegawai) {
     require_once 'partials/footer.php';
     exit();
 }
+
+// Ambil daftar hari libur dalam rentang tanggal
+$daftar_libur = [];
+$sql_libur = "SELECT tanggal, keterangan FROM tabel_hari_libur WHERE tanggal BETWEEN ? AND ?";
+$stmt_libur = mysqli_prepare($koneksi, $sql_libur);
+mysqli_stmt_bind_param($stmt_libur, "ss", $tanggal_awal, $tanggal_akhir);
+mysqli_stmt_execute($stmt_libur);
+$result_libur = mysqli_stmt_get_result($stmt_libur);
+while($row_libur = mysqli_fetch_assoc($result_libur)) {
+    $daftar_libur[$row_libur['tanggal']] = $row_libur['keterangan'];
+}
+
+// Ambil daftar jam kerja khusus dalam rentang tanggal
+$daftar_jam_kerja = [];
+$sql_jk = "SELECT tanggal, jam_masuk, jam_pulang FROM tabel_jam_kerja WHERE tanggal BETWEEN ? AND ?";
+$stmt_jk = mysqli_prepare($koneksi, $sql_jk);
+mysqli_stmt_bind_param($stmt_jk, "ss", $tanggal_awal, $tanggal_akhir);
+mysqli_stmt_execute($stmt_jk);
+$result_jk = mysqli_stmt_get_result($stmt_jk);
+while($row_jk = mysqli_fetch_assoc($result_jk)) {
+    $daftar_jam_kerja[$row_jk['tanggal']] = $row_jk;
+}
 ?>
 
 <div class="card">
@@ -71,6 +93,8 @@ if (!$pegawai) {
                     foreach ($period as $date) {
                         $tanggal_loop = $date->format('Y-m-d');
                         $hari_angka = $date->format('w');
+                        $is_libur_nasional = isset($daftar_libur[$tanggal_loop]);
+                        $jam_kerja_khusus = isset($daftar_jam_kerja[$tanggal_loop]) ? $daftar_jam_kerja[$tanggal_loop] : null;
                         
                         $sql_harian = "SELECT tipe_absensi, waktu_absensi, catatan FROM tabel_absensi WHERE id_pegawai = ? AND DATE(waktu_absensi) = ?";
                         $stmt_harian = mysqli_prepare($koneksi, $sql_harian);
@@ -94,8 +118,13 @@ if (!$pegawai) {
                         $persen_harian = 0;
 
                         $batas_masuk_str = ''; $batas_pulang_str = '';
-                        if ($hari_angka >= 1 && $hari_angka <= 5) { $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; }
-                        elseif ($hari_angka == 6) { $batas_masuk_str = '08:00:00'; $batas_pulang_str = '14:00:00'; }
+                        if ($jam_kerja_khusus) {
+                            $batas_masuk_str = $jam_kerja_khusus['jam_masuk'];
+                            $batas_pulang_str = $jam_kerja_khusus['jam_pulang'];
+                        } else {
+                            if ($hari_angka >= 1 && $hari_angka <= 5) { $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; }
+                            elseif ($hari_angka == 6) { $batas_masuk_str = '08:00:00'; $batas_pulang_str = '14:00:00'; }
+                        }
 
                         if(isset($data_hari_ini['Dinas Luar'])) {
                             $status = 'DL';
@@ -164,7 +193,12 @@ if (!$pegawai) {
                             // --- AKHIR LOGIKA PERHITUNGAN ---
                         }
                         
-                        if ($hari_angka == 0) { $status = 'Libur'; }
+                        if ($hari_angka == 0 || $is_libur_nasional) { 
+                            $status = 'Libur'; 
+                            if ($is_libur_nasional && empty($keterangan)) {
+                                $keterangan = $daftar_libur[$tanggal_loop];
+                            }
+                        }
                         
                         $total_persen += $persen_harian;
                     ?>

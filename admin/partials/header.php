@@ -109,6 +109,12 @@ require_once __DIR__ . '/../../config/csrf_helper.php';
                     <span>Input Hari Libur</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/jam-kerja">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Jam Kerja</span>
+                </a>
+            </li>
             <?php endif; ?>
 
             <?php if ($_SESSION['role'] == 'superadmin'): ?>

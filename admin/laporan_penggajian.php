@@ -52,6 +52,17 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
         $daftar_libur[] = $row_libur['tanggal'];
     }
 
+    // Ambil daftar jam kerja khusus
+    $daftar_jam_kerja = [];
+    $sql_jk = "SELECT tanggal, jam_masuk, jam_pulang FROM tabel_jam_kerja WHERE tanggal BETWEEN ? AND ?";
+    $stmt_jk = mysqli_prepare($koneksi, $sql_jk);
+    mysqli_stmt_bind_param($stmt_jk, "ss", $tanggal_awal, $tanggal_akhir);
+    mysqli_stmt_execute($stmt_jk);
+    $result_jk = mysqli_stmt_get_result($stmt_jk);
+    while($row_jk = mysqli_fetch_assoc($result_jk)) {
+        $daftar_jam_kerja[$row_jk['tanggal']] = $row_jk;
+    }
+
     $jumlah_hari_masuk = 0;
     $total_potongan_rupiah = 0;
     $total_persen_potongan_periode = 0;
@@ -61,6 +72,7 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
     foreach ($period as $date) {
         $tanggal_loop = $date->format('Y-m-d');
         $hari_angka = $date->format('w');
+        $jam_kerja_khusus = isset($daftar_jam_kerja[$tanggal_loop]) ? $daftar_jam_kerja[$tanggal_loop] : null;
 
         $is_hari_kerja = ($hari_angka != 0 && !in_array($tanggal_loop, $daftar_libur));
 
@@ -75,8 +87,13 @@ while ($pegawai = mysqli_fetch_assoc($result_pegawai)) {
 
                 // Hanya hitung potongan jika bukan dinas luar
                 if (!isset($rekap_harian[$tanggal_loop]['Dinas Luar'])) {
-                    $batas_masuk_str = ($hari_angka >= 1 && $hari_angka <= 5) ? '07:30:00' : '08:00:00';
-                    $batas_pulang_str = ($hari_angka >= 1 && $hari_angka <= 5) ? '16:00:00' : '14:00:00';
+                    if ($jam_kerja_khusus) {
+                        $batas_masuk_str = $jam_kerja_khusus['jam_masuk'];
+                        $batas_pulang_str = $jam_kerja_khusus['jam_pulang'];
+                    } else {
+                        $batas_masuk_str = ($hari_angka >= 1 && $hari_angka <= 5) ? '07:30:00' : '08:00:00';
+                        $batas_pulang_str = ($hari_angka >= 1 && $hari_angka <= 5) ? '16:00:00' : '14:00:00';
+                    }
 
                     $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
                     $batas_pulang_dt = new DateTime($tanggal_loop . ' ' . $batas_pulang_str);

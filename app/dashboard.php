@@ -80,6 +80,19 @@ while($row_libur = mysqli_fetch_assoc($result_libur)) {
 $is_libur_ditetapkan = isset($daftar_libur[$hari_ini]);
 // ===============================================================
 
+// =================================================================
+// === PERBAIKAN: CEK JAM KERJA KHUSUS (RAMADHAN DLL) ===
+// =================================================================
+$jam_kerja_khusus = null;
+$sql_jk = "SELECT jam_masuk, jam_pulang FROM tabel_jam_kerja WHERE tanggal = ?";
+$stmt_jk = mysqli_prepare($koneksi, $sql_jk);
+mysqli_stmt_bind_param($stmt_jk, "s", $hari_ini);
+mysqli_stmt_execute($stmt_jk);
+$result_jk = mysqli_stmt_get_result($stmt_jk);
+if ($row_jk = mysqli_fetch_assoc($result_jk)) {
+    $jam_kerja_khusus = $row_jk;
+}
+// ===============================================================
 
 // Logika untuk menentukan batas jam pulang dan hari libur
 $hari_angka = date('w'); // 0 untuk Minggu, 6 untuk Sabtu
@@ -92,13 +105,18 @@ if ($hari_angka == 0 || $is_libur_ditetapkan) {
     $is_hari_kerja = false;
 }
 
-switch ($hari_angka) {
-    case 1: case 2: case 3: case 4: case 5:
-        $batas_pulang_str = '16:00:00'; 
-        break;
-    case 6: // Sabtu
-        $batas_pulang_str = '14:00:00'; 
-        break;
+// Jika ada jam kerja khusus, gunakan itu. Jika tidak, gunakan default.
+if ($jam_kerja_khusus) {
+    $batas_pulang_str = $jam_kerja_khusus['jam_pulang'];
+} else {
+    switch ($hari_angka) {
+        case 1: case 2: case 3: case 4: case 5:
+            $batas_pulang_str = '16:00:00'; 
+            break;
+        case 6: // Sabtu
+            $batas_pulang_str = '14:00:00'; 
+            break;
+    }
 }
 
 $lewat_jam_pulang = false;

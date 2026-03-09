@@ -1,0 +1,31 @@
+[21-Nov-2025 10:32:29 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Class "TCPDF" not found in /home/dprdsby/web/rekabsen.dprdsby.id/public_html/admin/proses/proses_rekap_harian_pdf.php:93
+Stack trace:
+#0 {main}
+  thrown in /home/dprdsby/web/rekabsen.dprdsby.id/public_html/admin/proses/proses_rekap_harian_pdf.php on line 93
+[21-Nov-2025 10:36:00 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Class "TCPDF" not found in /home/dprdsby/web/rekabsen.dprdsby.id/public_html/admin/proses/proses_rekap_harian_pdf.php:93
+Stack trace:
+#0 {main}
+  thrown in /home/dprdsby/web/rekabsen.dprdsby.id/public_html/admin/proses/proses_rekap_harian_pdf.php on line 93
+[23-Jan-2026 22:26:16 Asia/Jakarta] PHP Warning:  Undefined array key "username" in /home/dprdsby/web/rekabsen.dprdsby.id/public_html/auth/proses_login.php on line 12
+[23-Jan-2026 22:26:16 Asia/Jakarta] PHP Warning:  Undefined array key "password" in /home/dprdsby/web/rekabsen.dprdsby.id/public_html/auth/proses_login.php on line 13
+[03-Feb-2026 02:31:44 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'dprdsby_rekabsen'@'localhost' (using password: YES) in C:\laragon\www\absensi_php\config\database.php:35
+Stack trace:
+#0 C:\laragon\www\absensi_php\config\database.php(35): mysqli_connect('localhost', 'dprdsby_rekabse...', Object(SensitiveParameterValue), 'dprdsby_db_abse...')
+#1 C:\laragon\www\absensi_php\auth\proses_login.php(6): require_once('C:\\laragon\\www\\...')
+#2 C:\laragon\www\absensi_php\index.php(55): require('C:\\laragon\\www\\...')
+#3 {main}
+  thrown in C:\laragon\www\absensi_php\config\database.php on line 35
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Warning:  Undefined array key "tanggal_awal" in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 14
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Warning:  Undefined array key "tanggal_akhir" in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 15
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Warning:  Undefined array key "jam_masuk_wd" in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 18
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Warning:  Undefined array key "jam_pulang_wd" in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 19
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Warning:  Undefined array key "jam_masuk_fri" in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 22
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Warning:  Undefined array key "jam_pulang_fri" in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 23
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Deprecated:  DateTime::__construct(): Passing null to parameter #1 ($datetime) of type string is deprecated in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 32
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Deprecated:  DateTime::__construct(): Passing null to parameter #1 ($datetime) of type string is deprecated in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 33
+[19-Feb-2026 13:38:42 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'jam_masuk' cannot be null in C:\laragon\www\absensi_php\admin\jam_kerja.php:62
+Stack trace:
+#0 C:\laragon\www\absensi_php\admin\jam_kerja.php(62): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\laragon\www\absensi_php\index.php(114): require('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\absensi_php\admin\jam_kerja.php on line 62

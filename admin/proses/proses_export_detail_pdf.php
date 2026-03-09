@@ -28,6 +28,17 @@ if (!$pegawai) {
     die("Pegawai tidak ditemukan.");
 }
 
+// Ambil daftar hari libur dalam rentang tanggal
+$daftar_libur = [];
+$sql_libur = "SELECT tanggal, keterangan FROM tabel_hari_libur WHERE tanggal BETWEEN ? AND ?";
+$stmt_libur = mysqli_prepare($koneksi, $sql_libur);
+mysqli_stmt_bind_param($stmt_libur, "ss", $tanggal_awal, $tanggal_akhir);
+mysqli_stmt_execute($stmt_libur);
+$result_libur = mysqli_stmt_get_result($stmt_libur);
+while($row_libur = mysqli_fetch_assoc($result_libur)) {
+    $daftar_libur[$row_libur['tanggal']] = $row_libur['keterangan'];
+}
+
 class PDF extends FPDF
 {
     function Header()
@@ -74,6 +85,7 @@ $nama_hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 foreach ($period as $date) {
     $tanggal_loop = $date->format('Y-m-d');
     $hari_angka = $date->format('w');
+    $is_libur_nasional = isset($daftar_libur[$tanggal_loop]);
     
     $sql_harian = "SELECT tipe_absensi, waktu_absensi, catatan FROM tabel_absensi WHERE id_pegawai = ? AND DATE(waktu_absensi) = ?";
     $stmt_harian = mysqli_prepare($koneksi, $sql_harian);
@@ -86,8 +98,8 @@ foreach ($period as $date) {
         $data_hari_ini[$row['tipe_absensi']] = $row;
     }
 
-    $jam_masuk = $data_hari_ini['Masuk']['waktu_absensi'] ?? '-';
-    $jam_pulang = $data_hari_ini['Pulang']['waktu_absensi'] ?? '-';
+    $jam_masuk = $data_hari_ini['Masuk']['waktu_absensi'] ?? null;
+    $jam_pulang = $data_hari_ini['Pulang']['waktu_absensi'] ?? null;
     $keterangan = $data_hari_ini['Masuk']['catatan'] ?? '';
     if(isset($data_hari_ini['Pulang']['catatan'])) {
         $keterangan .= ' | ' . $data_hari_ini['Pulang']['catatan'];
@@ -95,34 +107,76 @@ foreach ($period as $date) {
     
     $status = 'M';
     $persen_harian = 0;
+    
+    $batas_masuk_str = ''; $batas_pulang_str = '';
+    if ($hari_angka >= 1 && $hari_angka <= 5) { $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; }
+    elseif ($hari_angka == 6) { $batas_masuk_str = '08:00:00'; $batas_pulang_str = '14:00:00'; }
 
     if(isset($data_hari_ini['Dinas Luar'])) {
         $status = 'DL';
         $keterangan = 'Dinas Luar';
         $total_hadir++;
-    } elseif (isset($data_hari_ini['Masuk'])) {
+    } elseif (isset($data_hari_ini['Masuk']) || isset($data_hari_ini['Pulang'])) {
         $status = 'H';
         $total_hadir++;
-        $batas_masuk_str = ($hari_angka == 6) ? '08:00:00' : '07:30:00';
-        $absen_masuk_dt = new DateTime($jam_masuk);
-        $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
-        if ($absen_masuk_dt > $batas_masuk_dt) {
-            $diff = $absen_masuk_dt->diff($batas_masuk_dt);
-            $menit_telat = ($diff->h * 60) + $diff->i;
-            if ($menit_telat >= 1 && $menit_telat <= 15) $persen_harian = 0.25;
-            elseif ($menit_telat >= 16 && $menit_telat <= 60) $persen_harian = 0.5;
-            elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_harian = 1.0;
-            elseif ($menit_telat > 120) $persen_harian = 1.5;
+        
+        if (!empty($batas_masuk_str)) {
+            $batas_masuk_dt = new DateTime($tanggal_loop . ' ' . $batas_masuk_str);
+            $batas_pulang_dt = new DateTime($tanggal_loop . ' ' . $batas_pulang_str);
+
+            // Cek Tidak Absen Masuk
+            if (!$jam_masuk) {
+                $persen_harian += 1.5;
+            } else {
+                // Cek Terlambat
+                $absen_masuk_dt = new DateTime($jam_masuk);
+                
+                $absen_masuk_menit = clone $absen_masuk_dt;
+                $absen_masuk_menit->setTime($absen_masuk_dt->format('H'), $absen_masuk_dt->format('i'), 0);
+                $batas_masuk_menit = clone $batas_masuk_dt;
+                $batas_masuk_menit->setTime($batas_masuk_dt->format('H'), $batas_masuk_dt->format('i'), 0);
+
+                if ($absen_masuk_menit > $batas_masuk_menit) {
+                    $diff = $absen_masuk_dt->diff($batas_masuk_dt);
+                    $menit_telat = ($diff->h * 60) + $diff->i;
+                    if ($menit_telat >= 1 && $menit_telat <= 15) $persen_harian += 0.25;
+                    elseif ($menit_telat >= 16 && $menit_telat <= 60) $persen_harian += 0.5;
+                    elseif ($menit_telat > 60 && $menit_telat <= 120) $persen_harian += 1.0;
+                    elseif ($menit_telat > 120) $persen_harian += 1.5;
+                }
+            }
+
+            // Cek Tidak Absen Pulang
+            if (!$jam_pulang) {
+                $persen_harian += 1.5;
+            } else {
+                // Cek Pulang Cepat
+                $absen_pulang_dt = new DateTime($jam_pulang);
+                
+                $absen_pulang_menit = clone $absen_pulang_dt;
+                $absen_pulang_menit->setTime($absen_pulang_dt->format('H'), $absen_pulang_dt->format('i'), 0);
+                $batas_pulang_menit = clone $batas_pulang_dt;
+                $batas_pulang_menit->setTime($batas_pulang_dt->format('H'), $batas_pulang_dt->format('i'), 0);
+
+                if ($absen_pulang_menit < $batas_pulang_menit) {
+                    $persen_harian += 1.5;
+                }
+            }
         }
     }
     
-    if ($hari_angka == 0) { $status = 'Libur'; }
+    if ($hari_angka == 0 || $is_libur_nasional) { 
+        $status = 'Libur'; 
+        if ($is_libur_nasional && empty($keterangan)) {
+            $keterangan = $daftar_libur[$tanggal_loop];
+        }
+    }
     
     $total_persen += $persen_harian;
     
     $pdf->Cell(40, 6, $nama_hari[$hari_angka] . ", " . $date->format('d-m-Y'), 1);
-    $pdf->Cell(25, 6, $jam_masuk !== '-' ? date('H:i:s', strtotime($jam_masuk)) : '-', 1, 0, 'C');
-    $pdf->Cell(25, 6, $jam_pulang !== '-' ? date('H:i:s', strtotime($jam_pulang)) : '-', 1, 0, 'C');
+    $pdf->Cell(25, 6, $jam_masuk ? date('H:i:s', strtotime($jam_masuk)) : '-', 1, 0, 'C');
+    $pdf->Cell(25, 6, $jam_pulang ? date('H:i:s', strtotime($jam_pulang)) : '-', 1, 0, 'C');
     $pdf->Cell(15, 6, $status, 1, 0, 'C');
     $pdf->Cell(25, 6, $persen_harian > 0 ? number_format($persen_harian, 2, ',', '.') . '%' : '-', 1, 0, 'C');
     $pdf->Cell(60, 6, substr($keterangan, 0, 40), 1);

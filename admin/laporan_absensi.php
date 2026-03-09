@@ -63,6 +63,17 @@ while($row_libur = mysqli_fetch_assoc($result_libur)) {
     $daftar_libur[$row_libur['tanggal']] = $row_libur['keterangan'];
 }
 
+// --- AMBIL DAFTAR JAM KERJA KHUSUS ---
+$daftar_jam_kerja = [];
+$sql_jk = "SELECT tanggal, jam_masuk, jam_pulang FROM tabel_jam_kerja WHERE tanggal BETWEEN ? AND ?";
+$stmt_jk = mysqli_prepare($koneksi, $sql_jk);
+mysqli_stmt_bind_param($stmt_jk, "ss", $tanggal_awal, $tanggal_akhir);
+mysqli_stmt_execute($stmt_jk);
+$result_jk = mysqli_stmt_get_result($stmt_jk);
+while($row_jk = mysqli_fetch_assoc($result_jk)) {
+    $daftar_jam_kerja[$row_jk['tanggal']] = $row_jk;
+}
+
 // --- BUAT SEMUA BARIS LAPORAN BERDASARKAN TANGGAL DAN PEGAWAI ---
 $laporan_final = [];
 $period = new DatePeriod(
@@ -121,7 +132,13 @@ if ($end_page - $start_page < $max_links - 1) {
 ?>
 
 <style>
-    @media print { .no-print { display: none !important; } .card { border: none; box-shadow: none; } .table { font-size: 12px; } }
+    .printable-table { display: none; }
+    @media print { 
+        .no-print, .paginated-table { display: none !important; } 
+        .printable-table { display: block !important; width: 100%; }
+        .card { border: none; box-shadow: none; } 
+        .table { font-size: 12px; } 
+    }
 </style>
 
 <div class="card">
@@ -129,6 +146,10 @@ if ($end_page - $start_page < $max_links - 1) {
         <h4 class="card-title"><i class="bi bi-file-earmark-spreadsheet-fill"></i> Laporan Absensi Pegawai</h4>
     </div>
     <div class="card-body">
+        <div class="printable-table">
+            <h3 class="text-center">Laporan Absensi Pegawai</h3>
+            <p class="text-center">Periode: <?php echo htmlspecialchars($tanggal_awal) . ' - ' . htmlspecialchars($tanggal_akhir); ?></p>
+        </div>
         <form method="GET" action="" class="mb-4 no-print">
             <div class="row g-3 align-items-end">
                 <div class="col-md-3"><label for="awal" class="form-label">Tanggal Awal</label><input type="date" class="form-control" id="awal" name="awal" value="<?php echo htmlspecialchars($tanggal_awal); ?>"></div>
@@ -138,7 +159,7 @@ if ($end_page - $start_page < $max_links - 1) {
             </div>
         </form>
 
-        <div class="table-responsive">
+        <div class="table-responsive paginated-table">
             <table class="table table-striped table-bordered text-center">
                 <thead class="table-dark">
                     <tr>
@@ -170,6 +191,7 @@ if ($end_page - $start_page < $max_links - 1) {
                             $date_obj = new DateTime($tanggal);
                             $hari_angka = $date_obj->format('w');
                             $is_libur_nasional = isset($daftar_libur[$tanggal]);
+                            $jam_kerja_khusus = isset($daftar_jam_kerja[$tanggal]) ? $daftar_jam_kerja[$tanggal] : null;
                             
                             $data_masuk = $data_absensi[$id_pegawai][$tanggal]['Masuk'] ?? null;
                             $data_pulang = $data_absensi[$id_pegawai][$tanggal]['Pulang'] ?? null;
@@ -181,7 +203,10 @@ if ($end_page - $start_page < $max_links - 1) {
                             $status = ''; $persen = 0; $terlambat_jam = 0; $terlambat_menit = 0; $cepat_pulang_jam = 0; $cepat_pulang_menit = 0;
                             
                             $batas_masuk_str = ''; $batas_pulang_str = '';
-                            if (!$is_libur_nasional) {
+                            if ($jam_kerja_khusus) {
+                                $batas_masuk_str = $jam_kerja_khusus['jam_masuk'];
+                                $batas_pulang_str = $jam_kerja_khusus['jam_pulang'];
+                            } elseif (!$is_libur_nasional) {
                                 switch ($hari_angka) {
                                     case 1: case 2: case 3: case 4: case 5: $batas_masuk_str = '07:30:00'; $batas_pulang_str = '16:00:00'; break;
                                     case 6: $batas_masuk_str = '08:00:00'; $batas_pulang_str = '14:00:00'; break;
@@ -300,14 +325,168 @@ if ($end_page - $start_page < $max_links - 1) {
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-                <tfoot class="table-group-divider fw-bold">
+                <tfoot class="table-group-divider fw-bold paginated-table">
                     <tr>
-                        <td colspan="11" class="text-end">Total</td>
+                        <td colspan="10" class="text-end">Total</td>
                         <td colspan="2"><span class="badge bg-success"><?php echo $total_h; ?> H</span> <span class="badge bg-danger"><?php echo $total_m; ?> M</span> <span class="badge bg-warning text-dark"><?php echo $total_dl; ?> DL</span></td>
                     </tr>
                     <tr>
-                        <td colspan="11" class="text-end">Total Potongan (%)</td>
+                        <td colspan="10" class="text-end">Total Potongan (%)</td>
                         <td colspan="2"><?php echo number_format($total_persen_potongan, 2); ?>%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="table-responsive printable-table">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th rowspan="2" class="align-middle">No</th>
+                        <th rowspan="2" class="align-middle">Hari, Tanggal</th>
+                        <th rowspan="2" class="align-middle">Nama Pegawai</th>
+                        <th rowspan="2" class="align-middle">Jam Masuk</th>
+                        <th colspan="2">Terlambat</th>
+                        <th rowspan="2" class="align-middle">Jam Pulang</th>
+                        <th colspan="2">Cepat Pulang</th>
+                        <th rowspan="2" class="align-middle">Status</th>
+                        <th rowspan="2" class="align-middle">Potongan (%)</th>
+                        <th rowspan="2" class="align-middle">Bukti</th>
+                    </tr>
+                    <tr><th>Jam</th><th>Menit</th><th>Jam</th><th>Menit</th></tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($laporan_final)): ?>
+                        <tr><td colspan="12">Tidak ada data untuk ditampilkan pada rentang tanggal dan pegawai yang dipilih.</td></tr>
+                    <?php else: ?>
+                        <?php 
+                        $nomor_print = 1;
+                        $total_h_print = 0; $total_m_print = 0; $total_dl_print = 0;
+                        $total_persen_potongan_print = 0;
+                        $nama_hari_print = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                        foreach($laporan_final as $laporan_print):
+                            $tanggal_print = $laporan_print['tanggal'];
+                            $id_pegawai_print = $laporan_print['id_pegawai'];
+                            
+                            $date_obj_print = new DateTime($tanggal_print);
+                            $hari_angka_print = $date_obj_print->format('w');
+                            $is_libur_nasional_print = isset($daftar_libur[$tanggal_print]);
+                            $jam_kerja_khusus_print = isset($daftar_jam_kerja[$tanggal_print]) ? $daftar_jam_kerja[$tanggal_print] : null;
+                            
+                            $data_masuk_print = $data_absensi[$id_pegawai_print][$tanggal_print]['Masuk'] ?? null;
+                            $data_pulang_print = $data_absensi[$id_pegawai_print][$tanggal_print]['Pulang'] ?? null;
+                            $data_dinas_luar_print = $data_absensi[$id_pegawai_print][$tanggal_print]['Dinas Luar'] ?? null;
+
+                            $absen_masuk_print = $data_masuk_print ? new DateTime($data_masuk_print['waktu_absensi']) : null;
+                            $absen_pulang_print = $data_pulang_print ? new DateTime($data_pulang_print['waktu_absensi']) : null;
+                            
+                            $status_print = ''; $persen_print = 0; $terlambat_jam_print = 0; $terlambat_menit_print = 0; $cepat_pulang_jam_print = 0; $cepat_pulang_menit_print = 0;
+                            
+                            $batas_masuk_str_print = ''; $batas_pulang_str_print = '';
+                            if ($jam_kerja_khusus_print) {
+                                $batas_masuk_str_print = $jam_kerja_khusus_print['jam_masuk'];
+                                $batas_pulang_str_print = $jam_kerja_khusus_print['jam_pulang'];
+                            } elseif (!$is_libur_nasional_print) {
+                                switch ($hari_angka_print) {
+                                    case 1: case 2: case 3: case 4: case 5: $batas_masuk_str_print = '07:30:00'; $batas_pulang_str_print = '16:00:00'; break;
+                                    case 6: $batas_masuk_str_print = '08:00:00'; $batas_pulang_str_print = '14:00:00'; break;
+                                }
+                            }
+
+                            if ($data_dinas_luar_print) {
+                                $status_print = 'DL'; $total_dl_print++;
+                            } elseif ($data_masuk_print || $data_pulang_print) {
+                                $status_print = 'H'; $total_h_print++;
+                            } else {
+                                if (!empty($batas_masuk_str_print)) { 
+                                    $status_print = 'M'; $total_m_print++;
+                                } 
+                                else { $status_print = 'Libur'; }
+                            }
+
+                            if ($status_print == 'H' && !empty($batas_masuk_str_print)) {
+                                $batas_masuk_dt_print = new DateTime($tanggal_print . ' ' . $batas_masuk_str_print);
+                                $batas_pulang_dt_print = new DateTime($tanggal_print . ' ' . $batas_pulang_str_print);
+                                
+                                if ($absen_masuk_print) {
+                                    $absen_masuk_menit_print = clone $absen_masuk_print;
+                                    $absen_masuk_menit_print->setTime($absen_masuk_print->format('H'), $absen_masuk_print->format('i'), 0);
+
+                                    $batas_masuk_menit_print = clone $batas_masuk_dt_print;
+                                    $batas_masuk_menit_print->setTime($batas_masuk_dt_print->format('H'), $batas_masuk_dt_print->format('i'), 0);
+
+                                    if ($absen_masuk_menit_print > $batas_masuk_menit_print) {
+                                        $diff_print = $absen_masuk_print->diff($batas_masuk_dt_print);
+                                        $terlambat_jam_print = $diff_print->h; $terlambat_menit_print = $diff_print->i;
+                                        $menit_telat_print = ($terlambat_jam_print * 60) + $terlambat_menit_print;
+                                        if ($menit_telat_print >= 1 && $menit_telat_print <= 15) $persen_print += 0.25;
+                                        elseif ($menit_telat_print >= 16 && $menit_telat_print <= 60) $persen_print += 0.5;
+                                        elseif ($menit_telat_print > 60 && $menit_telat_print <= 120) $persen_print += 1.0;
+                                        elseif ($menit_telat_print > 120) $persen_print += 1.5;
+                                    }
+                                } else {
+                                    $diff_print = $batas_masuk_dt_print->diff($batas_pulang_dt_print);
+                                    $terlambat_jam_print = $diff_print->h;
+                                    $terlambat_menit_print = $diff_print->i;
+                                    $persen_print += 1.5;
+                                }
+
+                                if ($absen_pulang_print) {
+                                    $absen_pulang_menit_print = clone $absen_pulang_print;
+                                    $absen_pulang_menit_print->setTime($absen_pulang_print->format('H'), $absen_pulang_print->format('i'), 0);
+
+                                    $batas_pulang_menit_print = clone $batas_pulang_dt_print;
+                                    $batas_pulang_menit_print->setTime($batas_pulang_dt_print->format('H'), $batas_pulang_dt_print->format('i'), 0);
+                                    
+                                    if ($absen_pulang_menit_print < $batas_pulang_menit_print) {
+                                        $diff_print = $absen_pulang_print->diff($batas_pulang_dt_print);
+                                        $cepat_pulang_jam_print = $diff_print->h; $cepat_pulang_menit_print = $diff_print->i;
+                                        $persen_print += 1.5;
+                                    }
+                                } else {
+                                    $diff_print = $batas_masuk_dt_print->diff($batas_pulang_dt_print);
+                                    $cepat_pulang_jam_print = $diff_print->h;
+                                    $cepat_pulang_menit_print = $diff_print->i;
+                                    $persen_print += 1.5;
+                                }
+                            }
+                            
+                            $total_persen_potongan_print += $persen_print;
+                        ?>
+                        <tr>
+                            <td><?php echo $nomor_print++; ?></td>
+                            <td><?php echo $nama_hari_print[$hari_angka_print] . ", " . $date_obj_print->format('d-m-Y'); ?></td>
+                            <td><?php echo htmlspecialchars($laporan_print['nama_lengkap']); ?></td>
+                            <td><?php echo $absen_masuk_print ? $absen_masuk_print->format('H:i:s') : '-'; ?></td>
+                            <td><?php echo ($terlambat_jam_print > 0 || $terlambat_menit_print > 0) ? $terlambat_jam_print : '-'; ?></td>
+                            <td><?php echo ($terlambat_jam_print > 0 || $terlambat_menit_print > 0) ? $terlambat_menit_print : '-'; ?></td>
+                            <td><?php echo $absen_pulang_print ? $absen_pulang_print->format('H:i:s') : '-'; ?></td>
+                            <td><?php echo $cepat_pulang_jam_print; ?></td>
+                            <td><?php echo $cepat_pulang_menit_print; ?></td>
+                            <td><span class="badge <?php if($status_print=='H') echo 'bg-success'; elseif($status_print=='DL') echo 'bg-warning text-dark'; elseif($status_print=='M') echo 'bg-danger'; else echo 'bg-info'; ?>"><?php echo $status_print; ?></span></td>
+                            <td><?php echo $persen_print > 0 ? number_format($persen_print, 2) . '%' : '-'; ?></td>
+                            <td>
+                                <?php if ($data_masuk_print && $data_masuk_print['foto']): ?>
+                                    <i class="bi bi-camera-fill"></i>
+                                <?php endif; ?>
+                                <?php if ($data_pulang_print && $data_pulang_print['foto']): ?>
+                                    <i class="bi bi-camera-fill"></i>
+                                <?php endif; ?>
+                                <?php if ($data_dinas_luar_print && !empty($data_dinas_luar_print['file_surat_tugas'])): ?>
+                                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+                <tfoot class="table-group-divider fw-bold">
+                    <tr>
+                        <td colspan="9" class="text-end align-middle">Total Keseluruhan:</td>
+                        <td colspan="3" class="text-start align-middle">
+                            <div><span class="badge bg-success"><?php echo $total_h_print; ?> Hadir</span> <span class="badge bg-danger"><?php echo $total_m_print; ?> Mangkir</span> <span class="badge bg-warning text-dark"><?php echo $total_dl_print; ?> DL</span></div>
+                            <div class="mt-1">Total Potongan: <?php echo number_format($total_persen_potongan_print, 2); ?>%</div>
+                        </td>
                     </tr>
                 </tfoot>
             </table>

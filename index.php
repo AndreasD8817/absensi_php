@@ -110,6 +110,9 @@ switch ($request) {
     case 'admin/kelola-libur':
         require 'admin/kelola_libur.php';
         break;
+    case 'admin/jam-kerja':
+        require 'admin/jam_kerja.php';
+        break;
     case 'admin/edit-absensi':
         require 'admin/edit_absensi.php';
         break;
